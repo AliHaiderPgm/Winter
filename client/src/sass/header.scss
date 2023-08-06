@@ -1,0 +1,99 @@
+.cardContainer {
+    float: right;
+    @media (max-width:575px) {
+        float: none;
+    }
+    .coverImg{
+        height: 450px;
+        width: 300px;
+        @media (max-width:575px){
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    .smallCard {
+        cursor: pointer;
+        position: absolute;
+        background-color: rgb(255 255 255 / 50%);
+        border-radius: 10px;
+        height: 125px;
+        width: 125px;
+        backdrop-filter: blur(9px);
+        top: 15%;
+        left: -30%;
+        margin-right: 10px;
+
+        @media (max-width:991px) {
+            left: 5%;
+        }
+
+        @media (max-width:767px) {
+            left: -10%;
+        }
+        @media (max-width:575px){
+            left: 10%;
+        }
+
+        img {
+            height: 80px;
+            position: relative;
+            top: -43px;
+            left: 20px;
+        }
+
+        .contentWrapper {
+            position: relative;
+            top: -37px;
+            left: 10px;
+        }
+    }
+
+    :nth-child(2) {
+        top: 15%;
+        left: 15%;
+
+        @media (max-width:991px) {
+            left: 52%;
+        }
+
+        @media (max-width:767px) {
+            left: 60%;
+        }
+        @media (max-width:575px){
+            left: 48%;
+        }
+    }
+
+    :nth-child(3) {
+        top: 57%;
+        left: 15%;
+
+        @media (max-width:991px) {
+            left: 5%;
+        }
+
+        @media (max-width:767px) {
+            left: -10%;
+        }
+        @media (max-width:575px){
+            left: 10%;
+        }
+    }
+
+    :nth-child(4) {
+        top: 57%;
+        left: -31%;
+
+        @media (max-width:991px) {
+            left: 52%;
+        }
+
+        @media (max-width:767px) {
+            left: 60%;
+        }
+        @media (max-width:575px){
+            left: 48%;
+        }
+    }
+}
