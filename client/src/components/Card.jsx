@@ -5,7 +5,7 @@ const CustomCard = () => (
 	<Card
 		hoverable
 		style={{
-			width: 240,
+			width: 250,
 		}}
 		cover={
 			<img

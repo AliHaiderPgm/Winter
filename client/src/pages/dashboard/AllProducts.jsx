@@ -16,12 +16,12 @@ const AllProducts = () => {
 	const handleChange = (value) => {}
 	return (
 		<>
-			<div className="d-flex justify-content-between mt-2 mb-3">
-				<div className="w-50">
+			<div className="d-flex justify-content-between mt-2 mb-3 flex-column">
+				<div className="w-100">
 					<Search
 						placeholder="Search Product"
 						allowClear
-						enterButton="Search"
+						enterButton="Find"
 						size="large"
 						onSearch={onSearch}
 					/>

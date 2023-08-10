@@ -1,18 +1,26 @@
-import { Button, Input, Select, Upload } from "antd"
+import { useState } from "react"
+import Dragger from "../../components/upload"
+import { Button, Input, InputNumber, Select } from "antd"
 import {
 	FontSizeOutlined,
 	DollarOutlined,
-	InboxOutlined,
 	StockOutlined,
 	BgColorsOutlined,
 } from "@ant-design/icons"
-import { useState } from "react"
 
 const { TextArea } = Input
-const { Dragger } = Upload
 
+const initialState = {
+	name: "",
+	type: "",
+	price: null,
+	description: "",
+	color: "",
+	size: "",
+	stock: 0,
+}
 const AddProduct = () => {
-	const [files, selectedFiles] = useState()
+	const [state, setState] = useState(initialState)
 	const types = [
 		{
 			value: "cloth",
@@ -63,33 +71,18 @@ const AddProduct = () => {
 			label: "Extra Large",
 		},
 	]
-	const handleChange = (value) => {}
-	const handleColor = (value) => {}
-
-	const props = {
-		name: "file",
-		multiple: true,
-		// action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76', //axios url
-		// onChange(info) {
-		// 	const { status } = info.file
-		// 	if (status !== "uploading") {
-		// 		console.log(info.file, info.fileList)
-		// 	}
-		// 	if (status === "done") {
-		// 		message.success(`${info.file.name} file uploaded successfully.`)
-		// 	} else if (status === "error") {
-		// 		message.error(`${info.file.name} file upload failed.`)
-		// 	}
-		// },
-		beforeUpload: (file) => {
-			selectedFiles(file)
-			return false // Prevent automatic upload when selecting the file
-		},
-		onDrop(e) {
-			selectedFiles(e.dataTransfer.files)
-			console.log("Dropped files", e.dataTransfer.files)
-		},
+	const handleSelect = (name, value) => {
+		setState((prevState) => ({ ...prevState, [name]: value }))
 	}
+	const handleChange = (e) => {
+		const { name, value } = e.target
+		setState((prevState) => ({ ...prevState, [name]: value }))
+	}
+
+	const handleSubmit = () => {
+		console.log("state=>", state)
+	}
+
 	return (
 		<div className="d-flex flex-column align-items-center">
 			<h1 className="text-decoration-underline">Add Product</h1>
@@ -99,21 +92,29 @@ const AddProduct = () => {
 					placeholder="Name"
 					className="gap-1"
 					prefix={<FontSizeOutlined />}
+					name="name"
+					value={state.name}
+					onChange={handleChange}
 				/>
 				<div className="d-flex justify-content-between gap-2">
 					<Select
 						placeholder="Type"
 						size="large"
-						onChange={handleChange}
+						onChange={(e) => handleSelect("type", e)}
+						// value={state.type}
 						options={types}
 						style={{
 							width: 400,
 						}}
 					/>
-					<Input
+					<InputNumber
 						placeholder="Price"
 						size="large"
-						className="gap-1"
+						onChange={(e) => handleSelect("price", e)}
+						value={state.price}
+						min={1}
+						max={10000}
+						className="w-50"
 						type="number"
 						prefix={<DollarOutlined />}
 					/>
@@ -121,38 +122,37 @@ const AddProduct = () => {
 				<TextArea
 					placeholder="Description"
 					autoSize={{ minRows: 3, maxRows: 6 }}
+					name="description"
+					onChange={handleChange}
+					value={state.description}
 				/>
 				<div className="d-flex flex-column gap-2">
 					<Select
 						placeholder="Color"
 						size="large"
-						onChange={handleColor}
 						options={colors}
 						suffixIcon={<BgColorsOutlined />}
+						onChange={(e) => handleSelect("color", e)}
+						// value={state.color}
 					/>
 					<Select
 						placeholder="Size"
 						size="large"
-						onChange={handleColor}
+						onChange={(e) => handleSelect("size", e)}
 						options={sizes}
+						// value={state.size}
 					/>
 				</div>
-				<Dragger {...props}>
-					<p className="ant-upload-drag-icon">
-						<InboxOutlined />
-					</p>
-					<p className="ant-upload-text">
-						Click or drag file to this area to upload
-					</p>
-					<p className="ant-upload-hint">
-						Support for a single or bulk upload. Strictly prohibited from
-						uploading company data or other banned files.
-					</p>
-				</Dragger>
-				<Input
+
+				<Dragger />
+
+				<InputNumber
 					placeholder="Stock"
 					size="large"
-					className="gap-1"
+					onChange={(e) => handleSelect("stock", e)}
+					className="w-100"
+					min={1}
+					max={100000}
 					type="number"
 					prefix={<StockOutlined />}
 				/>
@@ -161,6 +161,7 @@ const AddProduct = () => {
 					size="large"
 					className="w-100"
 					style={{ backgroundColor: "#001529" }}
+					onClick={handleSubmit}
 				>
 					Add Product
 				</Button>
