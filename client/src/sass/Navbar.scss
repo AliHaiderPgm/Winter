@@ -1,0 +1,195 @@
+$transition: 0.2s ease-in;
+$transition-2: 1.2s cubic-bezier(0.25, 1, 0.3, 1);
+.divider {
+	background-color: #dddddd;
+	flex: 0 0 1px;
+	height: 24px;
+	width: 1px;
+}
+header {
+	display: grid;
+	place-items: center;
+	box-shadow: rgb(0 0 0 / 8%) 0 1px 0;
+	padding: 0px 80px;
+	height: 80px;
+	@media screen and (max-width: 768px) {
+		position: relative;
+		z-index: 101;
+		background-color: #fff;
+	}
+	.nav {
+		max-width: 1760px;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		.logo {
+			img {
+				width: 50px;
+			}
+		}
+		.nav-links {
+			display: flex;
+			align-items: center;
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 40px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
+			transition: box-shadow $transition;
+			overflow: hidden;
+			&:hover {
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+			}
+			@media screen and (max-width: 768px) {
+				position: absolute;
+				top: 110%;
+				right: -100%;
+				flex-direction: column;
+				transition: all $transition-2;
+				transition-delay: 0.03s;
+				box-shadow: none;
+				border-radius: 0px;
+				border: none;
+				width: 50%;
+				background-color: transparent;
+				&:hover {
+					box-shadow: none;
+				}
+			}
+			.link {
+				text-align: center;
+				line-height: 48px;
+				text-decoration: none;
+				color: #222;
+				font-weight: 400;
+				padding: 0px 20px;
+				background-color: transparent;
+				transition: background-color $transition;
+				&:hover {
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+				@media screen and (max-width: 768px) {
+					width: 100%;
+				}
+			}
+			.link.active {
+				font-weight: 700;
+				@media screen and (max-width: 768px) {
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+			}
+			.icon {
+				height: 48px;
+				width: 48px;
+				background-color: transparent;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				cursor: pointer;
+				transition: background-color $transition;
+				&:hover {
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+				@media screen and (max-width: 768px) {
+					width: 100%;
+				}
+				div {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					height: 30px;
+					width: 30px;
+					background-color: #222;
+					border-radius: 50%;
+				}
+				.search {
+					color: #fff;
+					font-size: 18px;
+				}
+			}
+		}
+		.nav-links.active {
+			right: 0%;
+		}
+		.notFrontend {
+			display: flex;
+			gap: 10px;
+			@media screen and (max-width: 768px) {
+				position: absolute;
+				flex-direction: column;
+				align-items: center;
+				top: 370%;
+				right: -100%;
+				transition: all $transition-2;
+				transition-delay: 0.07s;
+				width: 50%;
+			}
+			.link {
+				text-align: center;
+				line-height: 48px;
+				text-decoration: none;
+				color: #222;
+				font-weight: 600;
+				padding: 0px 20px;
+				background-color: transparent;
+				transition: background-color $transition;
+				border-radius: 40px;
+				&:hover {
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+			}
+			.auth {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 0px 10px;
+				background-color: #fff;
+				border: 1px solid #ddd;
+				border-radius: 40px;
+				box-shadow: 0 1px 0px rgba(0, 0, 0, 0.08), 0 0px 0px rgba(0, 0, 0, 0.05);
+				transition: box-shadow $transition;
+				overflow: hidden;
+				&:hover {
+					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+				}
+				@media screen and (max-width: 768px) {
+					justify-content: center;
+					padding: 10px;
+				}
+				.icon {
+					font-size: 25px;
+				}
+			}
+		}
+		.notFrontend.active {
+			right: 0%;
+		}
+		.hamburger {
+			display: none;
+			@media screen and (max-width: 768px) {
+				display: block;
+			}
+			.icon {
+				font-size: 36px;
+			}
+		}
+	}
+}
+.mb-res {
+	border: 2px solid red;
+	background-color: #fff;
+	height: 100vh;
+	width: 0vw;
+	position: absolute;
+	right: 0%;
+	top: 0;
+	z-index: 100;
+	display: none;
+	transition: all $transition-2;
+	@media screen and (max-width: 768px) {
+		display: block;
+	}
+}
+.mb-res.active {
+	width: 50vw;
+}

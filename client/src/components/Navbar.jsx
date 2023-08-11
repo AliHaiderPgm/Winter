@@ -1,201 +1,156 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import logo from "../assets/logo.png"
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded"
-import SearchIcon from "@mui/icons-material/Search"
-import { styled, alpha, Button } from "@mui/material"
-import InputBase from "@mui/material/InputBase"
-import { useAuth } from "../context/AuthContext"
-import { message } from "antd"
-import AuthServices from "../context/AuthServices"
-
-export default function Navbar() {
-	const [messageApi, contextHolder] = message.useMessage()
-
-	const Search = styled("div")(({ theme }) => ({
-		position: "relative",
-		borderRadius: theme.shape.borderRadius,
-		backgroundColor: alpha(theme.palette.common.white, 0.35),
-		"&:hover": {
-			backgroundColor: alpha(theme.palette.common.white, 0.45),
-		},
-		marginLeft: 0,
-		width: "100%",
-		[theme.breakpoints.up("sm")]: {
-			marginLeft: theme.spacing(1),
-			width: "auto",
-		},
-	}))
-
-	const SearchIconWrapper = styled("div")(({ theme }) => ({
-		padding: theme.spacing(0, 2),
-		height: "100%",
-		position: "absolute",
-		pointerEvents: "none",
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-	}))
-
-	const StyledInputBase = styled(InputBase)(({ theme }) => ({
-		color: "inherit",
-		"& .MuiInputBase-input": {
-			padding: theme.spacing(1, 1, 1, 0),
-			// vertical padding + font size from searchIcon
-			paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-			transition: theme.transitions.create("width"),
-			width: "100%",
-			[theme.breakpoints.up("sm")]: {
-				width: "12ch",
-				"&:focus": {
-					width: "20ch",
-				},
-			},
-		},
-	}))
+import { Link, NavLink, useNavigate } from "react-router-dom"
+import Logo from "../assets/logo.png"
+import {
+	CloseOutlined,
+	MenuOutlined,
+	SearchOutlined,
+} from "@mui/icons-material"
+import { Icon } from "@mui/material"
+import { Dropdown } from "antd"
+import { useEffect, useState } from "react"
+const Navbar = () => {
+	const [isActive, setIsActive] = useState(false)
+	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+	const navigate = useNavigate()
+	const userSvg = () => (
+		<svg
+			version="1.0"
+			xmlns="http://www.w3.org/2000/svg"
+			width="20.000000pt"
+			height="20.000000pt"
+			viewBox="0 0 512.000000 512.000000"
+			preserveAspectRatio="xMidYMid meet"
+		>
+			<g
+				transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+				fill="#000000"
+				stroke="none"
+			>
+				<path
+					d="M2330 5114 c-92 -9 -298 -45 -395 -70 -447 -112 -853 -344 -1184
+-675 -331 -331 -563 -737 -675 -1184 -57 -227 -70 -340 -70 -620 -1 -278 8
+-365 59 -582 219 -933 938 -1669 1860 -1903 248 -63 353 -75 645 -74 286 0
+398 14 647 79 839 220 1507 856 1782 1695 38 118 76 277 98 418 28 169 25 584
+-5 757 -81 471 -256 861 -547 1223 -289 358 -716 656 -1155 805 -273 93 -479
+128 -785 132 -126 1 -250 1 -275 -1z m370 -949 c385 -58 696 -351 775 -731 21
+-100 21 -285 1 -382 -67 -314 -303 -584 -602 -687 -208 -72 -420 -72 -628 0
+-306 106 -550 391 -603 705 -19 113 -18 267 2 364 78 375 389 672 765 731 114
+18 176 18 290 0z m-637 -1915 c142 -71 343 -120 497 -120 154 0 355 49 499
+121 l81 40 53 -17 c143 -46 348 -158 496 -270 297 -223 537 -556 650 -903 l31
+-93 -56 -64 c-97 -110 -261 -251 -414 -356 -314 -215 -679 -351 -1065 -399
+-128 -15 -420 -15 -550 0 -383 47 -753 185 -1065 399 -153 105 -317 246 -414
+357 l-56 63 36 104 c167 483 511 870 970 1090 92 44 196 85 218 87 5 1 45 -17
+89 -39z"
+				/>
+			</g>
+		</svg>
+	)
+	const UserIcon = (props) => <Icon component={userSvg} {...props} />
 
 	const items = [
 		{
-			key: "1",
-			label: (
-				<Link className="nav-link" rel="noopener noreferrer" to="/categories">
-					Categories
-				</Link>
-			),
+			key: "0",
+			label: <Link to="/auth/login">Login</Link>,
 		},
 		{
-			key: "2",
-			label: (
-				<Link className="nav-link" rel="noopener noreferrer" to="/cart">
-					Cart
-				</Link>
-			),
+			key: "1",
+			label: <Link to="/auth/register">Register</Link>,
+		},
+		{
+			type: "divider",
 		},
 		{
 			key: "3",
-			label: (
-				<Link className="nav-link" rel="noopener noreferrer" to="/checkout">
-					Checkout
-				</Link>
-			),
+			label: "Help Center",
 		},
 	]
 
-	const notify = (type, msg) => {
-		messageApi.open({ type: type, content: msg })
+	const handleSideBar = () => {
+		setIsActive(!isActive)
 	}
-
-	const { isAuthenticated, dispatch } = useAuth()
-	const handleLogout = () => {
-		dispatch({ type: "LOGOUT" })
-		AuthServices.logoutUser()
-		notify("success", "Logged out")
+	// check window inner width
+	const handleResize = () => {
+		setInnerWidth(window.innerWidth)
 	}
+	useEffect(() => {
+		window.addEventListener("resize", handleResize)
 
+		return () => {
+			window.removeEventListener("resize", handleResize)
+		}
+	}, [])
 	return (
 		<>
-			{contextHolder}
-			<nav className="navbar navbar-expand-lg bg-lightColor fw-bold">
-				<div className="container-fluid">
-					<Link className="navbar-brand" to="/">
-						<img src={logo} alt="My-Store-Logo" width="60" height="60" />
-					</Link>
-					<button
-						className="navbar-toggler"
-						type="button"
-						data-bs-toggle="collapse"
-						data-bs-target="#navbarSupportedContent"
-						aria-controls="navbarSupportedContent"
-						aria-expanded="false"
-						aria-label="Toggle navigation"
-					>
-						<span className="navbar-toggler-icon"></span>
-					</button>
-
-					<div className="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
-							<li className="nav-item">
-								<Link className="nav-link active" aria-current="page" to="/">
-									Home
-								</Link>
-							</li>
-							<li className="nav-item">
-								<Link className="nav-link" to="/about">
-									About
-								</Link>
-							</li>
-							<li className="nav-item">
-								<Link className="nav-link" to="/contact">
-									Contact
-								</Link>
-							</li>
-							{/* <li className="nav-item">
-								<Link className="nav-link" to="/products">
-									Product
-								</Link>
-							</li>
-							<Dropdown
-								menu={{
-									items,
-									selectable: true,
-								}}
-								placement="bottom"
-							>
-								<Link className="nav-link">
-									Pages
-									<DownOutlined />
-								</Link>
-							</Dropdown> */}
-							<li className="nav-item">
-								<Search>
-									<SearchIconWrapper>
-										<SearchIcon />
-									</SearchIconWrapper>
-									<StyledInputBase
-										placeholder="Search…"
-										inputProps={{ "aria-label": "search" }}
-										className="w-100"
-									/>
-								</Search>
-							</li>
-						</ul>
-						{!isAuthenticated ? (
-							<>
-								<Link className="nav-link me-2 my-2 my-md-0" to="/auth/login">
-									Sign in
-								</Link>
-							</>
-						) : (
-							<div className="d-flex gap-1 me-2 align-items-center">
-								<Link className="nav-link me-2 my-2 my-md-0" to="/dashboard">
-									Dashboard
-								</Link>
-								<Button
-									variant="contained"
-									onClick={handleLogout}
-									style={{ color: "white" }}
-								>
-									Sign out
-								</Button>
-							</div>
-						)}
-						<button
-							type="button"
-							className="btn position-relative p-0 mb-4 mb-md-0 me-0 me-md-3"
+			<header>
+				<div className="nav">
+					<div className="logo">
+						<NavLink to="/">
+							<img src={Logo} alt="Winter Store" className="img-fluid" />
+						</NavLink>
+					</div>
+					<div className={isActive ? "nav-links active" : "nav-links"}>
+						<NavLink
+							to="/"
+							className={({ isActive }) =>
+								isActive ? "active link" : "inactive link"
+							}
 						>
-							<Link to="/cart">
-								<ShoppingCartRoundedIcon style={{ color: "orange" }} />
-							</Link>
-							{/* <span className="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-primaryColor">
-              0
-              <span className="visually-hidden">
-                Cart Items
-              </span>
-            </span> */}
-						</button>
+							Home
+						</NavLink>
+						<span className="divider"></span>
+						<NavLink
+							to="/about"
+							className={({ isActive }) =>
+								isActive ? "active link" : "inactive link"
+							}
+						>
+							About
+						</NavLink>
+						<span className="divider"></span>
+						<NavLink
+							to="/contact"
+							className={({ isActive }) =>
+								isActive ? "active link" : "inactive link"
+							}
+						>
+							Contact
+						</NavLink>
+						<div className="icon" onClick={() => navigate("/search")}>
+							<div>
+								<SearchOutlined className="search" />
+							</div>
+						</div>
+					</div>
+					<div className={isActive ? "notFrontend active" : "notFrontend"}>
+						<Link to="/dashboard" className="link">
+							Dashboard
+						</Link>
+
+						<Dropdown
+							menu={{
+								items,
+							}}
+							trigger={["click"]}
+							placement={innerWidth <= 768 ? "bottom" : "bottomRight"}
+						>
+							<div className={isActive ? "auth active" : "auth"}>
+								<MenuOutlined className="icon" />
+								<UserIcon className="icon" />
+							</div>
+						</Dropdown>
+					</div>
+					<div className="hamburger" onClick={handleSideBar}>
+						{isActive ? (
+							<CloseOutlined className="icon" />
+						) : (
+							<MenuOutlined className="icon" />
+						)}
 					</div>
 				</div>
-			</nav>
+			</header>
+			<div className={isActive ? "mb-res active" : "mb-res"}></div>
 		</>
 	)
 }
+
+export default Navbar
