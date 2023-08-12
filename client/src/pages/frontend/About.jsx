@@ -1,5 +1,4 @@
-import Header from "../../components/Header"
-import React, { useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 
 export default function About() {
 	const paragraphRef = useRef()
@@ -15,7 +14,7 @@ export default function About() {
 
 		// Cleanup function (optional)
 		return () => {
-			document.title = "E-store"
+			document.title = "Winter"
 			if (metaDescription) {
 				metaDescription.content =
 					"Welcome to our online e-store, your one-stop destination for all your shopping needs. Discover an extensive range of high-quality products, carefully curated to cater to your diverse interests and preferences."

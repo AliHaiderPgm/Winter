@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,600&display=swap");
 @import url("./sass/_bootstrap.scss");
 @import "./sass/_colors.scss";
 @import "./sass/header.scss";
@@ -10,8 +11,9 @@
 .brandSection {
 	div {
 		img {
-			aspect-ratio: 3/2;
+			aspect-ratio: 2;
 			object-fit: contain;
+			cursor: pointer;
 		}
 	}
 }

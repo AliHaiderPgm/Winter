@@ -26,6 +26,19 @@ header {
 		.logo {
 			img {
 				width: 50px;
+				rotate: 0deg;
+				animation: rotate 60s cubic-bezier(0.25, 1, 0.3, 1) infinite;
+				&:hover {
+					rotate: 360deg;
+				}
+				@keyframes rotate {
+					from {
+						rotate: 0deg;
+					}
+					to {
+						rotate: 360deg;
+					}
+				}
 			}
 		}
 		.nav-links {
