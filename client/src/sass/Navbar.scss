@@ -17,6 +17,9 @@ header {
 		z-index: 101;
 		background-color: #fff;
 	}
+	@media screen and (width <= 575.98px) {
+		padding: 0px 40px;
+	}
 	.nav {
 		max-width: 1760px;
 		width: 100%;
@@ -44,6 +47,7 @@ header {
 		.nav-links {
 			display: flex;
 			align-items: center;
+			margin-left: 100px;
 			background-color: #fff;
 			border: 1px solid #ddd;
 			border-radius: 40px;
@@ -52,6 +56,9 @@ header {
 			overflow: hidden;
 			&:hover {
 				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+			}
+			@media screen and (768px <= width <= 1024px) {
+				margin-left: 0px;
 			}
 			@media screen and (max-width: 768px) {
 				position: absolute;
@@ -189,7 +196,6 @@ header {
 	}
 }
 .mb-res {
-	border: 2px solid red;
 	background-color: #fff;
 	height: 100vh;
 	width: 0vw;

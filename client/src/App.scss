@@ -1,21 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,600&display=swap");
 @import url("./sass/_bootstrap.scss");
 @import "./sass/_colors.scss";
 @import "./sass/header.scss";
 @import "./sass/Navbar.scss";
+@import "./sass/About-Section.scss";
+@import "./sass/Trusted.scss";
+@import "./sass/catalog.scss";
+@import "./sass/Home.scss";
 @import "./sass/antd";
 
 #root {
 	overflow-x: hidden;
-}
-.brandSection {
-	div {
-		img {
-			aspect-ratio: 2;
-			object-fit: contain;
-			cursor: pointer;
-		}
-	}
+	font-family: "Ubuntu", "sans-serif";
 }
 
 .footer-wrapper {
