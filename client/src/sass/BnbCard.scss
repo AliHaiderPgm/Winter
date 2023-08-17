@@ -1,0 +1,76 @@
+@import "./transitions";
+.card-content-wrapper {
+	min-width: 270px;
+	max-width: 330px;
+	width: 100%;
+	border-radius: 7px;
+	overflow: hidden;
+	cursor: pointer;
+	.carousel {
+		position: relative;
+		.card-controller {
+			position: absolute;
+			z-index: 1;
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+			height: 100%;
+			align-items: center;
+			.icon {
+				height: 25px;
+				width: 25px;
+				border-radius: 50%;
+				background-color: #fff;
+				color: #222;
+				margin: 0px 10px;
+				opacity: 0;
+				transition: all $transition-2;
+			}
+		}
+		img {
+			border-radius: 10px;
+			height: 300px;
+			object-fit: cover;
+		}
+	}
+	&:hover {
+		.icon {
+			opacity: 1 !important;
+		}
+	}
+	.content {
+		color: #222;
+		padding: 5px;
+		div {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			h1 {
+				font-size: 1.3rem;
+				font-weight: 600;
+				margin: 0;
+			}
+			div {
+				display: flex;
+				align-items: center;
+				gap: 3px;
+				.icon {
+					font-size: 1.3rem;
+				}
+				p {
+					font-size: 1rem;
+					margin: 0;
+				}
+			}
+		}
+		p {
+			margin: 0;
+			color: rgba($color: #000000, $alpha: 0.5);
+			&:nth-child(3) {
+				span {
+					font-weight: 700;
+				}
+			}
+		}
+	}
+}

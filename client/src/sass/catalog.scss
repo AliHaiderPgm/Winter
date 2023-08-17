@@ -2,6 +2,12 @@
 .catalog {
 	.row {
 		gap: 2%;
+		@media screen and (992px<=width<=1199.98px) {
+			gap: 3%;
+		}
+		@media screen and (width<=576px) {
+			gap: 5%;
+		}
 		.myCard {
 			width: 32%;
 			cursor: pointer;
@@ -12,11 +18,38 @@
 			padding: 0;
 			transition: all $transition-2;
 			box-shadow: rgba(0, 0, 0, 0.18) 0px 4px 12px;
+			@media screen and (992px<=width<=1199.98px) {
+				width: 30%;
+			}
+			@media screen and (768px<=width<=991.98px) {
+				height: 200px;
+			}
+			@media screen and (width<=768px) {
+				height: 150px;
+			}
+			@media screen and (width<=576px) {
+				&:nth-child(1) {
+					width: 45%;
+				}
+				&:nth-child(2) {
+					width: 45%;
+				}
+				&:nth-child(3) {
+					margin-top: 20px;
+					width: 95%;
+				}
+			}
 			h1 {
 				position: absolute;
 				bottom: 5%;
 				left: 7%;
 				transition: all $transition-2;
+				@media screen and (width<=1199.98px) {
+					background-color: rgba(255, 255, 255, 0.2);
+				}
+				@media screen and (width<=576px) {
+					background-color: transparent;
+				}
 				&:hover {
 					background-color: #222;
 					color: #fff;

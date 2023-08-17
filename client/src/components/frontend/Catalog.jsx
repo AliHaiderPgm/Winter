@@ -7,7 +7,7 @@ const Catalog = () => {
 		<div className="container-fluid catalog">
 			<div className="container d-flex flex-column my-5 gap-2">
 				<h2 className="text-center fw-bold">Catalog</h2>
-				<div className="row">
+				<div className="row justify-content-center">
 					<div className="myCard">
 						<img
 							src={Men}
