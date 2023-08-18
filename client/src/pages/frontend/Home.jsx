@@ -6,6 +6,7 @@ import Catalog from "../../components/frontend/Catalog"
 import HorizontalScroll from "../../components/frontend/HorizontalScroll"
 import { useState } from "react"
 import { ArrowUpwardOutlined } from "@mui/icons-material"
+import Featured from "../../components/frontend/Featured"
 
 const Home = () => {
 	const [isActive, setIsActive] = useState("New")
@@ -52,6 +53,7 @@ const Home = () => {
 					</div>
 					<HorizontalScroll />
 				</div>
+				<Featured />
 				<Trusted />
 				<AboutSection />
 				<Services />

@@ -12,7 +12,7 @@ const HorizontalScroll = () => {
 			const containerWidth = scroll.current.clientWidth
 			const maxScroll = totalWidth - containerWidth
 
-			scroll.current.scrollLeft += 1000
+			scroll.current.scrollLeft += 900
 
 			// Check if scroll position is at the end
 			if (Math.ceil(scroll.current.scrollLeft) >= maxScroll) {
@@ -22,7 +22,7 @@ const HorizontalScroll = () => {
 	}
 	const scrollLeft = () => {
 		if (scroll.current) {
-			scroll.current.scrollLeft -= 1000
+			scroll.current.scrollLeft -= 900
 
 			if (scroll.current.scrollLeft <= 0) {
 				const totalWidth = scroll.current.scrollWidth
