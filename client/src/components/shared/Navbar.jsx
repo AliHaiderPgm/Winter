@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom"
-import Logo from "../assets/logo.png"
+import Logo from "../../assets/logo.png"
 import {
 	CloseOutlined,
 	MenuOutlined,

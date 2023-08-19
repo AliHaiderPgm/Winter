@@ -1,5 +1,4 @@
-import React from "react"
-import Card from "../../components/Card"
+import Card from "../../components/shared/Card"
 import { Input, Select } from "antd"
 const { Search } = Input
 

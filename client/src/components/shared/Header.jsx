@@ -1,4 +1,4 @@
-import HeroImage from "../assets/hero-section.jpg"
+import HeroImage from "../../assets/hero-section.jpg"
 const Header = () => {
 	return (
 		<div className="header">

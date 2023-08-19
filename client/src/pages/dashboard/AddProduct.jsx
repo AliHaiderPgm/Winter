@@ -7,6 +7,7 @@ import {
 	StockOutlined,
 	BgColorsOutlined,
 } from "@ant-design/icons"
+import Chip from "../../components/dashboard/chip"
 
 const { TextArea } = Input
 
@@ -15,59 +16,83 @@ const initialState = {
 	type: "",
 	price: null,
 	description: "",
-	color: "",
-	size: "",
 	stock: 0,
 }
 const AddProduct = () => {
 	const [state, setState] = useState(initialState)
+	const [selectedColors, setSelectedColors] = useState([])
+	const [selectedSizes, setSelectedSizes] = useState([])
 	const types = [
 		{
-			value: "cloth",
-			label: "Cloth",
+			value: "Sneakers",
+			label: "Sneakers",
 		},
 		{
-			value: "shoe",
-			label: "Shoe",
+			value: "Sportswear",
+			label: "Sportswear",
 		},
 		{
-			value: "accessories",
-			label: "Accessories",
+			value: "Running",
+			label: "Running",
 		},
 		{
-			value: "watch",
-			label: "Watch",
+			value: "Golf",
+			label: "Golf",
+		},
+		{
+			value: "Workout & Gym",
+			label: "Workout & Gym",
+		},
+		{
+			value: "Football",
+			label: "Football",
+		},
+		{
+			value: "Basketball",
+			label: "Basketball",
+		},
+		{
+			value: "LifeStyle",
+			label: "LifeStyle",
 		},
 	]
 	const colors = [
 		{
-			value: "red",
+			value: "White",
+			label: "White",
+		},
+		{
+			value: "Red",
 			label: "Red",
 		},
 		{
-			value: "black",
+			value: "Black",
 			label: "Black",
 		},
 		{
-			value: "blue",
+			value: "Blue",
 			label: "Blue",
+		},
+		{
+			value: "Green",
+			label: "Green",
 		},
 	]
 	const sizes = [
 		{
-			value: "sm",
+			value: "Small",
 			label: "Small",
 		},
 		{
-			value: "md",
+			value: "Medium",
 			label: "Medium",
 		},
 		{
-			value: "l",
+			value: "Large",
 			label: "Large",
 		},
 		{
-			value: "xl",
+			value: "Extra Large",
 			label: "Extra Large",
 		},
 	]
@@ -79,8 +104,30 @@ const AddProduct = () => {
 		setState((prevState) => ({ ...prevState, [name]: value }))
 	}
 
+	const handleColor = (e) => {
+		setSelectedColors([...selectedColors, e])
+	}
+	const availableColors = colors.filter(
+		(color) => !selectedColors.includes(color.value)
+	)
+	const handleDeleteColor = (value) => {
+		const updatedColors = selectedColors.filter((color) => color !== value)
+		setSelectedColors(updatedColors)
+	}
+
+	const handleSize = (e) => {
+		setSelectedSizes([...selectedSizes, e])
+	}
+	const availableSizes = sizes.filter(
+		(size) => !selectedSizes.includes(size.value)
+	)
+	const handleDeleteSize = (value) => {
+		const updatedSize = selectedSizes.filter((size) => size !== value)
+		setSelectedSizes(updatedSize)
+	}
+
 	const handleSubmit = () => {
-		console.log("state=>", state)
+		console.log("colors=>", selectedColors)
 	}
 
 	return (
@@ -127,20 +174,30 @@ const AddProduct = () => {
 					value={state.description}
 				/>
 				<div className="d-flex flex-column gap-2">
+					{/*/////////////////////////////////// Colors ship */}
+					<div className="d-flex gap-2">
+						{selectedColors.map((val, e) => {
+							return <Chip value={val} onDelete={handleDeleteColor} key={e} />
+						})}
+					</div>
 					<Select
 						placeholder="Color"
 						size="large"
-						options={colors}
+						options={availableColors}
 						suffixIcon={<BgColorsOutlined />}
-						onChange={(e) => handleSelect("color", e)}
-						// value={state.color}
+						onChange={handleColor}
 					/>
+					{/*/////////////////////////////////// Size ship */}
+					<div className="d-flex gap-2">
+						{selectedSizes.map((val, e) => {
+							return <Chip value={val} onDelete={handleDeleteSize} key={e} />
+						})}
+					</div>
 					<Select
 						placeholder="Size"
 						size="large"
-						onChange={(e) => handleSelect("size", e)}
-						options={sizes}
-						// value={state.size}
+						onChange={handleSize}
+						options={availableSizes}
 					/>
 				</div>
 

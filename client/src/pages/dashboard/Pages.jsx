@@ -1,4 +1,3 @@
-import React from "react"
 import { Route, Routes } from "react-router-dom"
 import AllProducts from "./AllProducts"
 import AddProduct from "./AddProduct"
