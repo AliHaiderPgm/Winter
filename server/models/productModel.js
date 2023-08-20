@@ -18,11 +18,11 @@ const productSchema = mongoose.Schema({
         required: [true, "Please add product price!"]
     },
     color: {
-        type: String,
+        type: Array,
         required: [true, "Please add product color!"]
     },
     size: {
-        type: String,
+        type: Array,
         required: [true, "Please add product size!"]
     },
     rating: {

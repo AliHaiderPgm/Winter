@@ -20,7 +20,7 @@ const addProduct = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Product details are incomplete!')
     }
-    console.log(req.file.path)
+    // console.log(req.file.path)
     const product = await Product.create({
         name,
         category,

@@ -4,6 +4,7 @@ const { getProducts, addProduct, updateProduct, deleteProduct } = require('../co
 const multer = require('multer')
 const path = require('path')
 const { protect } = require('../middleware/authMiddleware')
+const cloudinary = require("cloudinary").v2
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -13,6 +14,12 @@ const storage = multer.diskStorage({
         cb(null, Date.now() + path.extname(file.originalname))
     }
 })
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET
+});
 
 const upload = multer({ storage: storage })
 
