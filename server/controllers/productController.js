@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler')
+const uploadImage = require('../controllers/uploadImage')
 
 const Product = require('../models/productModel')
 
@@ -6,21 +7,25 @@ const Product = require('../models/productModel')
 // @route    GET /api/products
 // @access   PRIVATE 
 const getProducts = asyncHandler(async (req, res) => {
-    // const goals = await Goal.find({ user: req.user.id })
-    // res.status(200).json(goals)
-    res.status(200).json({ message: 'Get products' })
+    const goals = await Product.find()
+    res.status(200).json(goals)
 })
 
 // @desc     Add product
 // @route    POST /api/products
 // @access   PRIVATE 
 const addProduct = asyncHandler(async (req, res) => {
-    const { name, category, description, price, color, size, rating } = req.body
-    if (!name || !category || !description || !price || !color || !size || !rating) {
+    const { name, category, description, price, color, size, rating, images } = req.body
+    if (!name || !category || !description || !price || !color || !size || !rating || !images) {
         res.status(400)
         throw new Error('Product details are incomplete!')
     }
-    // console.log(req.file.path)
+
+    const imageUrls = []
+    for (const image of images) {
+        const url = uploadImage(image)
+        imageUrls.push(url)
+    }
     const product = await Product.create({
         name,
         category,
@@ -29,23 +34,22 @@ const addProduct = asyncHandler(async (req, res) => {
         color,
         size,
         rating,
-        images: req.file.path //req.file.path contains the image path
+        images: imageUrls
     })
 
     res.status(200).json(product)
-    // res.status(200).json({ message: 'Product added successfully!' })
 })
 
 // @desc     Update product
 // @route    PUT /api/products/:id
 // @access   PRIVATE 
 const updateProduct = asyncHandler(async (req, res) => {
-    //Get goal by id
-    // const goal = Goal.findById(req.params.id)
-    // if (!goal) {
-    //     res.status(400)
-    //     throw new Error('Goal not found')
-    // }
+    //Get Product by id
+    const product = Product.findById(req.params.id)
+    if (!product) {
+        res.status(400)
+        throw new Error('Product not found!')
+    }
 
     // if (!req.user) {
     //     res.status(401)
@@ -57,22 +61,22 @@ const updateProduct = asyncHandler(async (req, res) => {
     //     res.status(401)
     //     throw new Error('User not authorized')
     // }
+    console.log(req.body)
 
-    // const updatedGoal = await Goal.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    // res.status(200).json(updatedGoal)
-    res.status(200).json({ message: `Update product with id ${req.params.id}` })
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    res.status(200).json(updatedProduct)
 })
 
 // @desc     Delete product
 // @route    DELETE /api/products/:id
 // @access   PRIVATE
 const deleteProduct = asyncHandler(async (req, res) => {
-    //Get goal by id
-    // const goal = await Goal.findById(req.params.id)
-    // if (!goal) {
-    //     res.status(400)
-    //     throw new Error('Goal not found')
-    // }
+    //Get product by id
+    const product = await Product.findById(req.params.id)
+    if (!product) {
+        res.status(400)
+        throw new Error('Product not found!')
+    }
 
     // if (!req.user) {
     //     res.status(401)
@@ -85,9 +89,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
     //     throw new Error('User not authorized')
     // }
 
-    // await goal.deleteOne()
-    // res.status(200).json({ id: req.params.id })
-    res.status(200).json({ message: `delete product with with id ${req.params.id}` })
+    await product.deleteOne()
+    res.status(200).json({ message: "Product deleted successfully!" })
 })
 
 module.exports = {

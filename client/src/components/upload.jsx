@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { UploadOutlined } from "@ant-design/icons"
-import { Button, message, Modal, Upload } from "antd"
+import { Button, Modal, Upload } from "antd"
 
 const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
@@ -9,8 +9,8 @@ const getBase64 = (file) =>
 		reader.onload = () => resolve(reader.result)
 		reader.onerror = (error) => reject(error)
 	})
-const Dragger = () => {
-	const [files, setFiles] = useState([])
+const Dragger = ({ imagesCode }) => {
+	// const [files, setFiles] = useState([])
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [previewImage, setPreviewImage] = useState("")
 	const [previewTitle, setPreviewTitle] = useState("")
@@ -25,6 +25,15 @@ const Dragger = () => {
 			file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
 		)
 	}
+	const handleSetFiles = async (file) => {
+		try {
+			const code = await getBase64(file)
+			// setFiles((prevFiles) => [...prevFiles, code])
+			imagesCode((prevFiles) => [...prevFiles, code])
+		} catch (err) {
+			console.log("Error Converting image to base 64:", err)
+		}
+	}
 	return (
 		<>
 			<Upload.Dragger
@@ -32,8 +41,7 @@ const Dragger = () => {
 				multiple
 				accept=".png,.jpg,.jpeg"
 				beforeUpload={(file) => {
-					console.log(file)
-					setFiles([...files, file])
+					handleSetFiles(file)
 					return false
 				}}
 				onRemove={(file) => {
@@ -59,7 +67,7 @@ const Dragger = () => {
 					src={previewImage}
 				/>
 			</Modal>
-			<Button onClick={() => console.log(files)}>Show</Button>
+			{/* <Button onClick={() => console.log(files)}>Show</Button> */}
 		</>
 	)
 }

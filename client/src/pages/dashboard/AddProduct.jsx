@@ -22,6 +22,7 @@ const AddProduct = () => {
 	const [state, setState] = useState(initialState)
 	const [selectedColors, setSelectedColors] = useState([])
 	const [selectedSizes, setSelectedSizes] = useState([])
+	const [images, setImages] = useState([])
 	const types = [
 		{
 			value: "Sneakers",
@@ -126,8 +127,10 @@ const AddProduct = () => {
 		setSelectedSizes(updatedSize)
 	}
 
+	// Images
+
 	const handleSubmit = () => {
-		console.log("colors=>", selectedColors)
+		console.log("images=>", images)
 	}
 
 	return (
@@ -174,7 +177,7 @@ const AddProduct = () => {
 					value={state.description}
 				/>
 				<div className="d-flex flex-column gap-2">
-					{/*/////////////////////////////////// Colors ship */}
+					{/*/////////////////////////////////// Colors Chips */}
 					<div className="d-flex gap-2">
 						{selectedColors.map((val, e) => {
 							return <Chip value={val} onDelete={handleDeleteColor} key={e} />
@@ -187,7 +190,7 @@ const AddProduct = () => {
 						suffixIcon={<BgColorsOutlined />}
 						onChange={handleColor}
 					/>
-					{/*/////////////////////////////////// Size ship */}
+					{/*/////////////////////////////////// Size Chips */}
 					<div className="d-flex gap-2">
 						{selectedSizes.map((val, e) => {
 							return <Chip value={val} onDelete={handleDeleteSize} key={e} />
@@ -201,7 +204,7 @@ const AddProduct = () => {
 					/>
 				</div>
 
-				<Dragger />
+				<Dragger imagesCode={setImages} />
 
 				<InputNumber
 					placeholder="Stock"
