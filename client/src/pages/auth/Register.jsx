@@ -43,6 +43,7 @@ export default function Register() {
 			name,
 			email,
 			password,
+			type: "user",
 		}
 		const res = await AuthServices.registerUser(userData)
 		if (res.token) {

@@ -10,7 +10,6 @@ const getBase64 = (file) =>
 		reader.onerror = (error) => reject(error)
 	})
 const Dragger = ({ imagesCode }) => {
-	// const [files, setFiles] = useState([])
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [previewImage, setPreviewImage] = useState("")
 	const [previewTitle, setPreviewTitle] = useState("")
@@ -28,7 +27,6 @@ const Dragger = ({ imagesCode }) => {
 	const handleSetFiles = async (file) => {
 		try {
 			const code = await getBase64(file)
-			// setFiles((prevFiles) => [...prevFiles, code])
 			imagesCode((prevFiles) => [...prevFiles, code])
 		} catch (err) {
 			console.log("Error Converting image to base 64:", err)
@@ -67,7 +65,6 @@ const Dragger = ({ imagesCode }) => {
 					src={previewImage}
 				/>
 			</Modal>
-			{/* <Button onClick={() => console.log(files)}>Show</Button> */}
 		</>
 	)
 }

@@ -5,9 +5,17 @@ const productSchema = mongoose.Schema({
         type: String,
         required: [true, "Please add product name!"]
     },
-    category: {
+    type: {
         type: String,
-        required: [true, "Please add/select product category!"]
+        required: [true, "Please add/select product type!"]
+    },
+    brand: {
+        type: String,
+        required: [true, "Please select product brand!"]
+    },
+    shoefor: {
+        type: String,
+        required: [true, "Specify product is for male/female/children!"]
     },
     description: {
         type: String,
@@ -17,22 +25,42 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: [true, "Please add product price!"]
     },
-    color: {
+    colors: {
         type: Array,
-        required: [true, "Please add product color!"]
+        required: [true, "Please add product color!"],
+        validate: {
+            validator: colors => {
+                return colors.length > 0
+            },
+            message: 'Please add at least one color!'
+        }
     },
-    size: {
+    sizes: {
         type: Array,
-        required: [true, "Please add product size!"]
+        required: [true, "Please add product size!"],
+        validate: {
+            validator: sizes => {
+                return sizes.length > 0
+            },
+            message: 'Please add at least one size!'
+        }
     },
     rating: {
-        type: Array,
+        type: Number,
         required: [true, "Please add product rating!"]
     },
-    image: {
+    reviews: {
+        type: Array,
+        required: [true, "Please add product reviews!"]
+    },
+    images: {
         type: Array,
         required: [true, "Please add product images!"]
     },
+    stock: {
+        type: Number,
+        required: [true, "Please add product initial stock"]
+    }
 }, {
     timestamps: true
 })

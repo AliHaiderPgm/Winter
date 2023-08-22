@@ -7,6 +7,10 @@ const Product = require('../models/productModel')
 // @route    GET /api/products
 // @access   PRIVATE 
 const getProducts = asyncHandler(async (req, res) => {
+    if (req.user.type !== "admin") {
+        res.status(500).json({ message: "Not authorized for this action!" })
+        throw new Error("Not authorized!")
+    }
     const goals = await Product.find()
     res.status(200).json(goals)
 })
@@ -15,29 +19,35 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route    POST /api/products
 // @access   PRIVATE 
 const addProduct = asyncHandler(async (req, res) => {
-    const { name, category, description, price, color, size, rating, images } = req.body
-    if (!name || !category || !description || !price || !color || !size || !rating || !images) {
-        res.status(400)
-        throw new Error('Product details are incomplete!')
-    }
+    const { images, ...productData } = req.body
 
-    const imageUrls = []
-    for (const image of images) {
-        const url = uploadImage(image)
-        imageUrls.push(url)
-    }
-    const product = await Product.create({
-        name,
-        category,
-        description,
-        price,
-        color,
-        size,
-        rating,
-        images: imageUrls
-    })
+    try {
+        // Create a new product instance
+        const product = new Product(productData)
 
-    res.status(200).json(product)
+        await product.validate()
+        const imageUrls = []
+        for (const image of images) {
+            const url = await uploadImage(image)
+            imageUrls.push(url)
+        }
+
+        productData.images = imageUrls
+        const createdProduct = await Product.create(productData)
+
+        res.status(200).json(createdProduct)
+    } catch (error) {
+        // Handle validation or other errors
+        const errorMessages = [];
+        if (error.errors) {
+            Object.values(error.errors).forEach((err) => {
+                errorMessages.push(err.message);
+            });
+        } else {
+            errorMessages.push(error.message);
+        }
+        res.status(400).json({ errors: errorMessages });
+    }
 })
 
 // @desc     Update product

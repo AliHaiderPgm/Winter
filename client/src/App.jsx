@@ -4,13 +4,16 @@ import Router from "../src/pages/Router"
 import AuthContextProvider from "./context/AuthContext"
 import { ThemeProvider } from "@mui/material"
 import { theme } from "./components/muiTheme"
+import ProductContextProvider from "./context/ProductContext"
 function App() {
 	return (
 		<>
 			<AuthContextProvider>
-				<ThemeProvider theme={theme}>
-					<Router />
-				</ThemeProvider>
+				<ProductContextProvider>
+					<ThemeProvider theme={theme}>
+						<Router />
+					</ThemeProvider>
+				</ProductContextProvider>
 			</AuthContextProvider>
 		</>
 	)
