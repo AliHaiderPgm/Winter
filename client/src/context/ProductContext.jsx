@@ -23,13 +23,9 @@ const ProductContextProvider = (props) => {
 				// Request was made and the server responded with an error status
 				const { data, status } = error.response
 				if (data && data.errors) {
-					// handle validation error
-					if (data.errors.length > 1) {
-						message.error("Product data is incomplete!")
-					} else {
-						const errorMessages = data.errors.join("\n")
-						message.error(errorMessages)
-					}
+					data.errors.map((err) => {
+						message.error(err)
+					})
 				} else {
 					message.error(`Server responded with status ${status}`)
 				}

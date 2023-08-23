@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Layout, Menu } from "antd"
 import { items } from "./SideBar"
 import Pages from "./Pages"
@@ -13,14 +13,14 @@ export default function Index() {
 
 	return (
 		<Layout>
-			<Header className="position-sticky ps-4 top-0 z-2">
-				<div className="logo">
+			<Header className="position-fixed w-100 top-0 z-2">
+				<div style={{ justifySelf: "normal" }}>
 					<Link to="/">
 						<img
 							src={logo}
 							alt="universe"
 							className="img-fluid"
-							style={{ height: 50 }}
+							style={{ height: 50, filter: "brightness(100)" }}
 						/>
 					</Link>
 				</div>
@@ -49,7 +49,7 @@ export default function Index() {
 				</Sider>
 
 				<Layout
-					className="p-4"
+					className="p-4 mt-5"
 					style={{ marginLeft: !collapsed ? 220 : 80, transition: "all 0.2s" }}
 				>
 					<Pages />

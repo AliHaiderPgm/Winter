@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Dragger from "../../components/upload"
-import { Button, Input, InputNumber, Select } from "antd"
+import { Button, Form, Input, InputNumber, Select, message } from "antd"
 import {
 	FontSizeOutlined,
 	DollarOutlined,
@@ -18,11 +18,12 @@ const initialState = {
 	shoefor: "",
 	price: null,
 	description: "",
-	stock: 1,
+	stock: null,
 	colors: [],
 	sizes: [],
 }
 const AddProduct = () => {
+	const [form] = Form.useForm()
 	const [state, setState] = useState(initialState)
 	const [images, setImages] = useState([])
 	const { AddProduct, loading } = useProduct()
@@ -246,126 +247,151 @@ const AddProduct = () => {
 			colors: state.colors,
 			sizes: state.sizes,
 			stock: state.stock,
-			images: images,
+			images,
 			rating: 0,
 			reviews: [],
 		}
+		message.error(productData.images.length)
 		const res = await AddProduct(productData)
 		if (res === 200) {
 			setState(initialState)
 			setImages([])
+			form.resetFields()
 		}
 	}
 
 	return (
 		<div className="d-flex flex-column align-items-center">
 			<h1 className="text-decoration-underline">Add Product</h1>
-			<form className="w-50 py-4 d-flex flex-column gap-2">
-				<Input
-					size="large"
-					placeholder="Name"
-					className="gap-1"
-					prefix={<FontSizeOutlined />}
-					name="name"
-					value={state.name}
-					onChange={handleChange}
-				/>
-				<div className="d-flex justify-content-between gap-2">
-					<Select
-						placeholder="Type"
-						size="large"
-						onChange={(e) => handleSelect("type", e)}
-						value={state.type}
-						options={types}
-						style={{
-							width: 400,
-						}}
-					/>
-					<InputNumber
-						placeholder="Price"
-						size="large"
-						onChange={(e) => handleSelect("price", e)}
-						value={state.price}
-						min={1}
-						max={10000}
-						className="w-50"
-						type="number"
-						prefix={<DollarOutlined />}
-					/>
-				</div>
-				<div className="d-flex justify-content-between gap-2">
-					<InputNumber
-						placeholder="Stock"
-						size="large"
-						value={state.stock}
-						onChange={(e) => handleSelect("stock", e)}
-						className="w-100"
-						min={1}
-						max={100000}
-						type="number"
-						prefix={<StockOutlined />}
-					/>
-					<Select
-						placeholder="Brand"
-						size="large"
-						onChange={(e) => handleSelect("brand", e)}
-						value={state.brand}
-						options={brands}
-						style={{
-							width: 400,
-						}}
-					/>
-					<Select
-						placeholder="Shoe for"
-						size="large"
-						onChange={(e) => handleSelect("shoefor", e)}
-						value={state.shoefor}
-						options={shoefor}
-						style={{
-							width: 400,
-						}}
-					/>
-				</div>
-				<TextArea
-					placeholder="Description"
-					autoSize={{ minRows: 3, maxRows: 6 }}
-					name="description"
-					onChange={handleChange}
-					value={state.description}
-				/>
-				<div className="d-flex flex-column gap-2">
-					<Select
-						placeholder="Colors"
-						size="large"
-						mode="multiple"
-						options={colors}
-						value={state.colors}
-						suffixIcon={<BgColorsOutlined />}
-						onChange={(e) => handleSelect("colors", e)}
-					/>
-					<Select
-						placeholder="Sizes"
-						mode="multiple"
-						value={state.sizes}
-						size="large"
-						onChange={(e) => handleSelect("sizes", e)}
-						options={sizes}
-					/>
-				</div>
-
-				<Dragger imagesCode={setImages} />
-
-				<Button
-					type="primary"
-					size="large"
-					className="w-100"
-					style={{ backgroundColor: "#001529" }}
-					onClick={handleSubmit}
-					loading={loading}
+			<div className="w-100 py-4 px-0 px-md-5">
+				<Form
+					form={form}
+					initialValues={initialState}
+					className="d-flex flex-column gap-2"
 				>
-					Add Product
-				</Button>
-			</form>
+					<Form.Item name="name" noStyle>
+						<Input
+							size="large"
+							name="name"
+							placeholder="Name"
+							className="gap-1"
+							prefix={<FontSizeOutlined />}
+							onChange={handleChange}
+							title="Name of product"
+						/>
+					</Form.Item>
+
+					<div className="d-flex gap-2 flex-column flex-md-row">
+						<Form.Item name="type" noStyle>
+							<Select
+								placeholder="Type"
+								size="large"
+								onChange={(e) => handleSelect("type", e)}
+								options={types}
+								className="w-100"
+								title="Shoe type"
+							/>
+						</Form.Item>
+
+						<Form.Item name="price" noStyle>
+							<InputNumber
+								placeholder="Price"
+								size="large"
+								onChange={(e) => handleSelect("price", e)}
+								min={1}
+								max={10000}
+								className="w-100"
+								type="number"
+								prefix={<DollarOutlined />}
+								title="Price of shoe"
+							/>
+						</Form.Item>
+					</div>
+					<div className="d-flex gap-2 flex-column flex-md-row">
+						<Form.Item name="stock" noStyle>
+							<InputNumber
+								placeholder="Stock"
+								size="large"
+								onChange={(e) => handleSelect("stock", e)}
+								min={1}
+								max={100000}
+								type="number"
+								prefix={<StockOutlined />}
+								className="w-100"
+								title="Stock of shoes"
+							/>
+						</Form.Item>
+
+						<Form.Item name="brand" noStyle>
+							<Select
+								placeholder="Brand"
+								size="large"
+								onChange={(e) => handleSelect("brand", e)}
+								options={brands}
+								className="w-100"
+								title="Brand of shoe"
+							/>
+						</Form.Item>
+
+						<Form.Item name="shoefor" noStyle>
+							<Select
+								placeholder="Shoe for"
+								size="large"
+								onChange={(e) => handleSelect("shoefor", e)}
+								options={shoefor}
+								className="w-100"
+								title="Shoe is for"
+							/>
+						</Form.Item>
+					</div>
+					<Form.Item name="description" noStyle>
+						<TextArea
+							placeholder="Description"
+							name="description"
+							autoSize={{ minRows: 3, maxRows: 6 }}
+							onChange={handleChange}
+							title="Describe shoe features"
+						/>
+					</Form.Item>
+					<div className="d-flex flex-column gap-2">
+						<Form.Item name="colors" noStyle>
+							<Select
+								placeholder="Colors"
+								size="large"
+								mode="multiple"
+								options={colors}
+								suffixIcon={<BgColorsOutlined />}
+								onChange={(e) => handleSelect("colors", e)}
+								title="Available colors for shoe"
+							/>
+						</Form.Item>
+
+						<Form.Item name="sizes" noStyle>
+							<Select
+								placeholder="Sizes"
+								mode="multiple"
+								size="large"
+								onChange={(e) => handleSelect("sizes", e)}
+								options={sizes}
+								title="Available sizes for shoe"
+							/>
+						</Form.Item>
+					</div>
+
+					<Dragger images={images} imagesCode={setImages} />
+
+					<Button
+						type="primary"
+						size="large"
+						className="w-100"
+						style={{ backgroundColor: "#001529" }}
+						onClick={handleSubmit}
+						loading={loading}
+					>
+						Add Product
+					</Button>
+				</Form>
+			</div>
 		</div>
 	)
 }

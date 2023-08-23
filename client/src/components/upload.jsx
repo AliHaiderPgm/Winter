@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { UploadOutlined } from "@ant-design/icons"
-import { Button, Modal, Upload } from "antd"
+import { InboxOutlined } from "@ant-design/icons"
+import { Modal, Upload, Form, message } from "antd"
 
 const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
@@ -9,7 +9,7 @@ const getBase64 = (file) =>
 		reader.onload = () => resolve(reader.result)
 		reader.onerror = (error) => reject(error)
 	})
-const Dragger = ({ imagesCode }) => {
+const Dragger = ({ images, imagesCode }) => {
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [previewImage, setPreviewImage] = useState("")
 	const [previewTitle, setPreviewTitle] = useState("")
@@ -29,28 +29,59 @@ const Dragger = ({ imagesCode }) => {
 			const code = await getBase64(file)
 			imagesCode((prevFiles) => [...prevFiles, code])
 		} catch (err) {
-			console.log("Error Converting image to base 64:", err)
+			message.error("Error while converting image to base64!")
 		}
+	}
+	const handleRemove = async (e) => {
+		try {
+			const code = await getBase64(e)
+			console.log(code)
+			const filterImg = images.filter((image) => image !== code)
+			imagesCode(filterImg)
+		} catch (err) {
+			message.error("Error while converting image to base64!", err)
+		}
+	}
+	const normFile = (e) => {
+		// console.log("Upload event:", e)
+		if (Array.isArray(e)) {
+			return e
+		}
+		return e?.fileList
 	}
 	return (
 		<>
-			<Upload.Dragger
-				listType="picture-card"
-				multiple
-				accept=".png,.jpg,.jpeg"
-				beforeUpload={(file) => {
-					handleSetFiles(file)
-					return false
-				}}
-				onRemove={(file) => {
-					console.log(file)
-				}}
-				onPreview={handlePreview}
-				className="d-flex flex-column gap-2"
+			<Form.Item
+				name="dragger"
+				valuePropName="fileList"
+				getValueFromEvent={normFile}
+				noStyle
 			>
-				Drag files or <br />
-				<Button icon={<UploadOutlined />}>Select Files</Button>
-			</Upload.Dragger>
+				<Upload.Dragger
+					name="files"
+					listType="picture-card"
+					multiple
+					onRemove={(e) => handleRemove(e)}
+					maxCount={5}
+					accept=".png,.jpg,.jpeg"
+					beforeUpload={(file) => {
+						handleSetFiles(file)
+						return false
+					}}
+					onPreview={handlePreview}
+					className="d-flex flex-column gap-2"
+				>
+					<p className="ant-upload-drag-icon">
+						<InboxOutlined />
+					</p>
+					<p className="ant-upload-text">
+						Click or drag file to this area to upload
+					</p>
+					<p className="ant-upload-hint">
+						Support for a single or bulk upload.
+					</p>
+				</Upload.Dragger>
+			</Form.Item>
 			<Modal
 				open={previewOpen}
 				title={previewTitle}
@@ -58,7 +89,7 @@ const Dragger = ({ imagesCode }) => {
 				onCancel={handleCancel}
 			>
 				<img
-					alt="example"
+					alt="Image"
 					style={{
 						width: "100%",
 					}}
