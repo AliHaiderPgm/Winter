@@ -6,11 +6,14 @@ import {
 	SearchOutlined,
 } from "@mui/icons-material"
 import { Icon } from "@mui/material"
-import { Dropdown } from "antd"
+import { Button, Dropdown } from "antd"
 import { useEffect, useState } from "react"
+import { useAuth } from "../../context/AuthContext"
+import AuthServices from "../../context/AuthServices"
 const Navbar = () => {
 	const [isActive, setIsActive] = useState(false)
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+	const { isAuthenticated, dispatch, user } = useAuth()
 	const navigate = useNavigate()
 	const userSvg = () => (
 		<svg
@@ -47,7 +50,7 @@ const Navbar = () => {
 	)
 	const UserIcon = (props) => <Icon component={userSvg} {...props} />
 
-	const items = [
+	const unauthorizedItems = [
 		{
 			key: "0",
 			label: <Link to="/auth/login">Login</Link>,
@@ -64,6 +67,37 @@ const Navbar = () => {
 			label: "Help Center",
 		},
 	]
+	const authorizedItems = [
+		{
+			key: "0",
+			label: <Link to="/">Profile</Link>,
+		},
+		{
+			key: "1",
+			label: (
+				<Button
+					type="primary"
+					block
+					className="bg-black"
+					onClick={() => handleLogout()}
+				>
+					Logout
+				</Button>
+			),
+		},
+		{
+			type: "divider",
+		},
+		{
+			key: "2",
+			label: "Help Center",
+		},
+	]
+	const items = isAuthenticated ? authorizedItems : unauthorizedItems
+	const handleLogout = () => {
+		dispatch({ type: "LOGOUT" })
+		AuthServices.logoutUser()
+	}
 
 	const handleSideBar = () => {
 		setIsActive(!isActive)
@@ -122,16 +156,17 @@ const Navbar = () => {
 						</div>
 					</div>
 					<div className={isActive ? "notFrontend active" : "notFrontend"}>
-						<Link to="/dashboard" className="link">
-							Dashboard
-						</Link>
+						{user?.type === "admin" ? (
+							<Link to="/dashboard" className="link">
+								Dashboard
+							</Link>
+						) : null}
 
 						<Dropdown
-							menu={{
-								items,
-							}}
+							menu={{ items }}
 							trigger={["click"]}
 							placement={innerWidth <= 768 ? "bottom" : "bottomRight"}
+							className="p-2"
 						>
 							<div className={isActive ? "auth active" : "auth"}>
 								<MenuOutlined className="icon" />

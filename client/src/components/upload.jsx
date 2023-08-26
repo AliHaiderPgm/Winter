@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { InboxOutlined } from "@ant-design/icons"
-import { Modal, Upload, Form, message } from "antd"
+import { Modal, Upload, Form } from "antd"
 
 const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
@@ -25,25 +25,13 @@ const Dragger = ({ images, imagesCode }) => {
 		)
 	}
 	const handleSetFiles = async (file) => {
-		try {
-			const code = await getBase64(file)
-			imagesCode((prevFiles) => [...prevFiles, code])
-		} catch (err) {
-			message.error("Error while converting image to base64!")
-		}
+		imagesCode((prevFiles) => [...prevFiles, file])
 	}
-	const handleRemove = async (e) => {
-		try {
-			const code = await getBase64(e)
-			console.log(code)
-			const filterImg = images.filter((image) => image !== code)
-			imagesCode(filterImg)
-		} catch (err) {
-			message.error("Error while converting image to base64!", err)
-		}
+	const handleRemove = (e) => {
+		const filterImg = images.filter((image) => image.uid !== e.uid)
+		imagesCode(filterImg)
 	}
 	const normFile = (e) => {
-		// console.log("Upload event:", e)
 		if (Array.isArray(e)) {
 			return e
 		}

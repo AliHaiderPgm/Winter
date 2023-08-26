@@ -7,12 +7,16 @@ const Product = require('../models/productModel')
 // @route    GET /api/products
 // @access   PRIVATE 
 const getProducts = asyncHandler(async (req, res) => {
-    if (req.user.type !== "admin") {
-        res.status(500).json({ message: "Not authorized for this action!" })
-        throw new Error("Not authorized!")
+    try {
+        if (req.user.type !== "admin") {
+            res.status(500).json({ message: "Not authorized for this action!" })
+            return
+        }
+        const goals = await Product.find()
+        res.status(200).json(goals)
+    } catch (error) {
+        res.status(400).json(error)
     }
-    const goals = await Product.find()
-    res.status(200).json(goals)
 })
 
 // @desc     Add product
@@ -22,10 +26,6 @@ const addProduct = asyncHandler(async (req, res) => {
     const { images, ...productData } = req.body
 
     try {
-        // Create a new product instance
-        const product = new Product(productData)
-
-        await product.validate()
         const imageUrls = []
         for (const image of images) {
             const url = await uploadImage(image)
@@ -33,6 +33,10 @@ const addProduct = asyncHandler(async (req, res) => {
         }
 
         productData.images = imageUrls
+
+        const product = new Product(productData)
+        await product.validate()
+
         const createdProduct = await Product.create(productData)
 
         res.status(200).json(createdProduct)

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Dragger from "../../components/upload"
-import { Button, Form, Input, InputNumber, Select, message } from "antd"
+import { Button, Form, Input, InputNumber, Select } from "antd"
 import {
 	FontSizeOutlined,
 	DollarOutlined,
@@ -237,6 +237,19 @@ const AddProduct = () => {
 	}
 
 	const handleSubmit = async () => {
+		const getBase64 = (file) =>
+			new Promise((resolve, reject) => {
+				const reader = new FileReader()
+				reader.readAsDataURL(file)
+				reader.onload = () => resolve(reader.result)
+				reader.onerror = (error) => reject(error)
+			})
+		const code = await Promise.all(
+			images.map(async (img) => {
+				const imgCode = await getBase64(img)
+				return imgCode
+			})
+		)
 		const productData = {
 			name: state.name,
 			type: state.type,
@@ -247,11 +260,10 @@ const AddProduct = () => {
 			colors: state.colors,
 			sizes: state.sizes,
 			stock: state.stock,
-			images,
+			images: code,
 			rating: 0,
 			reviews: [],
 		}
-		message.error(productData.images.length)
 		const res = await AddProduct(productData)
 		if (res === 200) {
 			setState(initialState)

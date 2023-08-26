@@ -1,4 +1,13 @@
-import { createContext, useContext, useEffect, useReducer } from "react"
+import {
+	createContext,
+	useContext,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
+} from "react"
+import AuthServices from "./AuthServices"
+import { message } from "antd"
 
 const AuthContext = createContext()
 
@@ -15,17 +24,37 @@ const reducer = (state, actions) => {
 }
 const AuthContextProvider = (props) => {
 	const [state, dispatch] = useReducer(reducer, initialState)
-	// check for user in local storage
+	const [loading, setLoading] = useState(false)
+	const [messageApi, contextHolder] = message.useMessage()
+	const log = useRef(true)
+	const getUser = async () => {
+		try {
+			setLoading(true)
+			const res = await AuthServices.getMe()
+			dispatch({ type: "LOGIN", payload: { user: res } })
+		} catch (error) {
+			if (error.request) {
+				messageApi.error("No response from server!")
+			} else {
+				messageApi.error("Oops! Something went wrong.")
+			}
+		} finally {
+			setLoading(false)
+		}
+	}
 	useEffect(() => {
-		const storedState = JSON.parse(localStorage.getItem("user"))
-		if (storedState) {
-			dispatch({ type: "LOGIN", payload: { user: storedState } })
+		if (log.current) {
+			getUser()
+			log.current = false
 		}
 	}, [])
 	return (
-		<AuthContext.Provider value={{ ...state, dispatch }}>
-			{props.children}
-		</AuthContext.Provider>
+		<>
+			{contextHolder}
+			<AuthContext.Provider value={{ ...state, dispatch, loading }}>
+				{props.children}
+			</AuthContext.Provider>
+		</>
 	)
 }
 

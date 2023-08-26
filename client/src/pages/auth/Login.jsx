@@ -44,14 +44,16 @@ export default function Login() {
 			email,
 			password,
 		}
-		const res = await AuthServices.loginUser(userData)
-		if (res.token) {
-			dispatch({ type: "LOGIN", payload: { user: res } })
+		try {
+			await AuthServices.loginUser(userData)
+			const user = await AuthServices.getMe()
+			dispatch({ type: "LOGIN", payload: { user } })
 			navigate("/")
-		} else {
-			notify("error", "Email or password is incorrect!")
+		} catch (error) {
+			notify("error", error.message)
+		} finally {
+			setLoading(false)
 		}
-		setLoading(false)
 	}
 
 	return (

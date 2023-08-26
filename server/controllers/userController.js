@@ -35,16 +35,11 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     if (user) {
-        res.status(201).json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            type: user.type,
-            token: generateToken(user._id),
-        })
+        res.cookie('accessToken', generateToken(user._id), { httpOnly: true })
+        res.status(200).json({ message: "Registered success!" })
     } else {
         res.status(500)
-        throw new Error('Invalid data')
+        throw new Error('Failed to register!')
     }
 })
 
@@ -57,28 +52,19 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email })
 
     if (email && (await bycrpt.compare(password, user.password))) {
-        res.json({
-            _id: user.id,
-            name: user.name,
-            email: user.email,
-            type: user.type,
-            token: generateToken(user._id),
-        })
+        res.cookie('accessToken', generateToken(user._id), { httpOnly: true })
+        res.status(200).json({ message: "login success!" })
     } else {
         res.status(401)
-        throw new Error('Invalid credentials')
+        throw new Error('Failed to login!')
     }
-
-    // res.json({ message: 'Login user' })
 })
 
 // @desc     Get user data
 // @route    GET /api/users/me
-// @access   PUBLIC
+// @access   PRIVATE
 const getMe = asyncHandler(async (req, res) => {
-
     res.status(200).json(req.user)
-    // res.json({ message: 'User data' })
 })
 
 //Generate Token
