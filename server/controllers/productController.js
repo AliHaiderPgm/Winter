@@ -23,9 +23,13 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route    POST /api/products
 // @access   PRIVATE 
 const addProduct = asyncHandler(async (req, res) => {
-    const { images, ...productData } = req.body
 
     try {
+        const { images, ...productData } = req.body
+        if (req.user.type !== "admin") {
+            res.status(500).json({ message: "Not authorized for this action!" })
+            return
+        }
         const imageUrls = []
         for (const image of images) {
             const url = await uploadImage(image)
@@ -58,53 +62,44 @@ const addProduct = asyncHandler(async (req, res) => {
 // @route    PUT /api/products/:id
 // @access   PRIVATE 
 const updateProduct = asyncHandler(async (req, res) => {
-    //Get Product by id
-    const product = Product.findById(req.params.id)
-    if (!product) {
-        res.status(400)
-        throw new Error('Product not found!')
+    try {
+        if (req.user.type !== "admin") {
+            res.status(500).json({ message: "Not authorized for this action!" })
+            return
+        }
+        //Get Product by id
+        const product = Product.findById(req.params.id)
+        if (!product) {
+            res.status(400)
+            throw new Error('Product not found!')
+        }
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        res.status(200).json(updatedProduct)
+    } catch (error) {
+        res.status(400).json(error)
     }
-
-    // if (!req.user) {
-    //     res.status(401)
-    //     throw new Error('User not authorized')
-    // }
-
-    // //Make sure only update goal of logged in user
-    // if (goal.user.toString() !== req.user.id) {
-    //     res.status(401)
-    //     throw new Error('User not authorized')
-    // }
-    console.log(req.body)
-
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    res.status(200).json(updatedProduct)
 })
 
 // @desc     Delete product
 // @route    DELETE /api/products/:id
 // @access   PRIVATE
 const deleteProduct = asyncHandler(async (req, res) => {
-    //Get product by id
-    const product = await Product.findById(req.params.id)
-    if (!product) {
-        res.status(400)
-        throw new Error('Product not found!')
+    try {
+        if (req.user.type !== "admin") {
+            res.status(500).json({ message: "Not authorized for this action!" })
+            return
+        }
+        //Get product by id
+        const product = await Product.findById(req.params.id)
+        if (!product) {
+            res.status(400)
+            throw new Error('Product not found!')
+        }
+        await product.deleteOne()
+        res.status(200).json({ message: "Product deleted successfully!" })
+    } catch (error) {
+        res.status(400).json(error)
     }
-
-    // if (!req.user) {
-    //     res.status(401)
-    //     throw new Error('User not authorized')
-    // }
-
-    // //Make sure only delete goal of logged in user
-    // if (goal.user.toString() !== req.user.id) {
-    //     res.status(401)
-    //     throw new Error('User not authorized')
-    // }
-
-    await product.deleteOne()
-    res.status(200).json({ message: "Product deleted successfully!" })
 })
 
 module.exports = {

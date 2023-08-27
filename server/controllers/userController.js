@@ -3,11 +3,11 @@ const bycrpt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 
+
 // @desc     Create a new user
 // @route    POST /api/users
 // @access   PUBLIC
 const registerUser = asyncHandler(async (req, res) => {
-    console.log(req.body.type)
     const { name, email, password, type } = req.body
 
     if (!name || !email || !password || !type) {
@@ -70,7 +70,7 @@ const getMe = asyncHandler(async (req, res) => {
 //Generate Token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
+        expiresIn: '60d',
     })
 }
 

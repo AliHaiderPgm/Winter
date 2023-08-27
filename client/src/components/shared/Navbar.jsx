@@ -96,7 +96,6 @@ const Navbar = () => {
 	const items = isAuthenticated ? authorizedItems : unauthorizedItems
 	const handleLogout = () => {
 		dispatch({ type: "LOGOUT" })
-		AuthServices.logoutUser()
 	}
 
 	const handleSideBar = () => {

@@ -34,25 +34,27 @@ export default function Register() {
 	}
 
 	const handleSubmit = async () => {
-		const { name, email, password } = state
-		if (password !== state.confirmPassword) {
-			return notify("error", "Password does not match")
-		}
-		setLoading(true)
-		const userData = {
-			name,
-			email,
-			password,
-			type: "user",
-		}
-		const res = await AuthServices.registerUser(userData)
-		if (res.token) {
-			dispatch({ type: "LOGIN", payload: { user: res } })
+		try {
+			const { name, email, password } = state
+			if (password !== state.confirmPassword) {
+				return notify("error", "Password does not match")
+			}
+			setLoading(true)
+			const userData = {
+				name,
+				email,
+				password,
+				type: "user",
+			}
+			await AuthServices.registerUser(userData)
+			const user = await AuthServices.getMe()
+			dispatch({ type: "LOGIN", payload: { user } })
 			navigate("/")
-		} else {
-			notify("error", "Something went wrong!")
+		} catch (error) {
+			notify("error", "Oops! Something went wrong!")
+		} finally {
+			setLoading(false)
 		}
-		setLoading(false)
 	}
 	return (
 		<>

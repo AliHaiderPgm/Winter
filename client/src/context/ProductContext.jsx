@@ -4,9 +4,11 @@ import axios from "axios"
 
 const ProductContext = createContext()
 const API_URL = "http://localhost:5000/api/products"
-
+const config = {
+	withCredentials: true,
+}
 const ProductContextProvider = (props) => {
-	const [messageApi] = message.useMessage()
+	const [messageApi, contextHolder] = message.useMessage()
 	const [loading, setLoading] = useState(false)
 	const [getProductLoading, setGetProductLoading] = useState(false)
 	const [products, setProducts] = useState()
@@ -28,7 +30,7 @@ const ProductContextProvider = (props) => {
 						message.error(err)
 					})
 				} else {
-					message.error(`Server responded with status ${status}`)
+					message.error(`Server responded with status ${status}!`)
 				}
 			} else if (error.request) {
 				// The request was made but no response from server
@@ -44,27 +46,23 @@ const ProductContextProvider = (props) => {
 	const GetProducts = async () => {
 		try {
 			setGetProductLoading(true)
-			const res = await axios.get(API_URL)
+			const res = await axios.get(API_URL, config)
 			setProducts(res.data)
 		} catch (error) {
-			if (error.request) {
-				message.error(error.request)
-			} else {
-				message.error("Oops! Something went wrong.")
-			}
+			message.error("Oops! Something went wrong.")
 		} finally {
 			setGetProductLoading(false)
 		}
 	}
 	return (
 		<>
+			{contextHolder}
 			<ProductContext.Provider
 				value={{
 					loading,
 					getProductLoading,
 					AddProduct,
 					GetProducts,
-					setProducts,
 					products,
 				}}
 			>
