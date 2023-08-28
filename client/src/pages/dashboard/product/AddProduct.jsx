@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Dragger from "../../components/upload"
+import Dragger from "../../../components/upload"
 import { Button, Form, Input, InputNumber, Select } from "antd"
 import {
 	FontSizeOutlined,
@@ -7,7 +7,9 @@ import {
 	StockOutlined,
 	BgColorsOutlined,
 } from "@ant-design/icons"
-import { useProduct } from "../../context/ProductContext"
+import { useProduct } from "../../../context/ProductContext"
+import data from "./data"
+import { getBase64 } from "../../../global"
 
 const { TextArea } = Input
 
@@ -27,207 +29,7 @@ const AddProduct = () => {
 	const [state, setState] = useState(initialState)
 	const [images, setImages] = useState([])
 	const { AddProduct, loading } = useProduct()
-	const brands = [
-		{
-			value: "",
-			label: "Brand",
-			disabled: true,
-		},
-		{
-			value: "Nike",
-			label: "Nike",
-		},
-		{
-			value: "Adidas",
-			label: "Adidas",
-		},
-		{
-			value: "Amiri",
-			label: "Amiri",
-		},
-		{
-			value: "Puma",
-			label: "Puma",
-		},
-		{
-			value: "Reebok",
-			label: "Reebok",
-		},
-		{
-			value: "Fila",
-			label: "Fila",
-		},
-		{
-			value: "Hush Puppies",
-			label: "Hush Puppies",
-		},
-		{
-			value: "Bata",
-			label: "Bata",
-		},
-	]
-	const types = [
-		{
-			value: "",
-			label: "Type",
-			disabled: true,
-		},
-		{
-			value: "Sneakers",
-			label: "Sneakers",
-		},
-		{
-			value: "Sportswear",
-			label: "Sportswear",
-		},
-		{
-			value: "Running",
-			label: "Running",
-		},
-		{
-			value: "Golf",
-			label: "Golf",
-		},
-		{
-			value: "Workout & Gym",
-			label: "Workout & Gym",
-		},
-		{
-			value: "Football",
-			label: "Football",
-		},
-		{
-			value: "Basketball",
-			label: "Basketball",
-		},
-		{
-			value: "LifeStyle",
-			label: "LifeStyle",
-		},
-	]
-	const shoefor = [
-		{
-			value: "",
-			label: "For",
-			disabled: true,
-		},
-		{
-			value: "Male",
-			label: "Male",
-		},
-		{
-			value: "Female",
-			label: "Female",
-		},
-		{
-			value: "Children",
-			label: "Children",
-		},
-	]
-	const colors = [
-		{
-			value: "White",
-			label: "White",
-		},
-		{
-			value: "Red",
-			label: "Red",
-		},
-		{
-			value: "Black",
-			label: "Black",
-		},
-		{
-			value: "Blue",
-			label: "Blue",
-		},
-		{
-			value: "Green",
-			label: "Green",
-		},
-	]
-	const sizes = [
-		{
-			value: "6",
-			label: "6",
-		},
-		{
-			value: "6.5",
-			label: "6.5",
-		},
-		{
-			value: "7",
-			label: "7",
-		},
-		{
-			value: "7.5",
-			label: "7.5",
-		},
-		{
-			value: "8",
-			label: "8",
-		},
-		{
-			value: "8.5",
-			label: "8.5",
-		},
-		{
-			value: "9",
-			label: "9",
-		},
-		{
-			value: "9.5",
-			label: "9.5",
-		},
-		{
-			value: "10",
-			label: "10",
-		},
-		{
-			value: "10.5",
-			label: "10.5",
-		},
-		{
-			value: "11",
-			label: "11",
-		},
-		{
-			value: "11.5",
-			label: "11.5",
-		},
-		{
-			value: "12",
-			label: "12",
-		},
-		{
-			value: "12.5",
-			label: "12.5",
-		},
-		{
-			value: "13",
-			label: "13",
-		},
-		{
-			value: "14",
-			label: "14",
-		},
-		{
-			value: "15",
-			label: "15",
-		},
-		{
-			value: "16",
-			label: "16",
-		},
-		{
-			value: "17",
-			label: "17",
-		},
-		{
-			value: "18",
-			label: "18",
-		},
-	]
+
 	const handleSelect = (name, value) => {
 		setState((prevState) => ({ ...prevState, [name]: value }))
 	}
@@ -237,13 +39,6 @@ const AddProduct = () => {
 	}
 
 	const handleSubmit = async () => {
-		const getBase64 = (file) =>
-			new Promise((resolve, reject) => {
-				const reader = new FileReader()
-				reader.readAsDataURL(file)
-				reader.onload = () => resolve(reader.result)
-				reader.onerror = (error) => reject(error)
-			})
 		const code = await Promise.all(
 			images.map(async (img) => {
 				const imgCode = await getBase64(img)
@@ -264,12 +59,13 @@ const AddProduct = () => {
 			rating: 0,
 			reviews: [],
 		}
-		const res = await AddProduct(productData)
-		if (res === 200) {
-			setState(initialState)
-			setImages([])
-			form.resetFields()
-		}
+		console.log(productData)
+		// const res = await AddProduct(productData)
+		// if (res === 200) {
+		// 	setState(initialState)
+		// 	setImages([])
+		// 	form.resetFields()
+		// }
 	}
 
 	return (
@@ -299,7 +95,7 @@ const AddProduct = () => {
 								placeholder="Type"
 								size="large"
 								onChange={(e) => handleSelect("type", e)}
-								options={types}
+								options={data.types}
 								className="w-100"
 								title="Shoe type"
 							/>
@@ -339,7 +135,7 @@ const AddProduct = () => {
 								placeholder="Brand"
 								size="large"
 								onChange={(e) => handleSelect("brand", e)}
-								options={brands}
+								options={data.brands}
 								className="w-100"
 								title="Brand of shoe"
 							/>
@@ -350,7 +146,7 @@ const AddProduct = () => {
 								placeholder="Shoe for"
 								size="large"
 								onChange={(e) => handleSelect("shoefor", e)}
-								options={shoefor}
+								options={data.shoefor}
 								className="w-100"
 								title="Shoe is for"
 							/>
@@ -371,7 +167,7 @@ const AddProduct = () => {
 								placeholder="Colors"
 								size="large"
 								mode="multiple"
-								options={colors}
+								options={data.colors}
 								suffixIcon={<BgColorsOutlined />}
 								onChange={(e) => handleSelect("colors", e)}
 								title="Available colors for shoe"
@@ -384,7 +180,7 @@ const AddProduct = () => {
 								mode="multiple"
 								size="large"
 								onChange={(e) => handleSelect("sizes", e)}
-								options={sizes}
+								options={data.sizes}
 								title="Available sizes for shoe"
 							/>
 						</Form.Item>

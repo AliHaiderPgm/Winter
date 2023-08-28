@@ -9,7 +9,6 @@ import { Icon } from "@mui/material"
 import { Button, Dropdown } from "antd"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../context/AuthContext"
-import AuthServices from "../../context/AuthServices"
 const Navbar = () => {
 	const [isActive, setIsActive] = useState(false)
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
@@ -156,7 +155,7 @@ const Navbar = () => {
 					</div>
 					<div className={isActive ? "notFrontend active" : "notFrontend"}>
 						{user?.type === "admin" ? (
-							<Link to="/dashboard" className="link">
+							<Link to="/dashboard/products" className="link">
 								Dashboard
 							</Link>
 						) : null}

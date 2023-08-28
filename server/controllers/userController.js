@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
     })
 
     if (user) {
-        res.cookie('accessToken', generateToken(user._id), { httpOnly: true })
+        res.cookie('accessToken', generateToken(user._id), { maxAge: 2592000000, httpOnly: true })
         res.status(200).json({ message: "Registered success!" })
     } else {
         res.status(500)
@@ -52,7 +52,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email })
 
     if (email && (await bycrpt.compare(password, user.password))) {
-        res.cookie('accessToken', generateToken(user._id), { httpOnly: true })
+        res.cookie('accessToken', generateToken(user._id), { maxAge: 2592000000, httpOnly: true })
         res.status(200).json({ message: "login success!" })
     } else {
         res.status(401)

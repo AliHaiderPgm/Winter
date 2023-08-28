@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { InboxOutlined } from "@ant-design/icons"
 import { Modal, Upload, Form } from "antd"
+import { getRandomId } from "../global"
 
 const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
@@ -9,7 +10,8 @@ const getBase64 = (file) =>
 		reader.onload = () => resolve(reader.result)
 		reader.onerror = (error) => reject(error)
 	})
-const Dragger = ({ images, imagesCode }) => {
+const Dragger = ({ images, imagesCode, prevImage }) => {
+	const [fileList, setFileList] = useState([])
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [previewImage, setPreviewImage] = useState("")
 	const [previewTitle, setPreviewTitle] = useState("")
@@ -31,12 +33,26 @@ const Dragger = ({ images, imagesCode }) => {
 		const filterImg = images.filter((image) => image.uid !== e.uid)
 		imagesCode(filterImg)
 	}
+	const handleChange = ({ fileList: newFileList }) => setFileList(newFileList)
 	const normFile = (e) => {
+		console.log(e)
 		if (Array.isArray(e)) {
 			return e
 		}
 		return e?.fileList
 	}
+	useEffect(() => {
+		if (prevImage) {
+			const item = prevImage.map((image) => {
+				return {
+					id: getRandomId(),
+					url: image,
+					status: "done",
+				}
+			})
+			setFileList(item)
+		}
+	}, [prevImage])
 	return (
 		<>
 			<Form.Item
@@ -50,6 +66,7 @@ const Dragger = ({ images, imagesCode }) => {
 					listType="picture-card"
 					multiple
 					onRemove={(e) => handleRemove(e)}
+					onChange={handleChange}
 					maxCount={5}
 					accept=".png,.jpg,.jpeg"
 					beforeUpload={(file) => {
@@ -58,6 +75,7 @@ const Dragger = ({ images, imagesCode }) => {
 					}}
 					onPreview={handlePreview}
 					className="d-flex flex-column gap-2"
+					fileList={fileList}
 				>
 					<p className="ant-upload-drag-icon">
 						<InboxOutlined />

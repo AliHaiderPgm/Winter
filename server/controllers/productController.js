@@ -12,8 +12,25 @@ const getProducts = asyncHandler(async (req, res) => {
             res.status(500).json({ message: "Not authorized for this action!" })
             return
         }
-        const goals = await Product.find()
-        res.status(200).json(goals)
+        const products = await Product.find()
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+})
+// @desc     Get single product details
+// @route    GET /api/products/:id
+// @access   PRIVATE 
+
+const getProductDetails = asyncHandler(async (req, res) => {
+    try {
+        if (req.user.type !== "admin") {
+            res.status(500).json({ message: "Not authorized for this action!" })
+            return
+        }
+        const id = req.params.id
+        const products = await Product.findById(id)
+        res.status(200).json(products)
     } catch (error) {
         res.status(400).json(error)
     }
@@ -104,6 +121,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 module.exports = {
     getProducts,
+    getProductDetails,
     addProduct,
     updateProduct,
     deleteProduct

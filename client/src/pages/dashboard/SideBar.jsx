@@ -1,6 +1,5 @@
-import React from "react"
 import { LaptopOutlined, UserOutlined } from "@ant-design/icons"
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 const getRandomId = () => Math.random().toString(36).slice(2)
 
 export const items = [
@@ -8,18 +7,18 @@ export const items = [
 		key: getRandomId(),
 		icon: <LaptopOutlined />,
 		label: (
-			<Link to={"/dashboard"} className="text-decoration-none">
+			<NavLink to={"/dashboard/products"} className="text-decoration-none">
 				All Products
-			</Link>
+			</NavLink>
 		),
 	},
 	{
 		key: getRandomId(),
 		icon: <UserOutlined />,
 		label: (
-			<Link to={"/dashboard/orders"} className="text-decoration-none">
+			<NavLink to={"/dashboard/orders"} className="text-decoration-none">
 				Orders
-			</Link>
+			</NavLink>
 		),
 	},
 	{
@@ -29,9 +28,12 @@ export const items = [
 			{
 				key: getRandomId(),
 				label: (
-					<Link to={"/dashboard/addProduct"} className="text-decoration-none">
+					<NavLink
+						to={"/dashboard/addProduct"}
+						className="text-decoration-none"
+					>
 						Add products
-					</Link>
+					</NavLink>
 				),
 			},
 		],

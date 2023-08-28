@@ -1,12 +1,14 @@
-import Card from "../../components/shared/Card"
+import Card from "../../../components/shared/Card"
 import { Input, Select } from "antd"
-import { useProduct } from "../../context/ProductContext"
+import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 const { Search } = Input
 
 const AllProducts = () => {
 	const shouldLog = useRef(true)
 	const { getProductLoading, GetProducts, products } = useProduct()
+	const navigate = useNavigate()
 
 	const options = []
 	for (let i = 10; i < 36; i++) {
@@ -26,6 +28,10 @@ const AllProducts = () => {
 	}, [])
 	if (getProductLoading) {
 		return <h1>Loading....</h1>
+	}
+
+	const handleNavigate = (id) => {
+		navigate(`/dashboard/update/${id}`)
 	}
 	return (
 		<>
@@ -49,7 +55,11 @@ const AllProducts = () => {
 			<div className="row">
 				{products?.map((item, index) => {
 					return (
-						<div className="col-3" key={index}>
+						<div
+							className="col-3"
+							key={index}
+							onClick={() => handleNavigate(item._id)}
+						>
 							<Card data={item} />
 						</div>
 					)
