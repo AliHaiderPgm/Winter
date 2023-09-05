@@ -24,6 +24,7 @@ const ProductContextProvider = (props) => {
 				return res.status
 			}
 		} catch (error) {
+			console.log(error)
 			if (error.response) {
 				// Request was made and the server responded with an error status
 				const { data, status } = error.response

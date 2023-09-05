@@ -6,9 +6,11 @@ import {
 	SearchOutlined,
 } from "@mui/icons-material"
 import { Icon } from "@mui/material"
-import { Button, Dropdown } from "antd"
+import { Button, Dropdown, message } from "antd"
 import { useEffect, useState } from "react"
 import { useAuth } from "../../context/AuthContext"
+import AuthServices from "../../context/AuthServices"
+
 const Navbar = () => {
 	const [isActive, setIsActive] = useState(false)
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
@@ -93,8 +95,15 @@ const Navbar = () => {
 		},
 	]
 	const items = isAuthenticated ? authorizedItems : unauthorizedItems
-	const handleLogout = () => {
-		dispatch({ type: "LOGOUT" })
+	const handleLogout = async () => {
+		try {
+			await AuthServices.logoutUser()
+			dispatch({ type: "LOGOUT" })
+			message.success("Logged out!")
+		} catch (error) {
+			console.log(error)
+			message.error("Failed to log out!")
+		}
 	}
 
 	const handleSideBar = () => {

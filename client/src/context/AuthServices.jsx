@@ -5,6 +5,7 @@ const config = {
 		"Content-Type": "application/json",
 	},
 	withCredentials: true,
+	credentials: "same-origin",
 }
 // register user
 const registerUser = async (userData) => {
@@ -18,6 +19,12 @@ const loginUser = async (userData) => {
 	return res.data
 }
 
+//logout user
+const logoutUser = async () => {
+	const res = await axios.post(`${API_URL}/logout`, config)
+	return res.status
+}
+
 //get user data
 const getMe = async () => {
 	const res = await axios.get(`${API_URL}/me`, config)
@@ -27,6 +34,7 @@ const getMe = async () => {
 const AuthServices = {
 	registerUser,
 	loginUser,
+	logoutUser,
 	getMe,
 }
 

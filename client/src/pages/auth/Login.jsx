@@ -45,8 +45,7 @@ export default function Login() {
 			password,
 		}
 		try {
-			await AuthServices.loginUser(userData)
-			const user = await AuthServices.getMe()
+			const user = await AuthServices.loginUser(userData)
 			dispatch({ type: "LOGIN", payload: { user } })
 			navigate("/")
 		} catch (error) {

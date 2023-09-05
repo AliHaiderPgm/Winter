@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons"
 import data from "../../pages/dashboard/product/data"
 import Dragger from "../upload"
+import ImageUploader from "./ImageUploader"
 const FormProvider = ({
 	initialState,
 	handleChange,
@@ -14,6 +15,7 @@ const FormProvider = ({
 	images,
 	setImages,
 	prevImage,
+	formRef,
 }) => {
 	const [form] = Form.useForm()
 	const { TextArea } = Input
@@ -22,6 +24,7 @@ const FormProvider = ({
 			form={form}
 			initialValues={initialState}
 			className="d-flex flex-column gap-2"
+			ref={formRef}
 		>
 			<Form.Item name="name" noStyle>
 				<Input
@@ -130,7 +133,12 @@ const FormProvider = ({
 					/>
 				</Form.Item>
 			</div>
-			<Dragger images={images} imagesCode={setImages} prevImage={prevImage} />
+			{/* <Dragger images={images} imagesCode={setImages} prevImage={prevImage} /> */}
+			<ImageUploader
+				prevImages={prevImage}
+				imagesCode={setImages}
+				images={images}
+			/>
 		</Form>
 	)
 }

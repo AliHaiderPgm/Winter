@@ -8,6 +8,7 @@ const UpdateProduct = () => {
 	const { id } = useParams()
 	const { GetDetails, product, detailsLoading } = useProduct()
 	const log = useRef(true)
+	const formRef = useRef()
 	// Get details
 	useEffect(() => {
 		GetDetails(id)
@@ -71,6 +72,7 @@ const UpdateProduct = () => {
 							setImages={setImages}
 							handleChange={handleChange}
 							handleSelect={handleSelect}
+							formRef={formRef}
 						/>
 						<div className="d-flex gap-3 justify-content-center">
 							<Button

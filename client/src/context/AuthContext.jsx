@@ -33,11 +33,7 @@ const AuthContextProvider = (props) => {
 			const res = await AuthServices.getMe()
 			dispatch({ type: "LOGIN", payload: { user: res } })
 		} catch (error) {
-			if (error.request) {
-				messageApi.error("No response from server!")
-			} else {
-				messageApi.error("Oops! Something went wrong.")
-			}
+			dispatch({ type: "LOGOUT" })
 		} finally {
 			setLoading(false)
 		}

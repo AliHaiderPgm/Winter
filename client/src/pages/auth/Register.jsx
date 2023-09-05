@@ -46,8 +46,7 @@ export default function Register() {
 				password,
 				type: "user",
 			}
-			await AuthServices.registerUser(userData)
-			const user = await AuthServices.getMe()
+			const user = await AuthServices.registerUser(userData)
 			dispatch({ type: "LOGIN", payload: { user } })
 			navigate("/")
 		} catch (error) {

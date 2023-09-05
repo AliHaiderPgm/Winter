@@ -1,16 +1,9 @@
-import { useEffect, useState } from "react"
 import { InboxOutlined } from "@ant-design/icons"
-import { Modal, Upload, Form } from "antd"
+import { Form, Modal, Upload } from "antd"
+import { useEffect, useState } from "react"
+import { getBase64, getRandomId } from "../../global"
 
-const getBase64 = (file) =>
-	new Promise((resolve, reject) => {
-		const reader = new FileReader()
-		reader.readAsDataURL(file)
-		reader.onload = () => resolve(reader.result)
-		reader.onerror = (error) => reject(error)
-	})
-const Dragger = ({ images, imagesCode }) => {
-	const [fileList, setFileList] = useState([])
+const ImageUploader = ({ prevImages, imagesCode, images }) => {
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [previewImage, setPreviewImage] = useState("")
 	const [previewTitle, setPreviewTitle] = useState("")
@@ -25,43 +18,51 @@ const Dragger = ({ images, imagesCode }) => {
 			file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
 		)
 	}
-	const handleSetFiles = async (file) => {
-		imagesCode((prevFiles) => [...prevFiles, file])
+
+	const [files, setFiles] = useState([])
+	const handleSetFiles = (file) => {
+		// console.log(prevImages)
+		// console.log(file)
+		const dataToStore = {
+			uid: file.uid,
+			name: file.name,
+			status: "done",
+			url: URL.createObjectURL(file),
+		}
+		setFiles([...files, dataToStore])
+		imagesCode([...files, dataToStore])
 	}
 	const handleRemove = (e) => {
-		const filterImg = images.filter((image) => image.uid !== e.uid)
-		imagesCode(filterImg)
+		const filteredImages = files.filter((image) => image.uid !== e.uid)
+		setFiles(filteredImages)
+		imagesCode(filteredImages)
 	}
-	const handleChange = ({ fileList: newFileList }) => setFileList(newFileList)
-	const normFile = (e) => {
-		if (Array.isArray(e)) {
-			return e
-		}
-		return e?.fileList
-	}
+	useEffect(() => {
+		prevImages?.map((imageUrl) => {
+			const file = {
+				uid: getRandomId(),
+				name: getRandomId(),
+				status: "done",
+				url: imageUrl,
+			}
+			setFiles([...files, file])
+			imagesCode([...files, file])
+		})
+	}, [])
+	// console.log("data in files=>", files)
 	return (
 		<>
-			<Form.Item
-				name="dragger"
-				valuePropName="fileList"
-				getValueFromEvent={normFile}
-				noStyle
-			>
+			<Form.Item name="Dragger">
 				<Upload.Dragger
-					name="files"
 					listType="picture-card"
-					multiple
-					onRemove={(e) => handleRemove(e)}
-					onChange={handleChange}
-					maxCount={5}
-					accept=".png,.jpg,.jpeg"
+					multiple={true}
 					beforeUpload={(file) => {
 						handleSetFiles(file)
 						return false
 					}}
+					onRemove={(e) => handleRemove(e)}
 					onPreview={handlePreview}
-					className="d-flex flex-column gap-2"
-					fileList={fileList}
+					fileList={files}
 				>
 					<p className="ant-upload-drag-icon">
 						<InboxOutlined />
@@ -91,4 +92,5 @@ const Dragger = ({ images, imagesCode }) => {
 		</>
 	)
 }
-export default Dragger
+
+export default ImageUploader

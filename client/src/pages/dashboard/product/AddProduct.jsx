@@ -9,7 +9,8 @@ import {
 } from "@ant-design/icons"
 import { useProduct } from "../../../context/ProductContext"
 import data from "./data"
-import { getBase64 } from "../../../global"
+import { getBase64, urlToBase64 } from "../../../global"
+import ImageUploader from "../../../components/dashboard/ImageUploader"
 
 const { TextArea } = Input
 
@@ -41,7 +42,7 @@ const AddProduct = () => {
 	const handleSubmit = async () => {
 		const code = await Promise.all(
 			images.map(async (img) => {
-				const imgCode = await getBase64(img)
+				const imgCode = await urlToBase64(img)
 				return imgCode
 			})
 		)
@@ -59,13 +60,13 @@ const AddProduct = () => {
 			rating: 0,
 			reviews: [],
 		}
-		console.log(productData)
-		// const res = await AddProduct(productData)
-		// if (res === 200) {
-		// 	setState(initialState)
-		// 	setImages([])
-		// 	form.resetFields()
-		// }
+		// console.log(productData)
+		const res = await AddProduct(productData)
+		if (res === 200) {
+			setState(initialState)
+			setImages([])
+			form.resetFields()
+		}
 	}
 
 	return (
@@ -186,7 +187,8 @@ const AddProduct = () => {
 						</Form.Item>
 					</div>
 
-					<Dragger images={images} imagesCode={setImages} />
+					{/* <Dragger images={images} imagesCode={setImages} /> */}
+					<ImageUploader images={images} imagesCode={setImages} />
 
 					<Button
 						type="primary"
