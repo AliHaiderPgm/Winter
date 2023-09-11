@@ -9,12 +9,13 @@ cloudinary.config({
 const opts = {
     overwrite: true,
     invalidate: true,
-    resource_type: "auto"
+    resource_type: "image"
 }
 
 const uploadImage = async (image) => {
     try {
         const result = await cloudinary.uploader.upload(image, opts)
+        console.log(result)
         if (result && result.secure_url) {
             return result.secure_url
         }

@@ -13,12 +13,11 @@ const ProductContextProvider = (props) => {
 	const [getProductLoading, setGetProductLoading] = useState(false)
 	const [detailsLoading, setDetailLoading] = useState(false)
 	const [products, setProducts] = useState()
-	const [product, setProduct] = useState()
 	// Add Product
 	const AddProduct = async (productData) => {
 		try {
 			setLoading(true)
-			const res = await axios.post(API_URL, productData)
+			const res = await axios.post(API_URL, productData, config)
 			if (res.status === 200) {
 				messageApi.success("Product added successfully!")
 				return res.status
@@ -62,12 +61,17 @@ const ProductContextProvider = (props) => {
 		try {
 			setDetailLoading(true)
 			const res = await axios.get(`${API_URL}/${id}`, config)
-			setProduct(res.data)
+			return res.data
 		} catch (error) {
 			message.error("Oops! Something went wrong.")
 		} finally {
 			setDetailLoading(false)
 		}
+	}
+	// Update Product
+	const UpdateProduct = async (id, productData) => {
+		const res = await axios.put(`${API_URL}/${id}`, productData, config)
+		return res.data
 	}
 	return (
 		<>
@@ -80,8 +84,8 @@ const ProductContextProvider = (props) => {
 					AddProduct,
 					GetProducts,
 					GetDetails,
+					UpdateProduct,
 					products,
-					product,
 				}}
 			>
 				{props.children}

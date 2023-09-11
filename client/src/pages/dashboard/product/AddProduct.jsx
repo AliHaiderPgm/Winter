@@ -187,8 +187,8 @@ const AddProduct = () => {
 						</Form.Item>
 					</div>
 
-					{/* <Dragger images={images} imagesCode={setImages} /> */}
-					<ImageUploader images={images} imagesCode={setImages} />
+					<Dragger images={images} imagesCode={setImages} />
+					{/* <ImageUploader images={images} imagesCode={setImages} /> */}
 
 					<Button
 						type="primary"

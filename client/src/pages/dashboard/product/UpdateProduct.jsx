@@ -3,25 +3,36 @@ import { useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import FormProvider from "../../../components/dashboard/FormProvider"
 import { useProduct } from "../../../context/ProductContext"
+import { urlToBase64 } from "../../../global"
 
 const UpdateProduct = () => {
 	const { id } = useParams()
-	const { GetDetails, product, detailsLoading } = useProduct()
+	const { GetDetails, detailsLoading, UpdateProduct } = useProduct()
+	const [loading, setLoading] = useState(false)
+	const [updateLoading, setUpdateLoading] = useState(false)
 	const log = useRef(true)
 	const formRef = useRef()
+	const [state, setState] = useState({})
 	// Get details
+	const getData = async () => {
+		try {
+			setLoading(true)
+			const data = await GetDetails(id)
+			setState({ ...data })
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setLoading(false)
+		}
+	}
 	useEffect(() => {
-		GetDetails(id)
 		if (log.current) {
+			getData()
 			log.current = false
 		}
 	}, [])
 
-	const initialState = {
-		...product,
-	}
-	const [state, setState] = useState(initialState)
-	const imagesArray = product?.images
+	const imagesArray = state?.images
 	const [images, setImages] = useState([])
 	const breadCrumbItems = [
 		{
@@ -45,16 +56,28 @@ const UpdateProduct = () => {
 	}
 
 	const handleUpdate = async () => {
-		// const code = await Promise.all(
-		// 	product?.images.map(async (image) => {
-		// 		const imageCode = await urlToBase64(image)
-		// 		return imageCode
-		// 	})
-		// )
-		console.log(images)
+		setUpdateLoading(true)
+		const code = await Promise.all(
+			images.map(async (img) => {
+				const imgCode = await urlToBase64(img)
+				return imgCode
+			})
+		)
+		const productData = {
+			...state,
+			images: code,
+		}
+		try {
+			const res = await UpdateProduct(id, productData)
+			console.log(res)
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setUpdateLoading(false)
+		}
 	}
 
-	if (detailsLoading) {
+	if (detailsLoading && loading) {
 		return <h1>Loading...</h1>
 	}
 	return (
@@ -65,8 +88,7 @@ const UpdateProduct = () => {
 					<div className="container-fluid">
 						<h1 className="text-center mb-3">Update Product</h1>
 						<FormProvider
-							state={state}
-							initialState={initialState}
+							initialState={state}
 							images={images}
 							prevImage={imagesArray}
 							setImages={setImages}
@@ -81,6 +103,7 @@ const UpdateProduct = () => {
 								className="w-25"
 								style={{ backgroundColor: "#001529" }}
 								onClick={handleUpdate}
+								loading={updateLoading}
 							>
 								Update
 							</Button>

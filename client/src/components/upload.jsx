@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { InboxOutlined } from "@ant-design/icons"
 import { Modal, Upload, Form } from "antd"
 

@@ -80,18 +80,26 @@ const addProduct = asyncHandler(async (req, res) => {
 // @access   PRIVATE 
 const updateProduct = asyncHandler(async (req, res) => {
     try {
+        const { images, ...productData } = req.body
         if (req.user.type !== "admin") {
             res.status(500).json({ message: "Not authorized for this action!" })
             return
         }
+        const imageUrls = []
+        for (const image of images) {
+            const url = await uploadImage(image)
+            imageUrls.push(url)
+        }
+
+        productData.images = imageUrls
         //Get Product by id
         const product = Product.findById(req.params.id)
         if (!product) {
             res.status(400)
             throw new Error('Product not found!')
         }
-        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        res.status(200).json(updatedProduct)
+        await Product.findByIdAndUpdate(req.params.id, productData, { new: true })
+        res.status(200).json({ message: "Product updated!" })
     } catch (error) {
         res.status(400).json(error)
     }
@@ -124,5 +132,5 @@ module.exports = {
     getProductDetails,
     addProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
 }
