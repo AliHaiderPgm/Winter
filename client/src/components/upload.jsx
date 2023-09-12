@@ -32,7 +32,7 @@ const Dragger = ({ images, imagesCode }) => {
 		const filterImg = images.filter((image) => image.uid !== e.uid)
 		imagesCode(filterImg)
 	}
-	const handleChange = ({ fileList: newFileList }) => setFileList(newFileList)
+	// const handleChange = ({ fileList: newFileList }) => setFileList(newFileList)
 	const normFile = (e) => {
 		if (Array.isArray(e)) {
 			return e
@@ -52,7 +52,7 @@ const Dragger = ({ images, imagesCode }) => {
 					listType="picture-card"
 					multiple
 					onRemove={(e) => handleRemove(e)}
-					onChange={handleChange}
+					// onChange={handleChange}
 					maxCount={5}
 					accept=".png,.jpg,.jpeg"
 					beforeUpload={(file) => {

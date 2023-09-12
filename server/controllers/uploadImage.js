@@ -9,7 +9,7 @@ cloudinary.config({
 const opts = {
     overwrite: true,
     invalidate: true,
-    resource_type: "image"
+    resource_type: "auto"
 }
 
 const uploadImage = async (image) => {

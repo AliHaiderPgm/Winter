@@ -42,7 +42,7 @@ const AddProduct = () => {
 	const handleSubmit = async () => {
 		const code = await Promise.all(
 			images.map(async (img) => {
-				const imgCode = await urlToBase64(img)
+				const imgCode = await getBase64(img)
 				return imgCode
 			})
 		)

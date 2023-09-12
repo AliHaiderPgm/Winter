@@ -42,10 +42,16 @@ const getProductDetails = asyncHandler(async (req, res) => {
 const addProduct = asyncHandler(async (req, res) => {
 
     try {
+        // console.log(req.body.images)
+        // res.json({ message: "Data received!" })
         const { images, ...productData } = req.body
         if (req.user.type !== "admin") {
             res.status(500).json({ message: "Not authorized for this action!" })
             return
+        }
+        if (!Array.isArray(images)) {
+            res.status(400).json({ message: "Images must be provided as an array" });
+            return;
         }
         const imageUrls = []
         for (const image of images) {
