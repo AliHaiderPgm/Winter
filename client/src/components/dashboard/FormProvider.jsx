@@ -6,16 +6,14 @@ import {
 	StockOutlined,
 } from "@ant-design/icons"
 import data from "../../pages/dashboard/product/data"
-import Dragger from "../upload"
 import ImageUploader from "./ImageUploader"
 const FormProvider = ({
+	newImages,
+	setNewImages,
+	formRef,
 	initialState,
 	handleChange,
 	handleSelect,
-	images,
-	setImages,
-	prevImage,
-	formRef,
 }) => {
 	const [form] = Form.useForm()
 	const { TextArea } = Input
@@ -28,9 +26,9 @@ const FormProvider = ({
 		>
 			<Form.Item name="name" noStyle>
 				<Input
+					placeholder="Name"
 					size="large"
 					name="name"
-					placeholder="Name"
 					className="gap-1"
 					prefix={<FontSizeOutlined />}
 					onChange={handleChange}
@@ -133,12 +131,7 @@ const FormProvider = ({
 					/>
 				</Form.Item>
 			</div>
-			{/* <Dragger images={images} imagesCode={setImages} prevImage={prevImage} /> */}
-			<ImageUploader
-				prevImages={prevImage}
-				imagesCode={setImages}
-				images={images}
-			/>
+			<ImageUploader newImages={newImages} setNewImages={setNewImages} />
 		</Form>
 	)
 }

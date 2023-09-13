@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import FormProvider from "../../../components/dashboard/FormProvider"
 import { useProduct } from "../../../context/ProductContext"
-import { urlToBase64 } from "../../../global"
+import { getRandomId, urlToBase64 } from "../../../global"
 
 const UpdateProduct = () => {
 	const { id } = useParams()
@@ -13,7 +13,8 @@ const UpdateProduct = () => {
 	const log = useRef(true)
 	const formRef = useRef()
 	const [state, setState] = useState({})
-	// Get details
+	const [newImages, setNewImages] = useState([])
+	// call get product function
 	const getData = async () => {
 		try {
 			setLoading(true)
@@ -32,20 +33,19 @@ const UpdateProduct = () => {
 		}
 	}, [])
 
-	const imagesArray = state?.images
-	const [images, setImages] = useState([])
-	const breadCrumbItems = [
-		{
-			title: (
-				<Link to="/dashboard/products" className="text-decoration-none">
-					Products
-				</Link>
-			),
-		},
-		{
-			title: "Nike Air",
-		},
-	]
+	// setting old images in state so, they can be previewed
+	useEffect(() => {
+		const imagesArray = state?.images
+		imagesArray?.map((imageUrl) => {
+			const file = {
+				uid: getRandomId(),
+				name: getRandomId(),
+				status: "done",
+				url: imageUrl,
+			}
+			setNewImages((prevImage) => [...prevImage, file])
+		})
+	}, [state.images])
 
 	const handleSelect = (name, value) => {
 		setState((prevState) => ({ ...prevState, [name]: value }))
@@ -67,19 +67,32 @@ const UpdateProduct = () => {
 			...state,
 			images: code,
 		}
-		try {
-			const res = await UpdateProduct(id, productData)
-			console.log(res)
-		} catch (error) {
-			console.log(error)
-		} finally {
-			setUpdateLoading(false)
-		}
+		console.log(productData)
+		// try {
+		// 	const res = await UpdateProduct(id, productData)
+		// 	console.log(res)
+		// } catch (error) {
+		// 	console.log(error)
+		// } finally {
+		// 	setUpdateLoading(false)
+		// }
 	}
 
 	if (detailsLoading && loading) {
 		return <h1>Loading...</h1>
 	}
+	const breadCrumbItems = [
+		{
+			title: (
+				<Link to="/dashboard/products" className="text-decoration-none">
+					Products
+				</Link>
+			),
+		},
+		{
+			title: state.name,
+		},
+	]
 	return (
 		<>
 			<div className="container">
@@ -88,10 +101,9 @@ const UpdateProduct = () => {
 					<div className="container-fluid">
 						<h1 className="text-center mb-3">Update Product</h1>
 						<FormProvider
+							newImages={newImages}
+							setNewImages={setNewImages}
 							initialState={state}
-							images={images}
-							prevImage={imagesArray}
-							setImages={setImages}
 							handleChange={handleChange}
 							handleSelect={handleSelect}
 							formRef={formRef}

@@ -3,7 +3,8 @@ import { Form, Modal, Upload } from "antd"
 import { useEffect, useState } from "react"
 import { getBase64, getRandomId } from "../../global"
 
-const ImageUploader = ({ prevImages, imagesCode, images }) => {
+const ImageUploader = ({ newImages, setNewImages }) => {
+	// Handle Images Preview
 	const [previewOpen, setPreviewOpen] = useState(false)
 	const [previewImage, setPreviewImage] = useState("")
 	const [previewTitle, setPreviewTitle] = useState("")
@@ -19,36 +20,25 @@ const ImageUploader = ({ prevImages, imagesCode, images }) => {
 		)
 	}
 
-	const [files, setFiles] = useState([])
+	// Handle previous images and adding new images to new state.
+
+	// const [files, setFiles] = useState([])
 	const handleSetFiles = (file) => {
-		// console.log(prevImages)
-		// console.log(file)
 		const dataToStore = {
 			uid: file.uid,
 			name: file.name,
 			status: "done",
 			url: URL.createObjectURL(file),
 		}
-		setFiles([...files, dataToStore])
-		imagesCode([...files, dataToStore])
+		// setFiles([...files, dataToStore])
+		setNewImages([...newImages, dataToStore])
 	}
 	const handleRemove = (e) => {
-		const filteredImages = files.filter((image) => image.uid !== e.uid)
-		setFiles(filteredImages)
-		imagesCode(filteredImages)
+		const filteredImages = newImages.filter((image) => image.uid !== e.uid)
+		// setFiles(filteredImages)
+		setNewImages(filteredImages)
 	}
-	useEffect(() => {
-		prevImages?.map((imageUrl) => {
-			const file = {
-				uid: getRandomId(),
-				name: getRandomId(),
-				status: "done",
-				url: imageUrl,
-			}
-			setFiles([...files, file])
-			imagesCode([...files, file])
-		})
-	}, [])
+
 	// console.log("data in files=>", files)
 	return (
 		<>
@@ -62,7 +52,7 @@ const ImageUploader = ({ prevImages, imagesCode, images }) => {
 					}}
 					onRemove={(e) => handleRemove(e)}
 					onPreview={handlePreview}
-					fileList={files}
+					fileList={newImages}
 				>
 					<p className="ant-upload-drag-icon">
 						<InboxOutlined />

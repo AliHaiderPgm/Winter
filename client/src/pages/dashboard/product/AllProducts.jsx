@@ -45,9 +45,9 @@ const AllProducts = () => {
 					className="w-25"
 				/>
 				<Select
+					placeholder="Sort Products"
 					size="large"
 					onChange={handleChange}
-					placeholder="Sort Products"
 					className="w-25"
 					options={options}
 				/>
