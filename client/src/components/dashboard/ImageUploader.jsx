@@ -29,6 +29,8 @@ const ImageUploader = ({ newImages, setNewImages }) => {
 			name: file.name,
 			status: "done",
 			url: URL.createObjectURL(file),
+			file: file,
+			newFile: true,
 		}
 		// setFiles([...files, dataToStore])
 		setNewImages([...newImages, dataToStore])

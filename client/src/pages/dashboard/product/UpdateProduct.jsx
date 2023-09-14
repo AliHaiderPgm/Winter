@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import FormProvider from "../../../components/dashboard/FormProvider"
 import { useProduct } from "../../../context/ProductContext"
-import { getRandomId, urlToBase64 } from "../../../global"
+import { getBase64, getRandomId, urlToBase64 } from "../../../global"
 
 const UpdateProduct = () => {
 	const { id } = useParams()
@@ -42,6 +42,7 @@ const UpdateProduct = () => {
 				name: getRandomId(),
 				status: "done",
 				url: imageUrl,
+				newFile: false,
 			}
 			setNewImages((prevImage) => [...prevImage, file])
 		})
@@ -58,24 +59,29 @@ const UpdateProduct = () => {
 	const handleUpdate = async () => {
 		setUpdateLoading(true)
 		const code = await Promise.all(
-			images.map(async (img) => {
-				const imgCode = await urlToBase64(img)
-				return imgCode
+			newImages.map(async (img) => {
+				if (img.newFile) {
+					const imgCode = await getBase64(img.file)
+					return imgCode
+				} else {
+					const imgCode = await urlToBase64(img)
+					return imgCode
+				}
 			})
 		)
 		const productData = {
 			...state,
 			images: code,
 		}
-		console.log(productData)
-		// try {
-		// 	const res = await UpdateProduct(id, productData)
-		// 	console.log(res)
-		// } catch (error) {
-		// 	console.log(error)
-		// } finally {
-		// 	setUpdateLoading(false)
-		// }
+		// console.log(productData)
+		try {
+			const res = await UpdateProduct(id, productData)
+			console.log(res)
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setUpdateLoading(false)
+		}
 	}
 
 	if (detailsLoading && loading) {
