@@ -27,15 +27,6 @@ app.use(express.urlencoded({ limit: '20mb', extended: true }))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/products', require('./routes/productRoutes'))
 
-// serve frontend
-// if (process.env.NODE_ENV !== 'production') {
-//     app.use(express.static(path.join(__dirname, '../client/dist')))
-
-//     app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')))
-// } else {
-//     app.get('/', (req, res) => res.send('Please set to production'))
-// }
-
 app.use(errorHandler)
 
 app.listen(port, () => console.log(`Starting server on port ${port}`))

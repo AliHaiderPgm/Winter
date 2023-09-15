@@ -7,7 +7,8 @@ import { getBase64, getRandomId, urlToBase64 } from "../../../global"
 
 const UpdateProduct = () => {
 	const { id } = useParams()
-	const { GetDetails, detailsLoading, UpdateProduct } = useProduct()
+	const { GetDetails, detailsLoading, UpdateProduct, uploadImage } =
+		useProduct()
 	const [loading, setLoading] = useState(false)
 	const [updateLoading, setUpdateLoading] = useState(false)
 	const log = useRef(true)
@@ -58,30 +59,37 @@ const UpdateProduct = () => {
 
 	const handleUpdate = async () => {
 		setUpdateLoading(true)
-		const code = await Promise.all(
-			newImages.map(async (img) => {
-				if (img.newFile) {
-					const imgCode = await getBase64(img.file)
-					return imgCode
-				} else {
-					const imgCode = await urlToBase64(img)
-					return imgCode
-				}
-			})
-		)
-		const productData = {
-			...state,
-			images: code,
-		}
-		// console.log(productData)
 		try {
-			const res = await UpdateProduct(id, productData)
-			console.log(res)
+			const imagesBase64 = await Promise.all(
+				newImages.map(async (img) => {
+					if (img.newFile) {
+						const imgCode = await getBase64(img.file)
+						return imgCode
+					}
+				})
+			)
+			for (const image of imagesBase64) {
+				const url = await uploadImage({ base64: image })
+				console.log(url)
+			}
+			// const productData = {
+			// 	...state,
+			// 	images: imagesUrl,
+			// }
+			// console.log(productData)
 		} catch (error) {
-			console.log(error)
+			console.log("Failed to upload new images")
 		} finally {
 			setUpdateLoading(false)
 		}
+		// try {
+		// 	const res = await UpdateProduct(id, productData)
+		// 	console.log(res)
+		// } catch (error) {
+		// 	console.log(error)
+		// } finally {
+		// 	setUpdateLoading(false)
+		// }
 	}
 
 	if (detailsLoading && loading) {

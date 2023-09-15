@@ -73,6 +73,11 @@ const ProductContextProvider = (props) => {
 		const res = await axios.put(`${API_URL}/${id}`, productData, config)
 		return res.data
 	}
+	// Upload Image
+	const uploadImage = async (image) => {
+		const res = await axios.post(`${API_URL}/uploadImage`, image, config)
+		return res.data
+	}
 	return (
 		<>
 			{contextHolder}
@@ -85,6 +90,7 @@ const ProductContextProvider = (props) => {
 					GetProducts,
 					GetDetails,
 					UpdateProduct,
+					uploadImage,
 					products,
 				}}
 			>

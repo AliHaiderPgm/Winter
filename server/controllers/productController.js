@@ -86,18 +86,18 @@ const addProduct = asyncHandler(async (req, res) => {
 // @access   PRIVATE 
 const updateProduct = asyncHandler(async (req, res) => {
     try {
-        const { images, ...productData } = req.body
+        const { ...productData } = req.body
         if (req.user.type !== "admin") {
             res.status(500).json({ message: "Not authorized for this action!" })
             return
         }
-        const imageUrls = []
-        for (const image of images) {
-            const url = await uploadImage(image)
-            imageUrls.push(url)
-        }
+        // const imageUrls = []
+        // for (const image of images) {
+        //     const url = await uploadImage(image)
+        //     imageUrls.push(url)
+        // }
 
-        productData.images = imageUrls
+        // productData.images = imageUrls
         //Get Product by id
         const product = Product.findById(req.params.id)
         if (!product) {
