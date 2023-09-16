@@ -1,9 +1,10 @@
 import { Breadcrumb, Button } from "antd"
-import { useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import FormProvider from "../../../components/dashboard/FormProvider"
+import { useEffect, useRef, useState } from "react"
+import { message } from "antd"
+import { getBase64, getRandomId } from "../../../global"
 import { useProduct } from "../../../context/ProductContext"
-import { getBase64, getRandomId, urlToBase64 } from "../../../global"
+import FormProvider from "../../../components/dashboard/FormProvider"
 
 const UpdateProduct = () => {
 	const { id } = useParams()
@@ -15,7 +16,7 @@ const UpdateProduct = () => {
 	const formRef = useRef()
 	const [state, setState] = useState({})
 	const [newImages, setNewImages] = useState([])
-	// call get product function
+	// call get current product data function
 	const getData = async () => {
 		try {
 			setLoading(true)
@@ -56,7 +57,7 @@ const UpdateProduct = () => {
 		const { name, value } = e.target
 		setState((prevState) => ({ ...prevState, [name]: value }))
 	}
-
+	// handle product update
 	const handleUpdate = async () => {
 		setUpdateLoading(true)
 		try {
@@ -68,28 +69,22 @@ const UpdateProduct = () => {
 					}
 				})
 			)
+			const newImagesUrl = []
 			for (const image of imagesBase64) {
 				const url = await uploadImage({ base64: image })
-				console.log(url)
+				newImagesUrl.push(url.url)
 			}
-			// const productData = {
-			// 	...state,
-			// 	images: imagesUrl,
-			// }
-			// console.log(productData)
+			const productData = {
+				...state,
+				images: newImagesUrl,
+			}
+			await UpdateProduct(id, productData)
+			message.success("Product Updated!")
 		} catch (error) {
-			console.log("Failed to upload new images")
+			message.success("Something went wrong!")
 		} finally {
 			setUpdateLoading(false)
 		}
-		// try {
-		// 	const res = await UpdateProduct(id, productData)
-		// 	console.log(res)
-		// } catch (error) {
-		// 	console.log(error)
-		// } finally {
-		// 	setUpdateLoading(false)
-		// }
 	}
 
 	if (detailsLoading && loading) {

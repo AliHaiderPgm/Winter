@@ -9,8 +9,7 @@ import {
 } from "@ant-design/icons"
 import { useProduct } from "../../../context/ProductContext"
 import data from "./data"
-import { getBase64, urlToBase64 } from "../../../global"
-import ImageUploader from "../../../components/dashboard/ImageUploader"
+import { getBase64 } from "../../../global"
 
 const { TextArea } = Input
 
