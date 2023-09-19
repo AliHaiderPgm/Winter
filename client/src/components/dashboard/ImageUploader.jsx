@@ -1,7 +1,7 @@
-import { InboxOutlined } from "@ant-design/icons"
+import { useState } from "react"
+import { getBase64 } from "../../global"
 import { Form, Modal, Upload } from "antd"
-import { useEffect, useState } from "react"
-import { getBase64, getRandomId } from "../../global"
+import { InboxOutlined } from "@ant-design/icons"
 
 const ImageUploader = ({ newImages, setNewImages }) => {
 	// Handle Images Preview
@@ -19,10 +19,6 @@ const ImageUploader = ({ newImages, setNewImages }) => {
 			file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
 		)
 	}
-
-	// Handle previous images and adding new images to new state.
-
-	// const [files, setFiles] = useState([])
 	const handleSetFiles = (file) => {
 		const dataToStore = {
 			uid: file.uid,
@@ -32,22 +28,18 @@ const ImageUploader = ({ newImages, setNewImages }) => {
 			file: file,
 			newFile: true,
 		}
-		// setFiles([...files, dataToStore])
 		setNewImages([...newImages, dataToStore])
 	}
 	const handleRemove = (e) => {
 		const filteredImages = newImages.filter((image) => image.uid !== e.uid)
-		// setFiles(filteredImages)
 		setNewImages(filteredImages)
 	}
 
-	// console.log("data in files=>", files)
 	return (
 		<>
 			<Form.Item name="Dragger">
 				<Upload.Dragger
 					listType="picture-card"
-					multiple={true}
 					beforeUpload={(file) => {
 						handleSetFiles(file)
 						return false
@@ -55,6 +47,8 @@ const ImageUploader = ({ newImages, setNewImages }) => {
 					onRemove={(e) => handleRemove(e)}
 					onPreview={handlePreview}
 					fileList={newImages}
+					maxCount={5}
+					accept=".png,.jpg,.jpeg"
 				>
 					<p className="ant-upload-drag-icon">
 						<InboxOutlined />
@@ -63,7 +57,7 @@ const ImageUploader = ({ newImages, setNewImages }) => {
 						Click or drag file to this area to upload
 					</p>
 					<p className="ant-upload-hint">
-						Support for a single or bulk upload.
+						Support for a single file at a time.
 					</p>
 				</Upload.Dragger>
 			</Form.Item>

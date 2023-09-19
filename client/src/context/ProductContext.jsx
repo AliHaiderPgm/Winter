@@ -78,6 +78,11 @@ const ProductContextProvider = (props) => {
 		const res = await axios.post(`${API_URL}/uploadImage`, image, config)
 		return res.data
 	}
+	// Delete product
+	const DeleteProduct = async (id) => {
+		const res = await axios.delete(`${API_URL}/${id}`, config)
+		return res.data
+	}
 	return (
 		<>
 			{contextHolder}
@@ -91,6 +96,7 @@ const ProductContextProvider = (props) => {
 					GetDetails,
 					UpdateProduct,
 					uploadImage,
+					DeleteProduct,
 					products,
 				}}
 			>

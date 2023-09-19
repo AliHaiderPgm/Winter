@@ -1,5 +1,5 @@
 import { Breadcrumb, Button } from "antd"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { message } from "antd"
 import { getBase64, getRandomId } from "../../../global"
@@ -8,14 +8,21 @@ import FormProvider from "../../../components/dashboard/FormProvider"
 
 const UpdateProduct = () => {
 	const { id } = useParams()
-	const { GetDetails, detailsLoading, UpdateProduct, uploadImage } =
-		useProduct()
+	const {
+		GetDetails,
+		detailsLoading,
+		UpdateProduct,
+		uploadImage,
+		DeleteProduct,
+	} = useProduct()
 	const [loading, setLoading] = useState(false)
 	const [updateLoading, setUpdateLoading] = useState(false)
+	const [deleteLoading, setDeleteLoading] = useState(false)
 	const log = useRef(true)
 	const formRef = useRef()
 	const [state, setState] = useState({})
 	const [newImages, setNewImages] = useState([])
+	const navigate = useNavigate()
 	// call get current product data function
 	const getData = async () => {
 		try {
@@ -36,18 +43,25 @@ const UpdateProduct = () => {
 	}, [])
 
 	// setting old images in state so, they can be previewed
+	const setOldImages = async () => {
+		try {
+			const imagesArray = state?.images
+			await imagesArray?.map((imageUrl) => {
+				const file = {
+					uid: getRandomId(),
+					name: getRandomId(),
+					status: "done",
+					url: imageUrl,
+					newFile: false,
+				}
+				setNewImages((prevImage) => [...prevImage, file])
+			})
+		} catch (error) {
+			message.error("Failed to set images!")
+		}
+	}
 	useEffect(() => {
-		const imagesArray = state?.images
-		imagesArray?.map((imageUrl) => {
-			const file = {
-				uid: getRandomId(),
-				name: getRandomId(),
-				status: "done",
-				url: imageUrl,
-				newFile: false,
-			}
-			setNewImages((prevImage) => [...prevImage, file])
-		})
+		setOldImages()
 	}, [state.images])
 
 	const handleSelect = (name, value) => {
@@ -84,6 +98,21 @@ const UpdateProduct = () => {
 			message.success("Something went wrong!")
 		} finally {
 			setUpdateLoading(false)
+		}
+	}
+
+	// handle delete product
+	const handleDelete = async () => {
+		try {
+			setDeleteLoading(true)
+			await DeleteProduct(id)
+			message.success("Product Deleted!")
+			navigate("/dashboard/products")
+		} catch (error) {
+			console.log(error)
+			message.error("Something went wrong!")
+		} finally {
+			setDeleteLoading(false)
 		}
 	}
 
@@ -128,7 +157,13 @@ const UpdateProduct = () => {
 							>
 								Update
 							</Button>
-							<Button type="default" size="large" className="w-25">
+							<Button
+								type="default"
+								size="large"
+								className="w-25"
+								onClick={handleDelete}
+								loading={deleteLoading}
+							>
 								Delete
 							</Button>
 						</div>
