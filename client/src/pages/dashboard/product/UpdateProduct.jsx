@@ -1,4 +1,4 @@
-import { Breadcrumb, Button } from "antd"
+import { Breadcrumb, Button, Popconfirm } from "antd"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { message } from "antd"
@@ -109,7 +109,6 @@ const UpdateProduct = () => {
 			message.success("Product Deleted!")
 			navigate("/dashboard/products")
 		} catch (error) {
-			console.log(error)
 			message.error("Something went wrong!")
 		} finally {
 			setDeleteLoading(false)
@@ -157,15 +156,20 @@ const UpdateProduct = () => {
 							>
 								Update
 							</Button>
-							<Button
-								type="default"
-								size="large"
-								className="w-25"
-								onClick={handleDelete}
-								loading={deleteLoading}
+							<Popconfirm
+								title="Are you sure?"
+								description="Delete this product."
+								onConfirm={handleDelete}
 							>
-								Delete
-							</Button>
+								<Button
+									type="default"
+									size="large"
+									className="w-25"
+									loading={deleteLoading}
+								>
+									Delete
+								</Button>
+							</Popconfirm>
 						</div>
 					</div>
 				</div>

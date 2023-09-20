@@ -3,6 +3,7 @@ import { Input, Select } from "antd"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import Loader from "../../../components/shared/Loader"
 const { Search } = Input
 
 const AllProducts = () => {
@@ -27,7 +28,7 @@ const AllProducts = () => {
 		}
 	}, [])
 	if (getProductLoading) {
-		return <h1>Loading....</h1>
+		return <Loader />
 	}
 
 	const handleNavigate = (id) => {

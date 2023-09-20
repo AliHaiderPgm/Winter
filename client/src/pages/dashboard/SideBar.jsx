@@ -36,6 +36,14 @@ export const items = [
 					</NavLink>
 				),
 			},
+			{
+				key: getRandomId(),
+				label: (
+					<NavLink to={"/dashboard/users"} className="text-decoration-none">
+						Users
+					</NavLink>
+				),
+			},
 		],
 	},
 ]
