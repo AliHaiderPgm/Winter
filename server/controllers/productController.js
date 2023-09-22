@@ -5,29 +5,21 @@ const Product = require('../models/productModel')
 
 // @desc     Get products
 // @route    GET /api/products
-// @access   PRIVATE 
+// @access   PUBLIC
 const getProducts = asyncHandler(async (req, res) => {
     try {
-        if (req.user.type !== "admin") {
-            res.status(500).json({ message: "Not authorized for this action!" })
-            return
-        }
         const products = await Product.find()
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json(error)
     }
 })
+
 // @desc     Get single product details
 // @route    GET /api/products/:id
-// @access   PRIVATE 
-
+// @access   PUBLIC
 const getProductDetails = asyncHandler(async (req, res) => {
     try {
-        if (req.user.type !== "admin") {
-            res.status(500).json({ message: "Not authorized for this action!" })
-            return
-        }
         const id = req.params.id
         const products = await Product.findById(id)
         res.status(200).json(products)
@@ -42,8 +34,6 @@ const getProductDetails = asyncHandler(async (req, res) => {
 const addProduct = asyncHandler(async (req, res) => {
 
     try {
-        // console.log(req.body.images)
-        // res.json({ message: "Data received!" })
         const { images, ...productData } = req.body
         if (req.user.type !== "admin") {
             res.status(500).json({ message: "Not authorized for this action!" })
@@ -91,13 +81,6 @@ const updateProduct = asyncHandler(async (req, res) => {
             res.status(500).json({ message: "Not authorized for this action!" })
             return
         }
-        // const imageUrls = []
-        // for (const image of images) {
-        //     const url = await uploadImage(image)
-        //     imageUrls.push(url)
-        // }
-
-        // productData.images = imageUrls
         //Get Product by id
         const product = Product.findById(req.params.id)
         if (!product) {

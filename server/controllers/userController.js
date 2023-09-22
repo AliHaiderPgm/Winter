@@ -13,7 +13,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
         if (!name || !email || !password || !type) {
             res.status(400)
-            throw new Error('Please enter all fields')
+            throw new Error('Incomplete data!')
         }
 
         //Check if user already exists
@@ -90,6 +90,38 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(req.user)
 })
 
+
+// @desc     Get All Users Data
+// @route    GET /api/users/getAllUsers
+// @access   PRIVATE
+const getAllUsers = asyncHandler(async (req, res) => {
+    try {
+        const users = await User.find()
+        const response = users.map(user => {
+            const { password, ...data } = user._doc
+            return data
+        })
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(400)
+        throw new Error('Failed to get users data!')
+    }
+})
+
+// @desc   update user
+// @route  /api/users/update/:id
+// @access PUBLIC
+const updateUser = asyncHandler(async (req, res) => {
+    try {
+        const { ...user } = req.body
+        await User.findByIdAndUpdate(req.params.id, user)
+        res.status(200).json({ message: "User updated!" })
+    } catch (error) {
+        res.status(400)
+        throw new Error("Failed to update user!")
+    }
+})
+
 //Generate Token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -97,12 +129,12 @@ const generateToken = (id) => {
     })
 }
 
-// Generate random id
-const getRandomId = () => Math.random()
 
 module.exports = {
     registerUser,
     loginUser,
     logoutUser,
-    getMe
+    getMe,
+    getAllUsers,
+    updateUser
 }
