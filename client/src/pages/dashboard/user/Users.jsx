@@ -1,7 +1,12 @@
-import { Button, Input, Space, Table } from "antd"
+import { Button, Dropdown, Input, Select, Space, Table } from "antd"
 import { userData } from "./TableData"
-import { DeleteOutlined, SearchOutlined } from "@ant-design/icons"
-import { useRef, useState } from "react"
+import {
+	CheckOutlined,
+	DeleteOutlined,
+	DownOutlined,
+	SearchOutlined,
+} from "@ant-design/icons"
+import { useEffect, useRef, useState } from "react"
 import Highlighter from "react-highlight-words"
 
 const Users = () => {
@@ -128,15 +133,51 @@ const Users = () => {
 				},
 			],
 			onFilter: (value, record) => record.role.indexOf(value) === 0,
+			render: (text, record) => {
+				return (
+					<Select
+						defaultValue={record.role}
+						style={{
+							width: 120,
+						}}
+						// onChange={handleChange}
+						options={[
+							{
+								value: "admin",
+								label: "Admin",
+							},
+							{
+								value: "user",
+								label: "User",
+							},
+						]}
+					/>
+				)
+			},
 		},
 		{
 			title: "Action",
 			key: "action",
-			render: (_, record) => (
-				<Button danger type="text">
-					<DeleteOutlined style={{ fontSize: 16 }} />
-				</Button>
-			),
+			render: (_, record) => {
+				let currentUser = {}
+				userData.map(user => {
+					if (user === record) {
+						currentUser = user
+					}
+				})
+				return (
+					<>
+						<Button danger type="text">
+							<DeleteOutlined style={{ fontSize: 16 }} />
+						</Button>
+						{record.role === currentUser.role ? null :
+							<Button type="text">
+								<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
+							</Button>
+						}
+					</>
+				)
+			},
 		},
 	]
 	return <Table columns={columns} dataSource={userData} />
