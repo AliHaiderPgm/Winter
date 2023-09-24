@@ -1,23 +1,51 @@
-import { Button, Dropdown, Input, Select, Space, Table } from "antd"
-import { userData } from "./TableData"
+import { Button, Input, Select, Space, Table } from "antd"
+// import { userData } from "./TableData"
+import { message } from "antd"
 import {
 	CheckOutlined,
 	DeleteOutlined,
-	DownOutlined,
 	SearchOutlined,
 } from "@ant-design/icons"
 import { useEffect, useRef, useState } from "react"
 import Highlighter from "react-highlight-words"
+import AuthServices from "../../../context/AuthServices"
+import Loader from "../../../components/shared/Loader"
 
 const Users = () => {
+	const [fetchedData, setFetchedData] = useState([])
+	const [data, setData] = useState([])
 	const [searchText, setSearchText] = useState("")
 	const [searchedColumn, setSearchedColumn] = useState("")
 	const searchInput = useRef(null)
+	const [loading, setLoading] = useState(false)
+	const log = useRef(true)
+	// get users
+	const getUsers = async () => {
+		try {
+			setLoading(true)
+			const res = await AuthServices.getAllUsers()
+			setFetchedData(res)
+			setData(res)
+		} catch (error) {
+			message.error("Something went wrong!")
+		} finally {
+			setLoading(false)
+		}
+	}
+	useEffect(() => {
+		if (log.current) {
+			getUsers()
+			log.current = false
+		}
+	}, [])
+
+	// search functions
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm()
 		setSearchText(selectedKeys[0])
 		setSearchedColumn(dataIndex)
 	}
+	// How searched data will look like
 	const getColumnSearchProps = (dataIndex) => ({
 		filterDropdown: ({
 			setSelectedKeys,
@@ -105,6 +133,7 @@ const Users = () => {
 				text
 			),
 	})
+	// how to display data
 	const columns = [
 		{
 			title: "Name",
@@ -136,11 +165,19 @@ const Users = () => {
 			render: (text, record) => {
 				return (
 					<Select
-						defaultValue={record.role}
+						defaultValue={record.type}
 						style={{
 							width: 120,
 						}}
-						// onChange={handleChange}
+						onChange={e => {
+							const updatedData = data.map(user => {
+								if (user._id === record._id) {
+									return { ...user, type: e }
+								}
+								return user
+							})
+							setData(updatedData)
+						}}
 						options={[
 							{
 								value: "admin",
@@ -158,11 +195,12 @@ const Users = () => {
 		{
 			title: "Action",
 			key: "action",
+			width: 300,
 			render: (_, record) => {
-				let currentUser = {}
-				userData.map(user => {
-					if (user === record) {
-						currentUser = user
+				let userFromState = {}
+				data.map(user => {
+					if (user._id === record._id) {
+						userFromState = user
 					}
 				})
 				return (
@@ -170,7 +208,7 @@ const Users = () => {
 						<Button danger type="text">
 							<DeleteOutlined style={{ fontSize: 16 }} />
 						</Button>
-						{record.role === currentUser.role ? null :
+						{record.type === userFromState.type ? null :
 							<Button type="text">
 								<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
 							</Button>
@@ -180,7 +218,10 @@ const Users = () => {
 			},
 		},
 	]
-	return <Table columns={columns} dataSource={userData} />
+	if (loading) {
+		return <Loader />
+	}
+	return <Table columns={columns} dataSource={fetchedData} />
 }
 
 export default Users

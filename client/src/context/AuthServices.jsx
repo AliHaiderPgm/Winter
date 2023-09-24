@@ -31,11 +31,18 @@ const getMe = async () => {
 	return res.data
 }
 
+// get all users
+const getAllUsers = async () => {
+	const res = await axios.get(`${API_URL}/getAllUsers`)
+	return res.data
+}
+
 const AuthServices = {
 	registerUser,
 	loginUser,
 	logoutUser,
 	getMe,
+	getAllUsers
 }
 
 export default AuthServices
