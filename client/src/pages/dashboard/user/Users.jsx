@@ -1,5 +1,4 @@
-import { Button, Input, Select, Space, Table } from "antd"
-// import { userData } from "./TableData"
+import { Button, Input, Popconfirm, Select, Space, Table } from "antd"
 import { message } from "antd"
 import {
 	CheckOutlined,
@@ -19,13 +18,17 @@ const Users = () => {
 	const searchInput = useRef(null)
 	const [loading, setLoading] = useState(false)
 	const log = useRef(true)
+	const [updating, setUpdating] = useState(false)
+	const [deleting, setDeleting] = useState(false)
 	// get users
 	const getUsers = async () => {
 		try {
 			setLoading(true)
+			const me = await AuthServices.getMe()
 			const res = await AuthServices.getAllUsers()
-			setFetchedData(res)
-			setData(res)
+			const dataToStore = res.filter(item => item._id !== me._id)
+			setFetchedData(dataToStore)
+			setData(dataToStore)
 		} catch (error) {
 			message.error("Something went wrong!")
 		} finally {
@@ -39,6 +42,38 @@ const Users = () => {
 		}
 	}, [])
 
+	// update user
+	const updateUser = async () => {
+		try {
+			setUpdating(true)
+			const userToUpdate = data.filter(item1 => {
+				return fetchedData.some(item2 => item1._id === item2._id)
+			})
+			const { _id, type, ...user } = userToUpdate[0]
+
+			await AuthServices.updateUser(_id, { type })
+			await getUsers()
+			message.success("Updated user!")
+		} catch (error) {
+			console.log(error)
+			message.error("Something went wrong!")
+		} finally {
+			setUpdating(false)
+		}
+	}
+	// delete suer
+	const deleteUser = async (e) => {
+		try {
+			setDeleting(true)
+			await AuthServices.deleteUser(e._id)
+			await getUsers()
+			message.success("User deleted!")
+		} catch (error) {
+			message.error("Failed to delete user!")
+		} finally {
+			setDeleting(false)
+		}
+	}
 	// search functions
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm()
@@ -161,7 +196,7 @@ const Users = () => {
 					value: "user",
 				},
 			],
-			onFilter: (value, record) => record.role.indexOf(value) === 0,
+			onFilter: (value, record) => record.type.indexOf(value) === 0,
 			render: (text, record) => {
 				return (
 					<Select
@@ -205,11 +240,17 @@ const Users = () => {
 				})
 				return (
 					<>
-						<Button danger type="text">
-							<DeleteOutlined style={{ fontSize: 16 }} />
-						</Button>
+						<Popconfirm
+							title="Delete the user"
+							description={`Are you sure to delete "${record.name}"?`}
+							onConfirm={() => deleteUser(record)}
+						>
+							<Button danger type="text" loading={deleting}>
+								<DeleteOutlined style={{ fontSize: 16 }} />
+							</Button>
+						</Popconfirm>
 						{record.type === userFromState.type ? null :
-							<Button type="text">
+							<Button type="text" loading={updating} onClick={updateUser}>
 								<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
 							</Button>
 						}

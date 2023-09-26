@@ -122,6 +122,23 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc   update user
+// @route  /api/users/update/:id
+// @access PUBLIC
+const deleteUser = asyncHandler(async (req, res) => {
+    try {
+        if (req.user.type !== "admin") {
+            res.status(500).json({ message: "Not authorized for this action!" })
+            return
+        }
+        await User.findByIdAndDelete(req.params.id)
+        res.status(200).json({ message: "User deleted successfully!" })
+    } catch (error) {
+        res.status(400)
+        throw new Error("Failed to delete user!")
+    }
+})
+
 //Generate Token
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -136,5 +153,6 @@ module.exports = {
     logoutUser,
     getMe,
     getAllUsers,
-    updateUser
+    updateUser,
+    deleteUser
 }

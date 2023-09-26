@@ -37,12 +37,25 @@ const getAllUsers = async () => {
 	return res.data
 }
 
+// update user
+const updateUser = async (id, data) => {
+	const res = await axios.put(`${API_URL}/update/${id}`, data)
+	return res.data
+}
+
+// delete user
+const deleteUser = async (id) => {
+	const res = await axios.delete(`${API_URL}/delete/${id}`, config)
+	return res.data
+}
 const AuthServices = {
 	registerUser,
 	loginUser,
 	logoutUser,
 	getMe,
-	getAllUsers
+	getAllUsers,
+	updateUser,
+	deleteUser
 }
 
 export default AuthServices
