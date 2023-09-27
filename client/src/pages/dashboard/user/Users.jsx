@@ -19,7 +19,7 @@ const Users = () => {
 	const [loading, setLoading] = useState(false)
 	const log = useRef(true)
 	const [updating, setUpdating] = useState(false)
-	const [deleting, setDeleting] = useState(false)
+	const [deleting, setDeleting] = useState(new Array(fetchedData.length).fill(false))
 	// get users
 	const getUsers = async () => {
 		try {
@@ -62,16 +62,20 @@ const Users = () => {
 		}
 	}
 	// delete suer
-	const deleteUser = async (e) => {
+	const deleteUser = async (i, e) => {
 		try {
-			setDeleting(true)
+			const newDeleting = [...deleting]
+			newDeleting[i] = true
+			setDeleting(newDeleting)
 			await AuthServices.deleteUser(e._id)
 			await getUsers()
 			message.success("User deleted!")
 		} catch (error) {
 			message.error("Failed to delete user!")
 		} finally {
-			setDeleting(false)
+			const newDeleting = [...deleting]
+			newDeleting[i] = false
+			setDeleting(newDeleting)
 		}
 	}
 	// search functions
@@ -231,7 +235,7 @@ const Users = () => {
 			title: "Action",
 			key: "action",
 			width: 300,
-			render: (_, record) => {
+			render: (_, record, index) => {
 				let userFromState = {}
 				data.map(user => {
 					if (user._id === record._id) {
@@ -243,9 +247,9 @@ const Users = () => {
 						<Popconfirm
 							title="Delete the user"
 							description={`Are you sure to delete "${record.name}"?`}
-							onConfirm={() => deleteUser(record)}
+							onConfirm={() => deleteUser(index, record)}
 						>
-							<Button danger type="text" loading={deleting}>
+							<Button danger type="text" loading={deleting[index]}>
 								<DeleteOutlined style={{ fontSize: 16 }} />
 							</Button>
 						</Popconfirm>
