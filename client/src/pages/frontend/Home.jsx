@@ -2,7 +2,7 @@ import Header from "../../components/shared/Header"
 import Trusted from "../../components/frontend/Trusted"
 import Services from "../../components/frontend/Services"
 import AboutSection from "../../components/frontend/AboutSection"
-import Catalog from "../../components/frontend/Catalog"
+import CatalogSection from "../../components/frontend/CatalogSection"
 import HorizontalScroll from "../../components/frontend/HorizontalScroll"
 import { useState } from "react"
 import { ArrowUpwardOutlined } from "@mui/icons-material"
@@ -25,7 +25,7 @@ const Home = () => {
 		<>
 			<Header title="E-Store" />
 			<div className="wrapper">
-				<Catalog />
+				<CatalogSection />
 				<div className="container my-4">
 					<div className="buttons-wrapper my-3">
 						<ArrowUpwardOutlined className={`arrow ${arrowClass}`} />

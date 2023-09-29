@@ -28,6 +28,30 @@ const getProductDetails = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc     Get recent products
+// @route    GET /api/products/recent
+// @access   PUBLIC
+const getRecentProducts = asyncHandler(async (req, res) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 }).limit(req.body.limit)
+        res.status(200).json(products)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+})
+
+// @desc     Get filtered products
+// @route    GET /api/products/filter
+// @access   PUBLIC
+const getFilteredProducts = asyncHandler(async (req, res) => {
+    try {
+        const filteredProducts = await Product.find(req.body)
+        res.status(200).json(filteredProducts)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+})
+
 // @desc     Add product
 // @route    POST /api/products
 // @access   PRIVATE 
@@ -119,6 +143,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
 module.exports = {
     getProducts,
     getProductDetails,
+    getRecentProducts,
+    getFilteredProducts,
     addProduct,
     updateProduct,
     deleteProduct,

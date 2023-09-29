@@ -2,13 +2,18 @@ import Men from "../../assets/men.jpg"
 import Women from "../../assets/women.jpg"
 import Child from "../../assets/child.png"
 import { ArrowUpwardOutlined } from "@mui/icons-material"
-const Catalog = () => {
+import { useNavigate } from "react-router-dom"
+const CatalogSection = () => {
+	const navigate = useNavigate()
+	const handleNavigate = (type) => {
+		navigate(`/catalog/${type}`)
+	}
 	return (
 		<div className="container-fluid catalog">
 			<div className="container d-flex flex-column my-5 gap-2">
 				<h2 className="text-center fw-bold">Catalog</h2>
 				<div className="row justify-content-center">
-					<div className="myCard">
+					<div className="myCard" onClick={() => handleNavigate("men")} >
 						<img
 							src={Men}
 							alt="Men Catalog winter"
@@ -17,7 +22,7 @@ const Catalog = () => {
 						<h1>Men</h1>
 						<ArrowUpwardOutlined className="arrow" />
 					</div>
-					<div className="myCard">
+					<div className="myCard" onClick={() => handleNavigate("women")}>
 						<img
 							src={Women}
 							alt="Women Catalog winter"
@@ -26,7 +31,7 @@ const Catalog = () => {
 						<h1>Women</h1>
 						<ArrowUpwardOutlined className="arrow" />
 					</div>
-					<div className="myCard">
+					<div className="myCard" onClick={() => handleNavigate("child")}>
 						<img
 							src={Child}
 							alt="Child Catalog winter"
@@ -41,4 +46,4 @@ const Catalog = () => {
 	)
 }
 
-export default Catalog
+export default CatalogSection

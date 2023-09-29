@@ -5,6 +5,7 @@ import Footer from "../../components/shared/Footer"
 import About from "./About"
 import Contact from "./Contact"
 import Search from "./Search"
+import Catalog from "./Catalog"
 
 const index = () => {
 	return (
@@ -15,6 +16,7 @@ const index = () => {
 				<Route path="/about" element={<About />} />
 				<Route path="/contact" element={<Contact />} />
 				<Route path="/search" element={<Search />} />
+				<Route path="/catalog/:type" element={<Catalog />} />
 				<Route path="*" element={<>Page Not Found</>} />
 			</Routes>
 			<Footer />
