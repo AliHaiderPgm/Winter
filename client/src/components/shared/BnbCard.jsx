@@ -8,48 +8,48 @@ import {
 	StarRate,
 } from "@mui/icons-material"
 import { useRef } from "react"
-const BnbCard = () => {
+const BnbCard = ({ data }) => {
 	const carousel = useRef()
 	return (
 		<div className="card-content-wrapper">
 			<div className="carousel">
-				<div className="card-controller">
-					<KeyboardArrowLeftOutlined
-						className="icon"
-						onClick={() => {
-							carousel.current.prev()
-						}}
-					/>
-					<KeyboardArrowRightOutlined
-						className="icon"
-						onClick={() => {
-							carousel.current.next()
-						}}
-					/>
-				</div>
+				{
+					data?.images.length === 1 ? null : <div className="card-controller">
+						<KeyboardArrowLeftOutlined
+							className="icon"
+							onClick={() => {
+								carousel.current.prev()
+							}}
+						/>
+						<KeyboardArrowRightOutlined
+							className="icon"
+							onClick={() => {
+								carousel.current.next()
+							}}
+						/>
+					</div>
+				}
 				<Carousel ref={carousel} dots={false}>
-					<div>
-						<img src={Image1} className="img-fluid" />
-					</div>
-					<div>
-						<img src={Image2} className="img-fluid" />
-					</div>
-					<div>
-						<img src={Image3} className="img-fluid" />
-					</div>
+					{
+						data?.images.map((imageUrl, index) => {
+							return <div key={index}>
+								<img src={imageUrl} className="img-fluid" />
+							</div>
+						})
+					}
 				</Carousel>
 			</div>
 			<div className="content">
 				<div>
-					<h1>Nike Air</h1>
+					<h1>{data?.name}</h1>
 					<div>
 						<StarRate className="icon" />
-						<p>4.5</p>
+						<p>{data?.rating}</p>
 					</div>
 				</div>
 				<p>Category Type</p>
 				<p>
-					Rs<span>288</span>
+					Rs<span>{data?.price}</span>
 				</p>
 			</div>
 		</div>

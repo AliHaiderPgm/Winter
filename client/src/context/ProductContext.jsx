@@ -83,6 +83,11 @@ const ProductContextProvider = (props) => {
 		const res = await axios.delete(`${API_URL}/${id}`, config)
 		return res.data
 	}
+	// Get recent products
+	const GetRecentProducts = async (count) => {
+		const res = await axios.post(`${API_URL}/getRecentProducts`, { limit: count })
+		return res.data
+	}
 	return (
 		<>
 			{contextHolder}
@@ -94,6 +99,7 @@ const ProductContextProvider = (props) => {
 					AddProduct,
 					GetProducts,
 					GetDetails,
+					GetRecentProducts,
 					UpdateProduct,
 					uploadImage,
 					DeleteProduct,

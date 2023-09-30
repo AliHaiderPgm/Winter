@@ -4,7 +4,9 @@ import {
 } from "@mui/icons-material"
 import BnbCard from "../shared/BnbCard"
 import { useRef } from "react"
-const HorizontalScroll = () => {
+import BnbCardLoading from "../shared/BnbCardLoading"
+const HorizontalScroll = (props) => {
+	const loading = props.loading
 	const scroll = useRef()
 	const scrollRight = () => {
 		if (scroll.current) {
@@ -37,18 +39,14 @@ const HorizontalScroll = () => {
 				<KeyboardArrowRightOutlined className="icon" onClick={scrollRight} />
 			</div>
 			<div className="cards-container" ref={scroll}>
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
-				<BnbCard />
+				{
+					loading ? Array.from({ length: 6 }, (_, index) => {
+						return <BnbCardLoading key={index} />
+					})
+						: props.products.map((product, index) => {
+							return <BnbCard data={product} key={index} />
+						})
+				}
 			</div>
 		</div>
 	)

@@ -4,15 +4,40 @@ import Services from "../../components/frontend/Services"
 import AboutSection from "../../components/frontend/AboutSection"
 import CatalogSection from "../../components/frontend/CatalogSection"
 import HorizontalScroll from "../../components/frontend/HorizontalScroll"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowUpwardOutlined } from "@mui/icons-material"
 import Featured from "../../components/frontend/Featured"
+import { useProduct } from "../../context/ProductContext"
+import { message } from "antd"
 
 const Home = () => {
+	const [recentProducts, setRecentProducts] = useState([])
 	const [isActive, setIsActive] = useState("New")
+	const [loading, setLoading] = useState(false)
+	const { GetRecentProducts } = useProduct()
+	const log = useRef(true)
 	const handleCarousel = (e) => {
 		setIsActive(e.target.value)
 	}
+	// get products
+	const getRecentProducts = async () => {
+		setLoading(true)
+		try {
+			const res = await GetRecentProducts(6)
+			setRecentProducts(res)
+		} catch (error) {
+			message.error("Something went wrong!")
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	useEffect(() => {
+		if (log.current) {
+			getRecentProducts()
+			log.current = false
+		}
+	}, [])
 	let arrowClass
 	if (isActive === "New") {
 		arrowClass = "first"
@@ -51,7 +76,7 @@ const Home = () => {
 							Member Exclusive
 						</button>
 					</div>
-					<HorizontalScroll />
+					<HorizontalScroll products={recentProducts} loading={loading} />
 				</div>
 				<Featured />
 				<Trusted />
