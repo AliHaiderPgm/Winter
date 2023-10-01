@@ -10,7 +10,6 @@ const UpdateProduct = () => {
 	const { id } = useParams()
 	const {
 		GetDetails,
-		detailsLoading,
 		UpdateProduct,
 		uploadImage,
 		DeleteProduct,
@@ -115,7 +114,7 @@ const UpdateProduct = () => {
 		}
 	}
 
-	if (detailsLoading && loading) {
+	if (loading) {
 		return <h1>Loading...</h1>
 	}
 	const breadCrumbItems = [

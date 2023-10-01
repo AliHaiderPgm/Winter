@@ -2,17 +2,18 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,600&display=swap");
 @import url("./sass/_bootstrap.scss");
 @import "./sass/_colors.scss";
-@import "./sass/header.scss";
-@import "./sass/Navbar.scss";
+@import "./sass/components/header.scss";
+@import "./sass/components/Navbar.scss";
 @import "./sass/About-Section.scss";
 @import "./sass/Trusted.scss";
-@import "./sass/HorizontalScroll.scss";
-@import "./sass/BnbCard.scss";
+@import "./sass/components/HorizontalScroll.scss";
+@import "./sass/components/BnbCard.scss";
 @import "./sass/catalog.scss";
 @import "./sass/Home.scss";
 @import "./sass/featured.scss";
 @import "./sass/components/FancyHeader.scss";
 @import "./sass/antd";
+@import "./sass/pages/product-detail.scss";
 
 #root {
 	overflow-x: hidden;

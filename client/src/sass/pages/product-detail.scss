@@ -1,0 +1,89 @@
+.product-details-container {
+	.carousel {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		.card-controller {
+			z-index: 1;
+			display: flex;
+			position: absolute;
+			bottom: 5%;
+			right: 20%;
+			align-items: center;
+			justify-content: space-between;
+			.icon {
+				height: 35px;
+				width: 35px;
+				border-radius: 50%;
+				background-color: #222;
+				color: #fff;
+				margin: 0px 10px;
+				opacity: 0;
+				transition: all $transition-2;
+				cursor: pointer;
+			}
+		}
+		.ant-carousel {
+			height: 100%;
+			div:not([class]) {
+				display: flex;
+				justify-content: center;
+				.img-container {
+					border-radius: 10px;
+					overflow: hidden;
+					width: 70% !important;
+					img {
+						object-fit: contain;
+					}
+				}
+			}
+		}
+		&:hover {
+			.icon {
+				opacity: 1 !important;
+			}
+		}
+	}
+
+	.content {
+		.size {
+			border: 2px solid #11111141;
+			border-radius: 7px;
+			display: grid;
+			place-items: center;
+			width: 40%;
+			&:hover {
+				border: 2px solid #111;
+			}
+			p {
+				font-size: 18px;
+				margin: 0 !important;
+			}
+		}
+	}
+}
+
+.btn-filled {
+	height: auto;
+	background-color: #111;
+	color: #fff;
+	font-size: 18px;
+	&:hover {
+		background-color: #111111da !important;
+	}
+}
+.btn-outline {
+	height: auto;
+	background-color: transparent;
+	border: 2px solid #11111141;
+	border-radius: 15px;
+	font-size: 18px;
+	&:hover {
+		background-color: transparent !important;
+		border: 2px solid #111;
+	}
+	.anticon {
+		vertical-align: 0 !important;
+	}
+}

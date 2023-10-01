@@ -6,6 +6,7 @@ import About from "./About"
 import Contact from "./Contact"
 import Search from "./Search"
 import Catalog from "./Catalog"
+import Details from "./product/Details"
 
 const index = () => {
 	return (
@@ -17,6 +18,7 @@ const index = () => {
 				<Route path="/contact" element={<Contact />} />
 				<Route path="/search" element={<Search />} />
 				<Route path="/catalog/:type" element={<Catalog />} />
+				<Route path="/:catalog/:name/:id" element={<Details />} />
 				<Route path="*" element={<>Page Not Found</>} />
 			</Routes>
 			<Footer />

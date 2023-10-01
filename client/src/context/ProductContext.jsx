@@ -11,7 +11,6 @@ const ProductContextProvider = (props) => {
 	const [messageApi, contextHolder] = message.useMessage()
 	const [loading, setLoading] = useState(false)
 	const [getProductLoading, setGetProductLoading] = useState(false)
-	const [detailsLoading, setDetailLoading] = useState(false)
 	const [products, setProducts] = useState()
 	// Add Product
 	const AddProduct = async (productData) => {
@@ -58,15 +57,8 @@ const ProductContextProvider = (props) => {
 	}
 	// Get single product details
 	const GetDetails = async (id) => {
-		try {
-			setDetailLoading(true)
-			const res = await axios.get(`${API_URL}/${id}`, config)
-			return res.data
-		} catch (error) {
-			message.error("Oops! Something went wrong.")
-		} finally {
-			setDetailLoading(false)
-		}
+		const res = await axios.get(`${API_URL}/${id}`, config)
+		return res.data
 	}
 	// Update Product
 	const UpdateProduct = async (id, productData) => {
@@ -95,7 +87,6 @@ const ProductContextProvider = (props) => {
 				value={{
 					loading,
 					getProductLoading,
-					detailsLoading,
 					AddProduct,
 					GetProducts,
 					GetDetails,
