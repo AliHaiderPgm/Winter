@@ -20,8 +20,8 @@ const BnbCard = ({ data }) => {
 		navigate(`/${shoefor}/${name}/${id}`)
 	}
 	return (
-		<div className="card-content-wrapper" onClick={() => handleNavigate()}>
-			<div className="carousel">
+		<div className="card-content-wrapper">
+			<div className="carousel d-flex flex-column justify-content-center">
 				{
 					data?.images.length === 1 ? null : <div className="card-controller">
 						<KeyboardArrowLeftOutlined
@@ -41,14 +41,14 @@ const BnbCard = ({ data }) => {
 				<Carousel ref={carousel} dots={false}>
 					{
 						data?.images.map((imageUrl, index) => {
-							return <div key={index}>
+							return <div key={index} onClick={() => handleNavigate()}>
 								<img src={imageUrl} className="img-fluid" />
 							</div>
 						})
 					}
 				</Carousel>
 			</div>
-			<div className="content">
+			<div className="content" onClick={() => handleNavigate()}>
 				<div>
 					<h1>{data?.name}</h1>
 					<div>

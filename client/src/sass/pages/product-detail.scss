@@ -26,13 +26,13 @@
 		}
 		.ant-carousel {
 			height: 100%;
+			width: 70%;
+			border-radius: 10px;
+			overflow: hidden;
 			div:not([class]) {
 				display: flex;
 				justify-content: center;
 				.img-container {
-					border-radius: 10px;
-					overflow: hidden;
-					width: 70% !important;
 					img {
 						object-fit: contain;
 					}
@@ -52,7 +52,6 @@
 			border-radius: 7px;
 			display: grid;
 			place-items: center;
-			width: 40%;
 			&:hover {
 				border: 2px solid #111;
 			}

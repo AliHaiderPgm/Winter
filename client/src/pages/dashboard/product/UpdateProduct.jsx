@@ -78,14 +78,20 @@ const UpdateProduct = () => {
 				newImages.map(async (img) => {
 					if (img.newFile) {
 						const imgCode = await getBase64(img.file)
-						return imgCode
+						return { code: imgCode }
 					}
+					return img
 				})
 			)
+			console.log(imagesBase64)
 			const newImagesUrl = []
 			for (const image of imagesBase64) {
-				const url = await uploadImage({ base64: image })
-				newImagesUrl.push(url.url)
+				if (image.code) {
+					const url = await uploadImage({ base64: image.code })
+					newImagesUrl.push(url.url)
+				} else {
+					newImagesUrl.push(image.url)
+				}
 			}
 			const productData = {
 				...state,
@@ -94,7 +100,8 @@ const UpdateProduct = () => {
 			await UpdateProduct(id, productData)
 			message.success("Product Updated!")
 		} catch (error) {
-			message.success("Something went wrong!")
+			console.log(error)
+			message.error("Something went wrong!")
 		} finally {
 			setUpdateLoading(false)
 		}

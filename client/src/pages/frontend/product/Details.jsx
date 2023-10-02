@@ -53,7 +53,7 @@ const Details = () => {
                         }}
                     />
                 </div>
-                <Carousel ref={carousel} dots={false} className="carousel-himself">
+                <Carousel ref={carousel} dots={false}>
                     {
                         product?.images?.map((imageUrl, index) => {
                             return <div key={index} className="img-container">
@@ -68,20 +68,25 @@ const Details = () => {
                 <p>{product?.shoefor}'s Shoes</p>
                 <p>Rs.{product?.price}</p>
                 <p>Select Size</p>
-                <div className="d-flex flex-wrap gap-2 pb-3">
+                <div className="row gap-2 pb-3">
                     {
                         product?.sizes?.map((size, index) => {
-                            return <div className="size p-3" key={index}>
+                            return <div className="size p-3 col-5" key={index}>
                                 <p>{size}</p>
                             </div>
                         })
                     }
                 </div>
-                <div className="d-flex flex-column gap-2 w-75 pb-3">
-                    <Button type="primary" className="btn-filled p-4" shape="round">Add to Bag</Button>
-                    <Button type="text" className="btn-outline p-4" shape="round">Favorite <HeartOutlined /></Button>
+                <div className="row gap-2 pb-3">
+                    <div className="col-10 p-0">
+                        <Button type="primary" className="btn-filled p-4 w-100" shape="round">Add to Bag</Button>
+                    </div>
+                    <div className="col-10 p-0">
+                        <Button type="text" className="btn-outline p-4 w-100" shape="round">Favorite <HeartOutlined /></Button>
+                    </div>
                 </div>
-                <p>{product?.description}</p>
+                <p className="w-75">{product?.description}</p>
+                <hr style={{ height: "1px", backgroundColor: "rgba(0,0,0,0.1)" }} className="w-75" />
             </div>
         </div>
     )
