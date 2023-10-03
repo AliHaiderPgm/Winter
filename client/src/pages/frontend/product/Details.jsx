@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message } from "antd"
+import { Button, Carousel, message, Divider, Collapse } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
 import { HeartOutlined } from "@ant-design/icons"
@@ -38,7 +38,7 @@ const Details = () => {
     }
     return (
         <div className="product-details-container row my-5">
-            <div className="carousel col-6">
+            <div className="carousel col-6 h-100">
                 <div className="card-controller">
                     <KeyboardArrowLeftOutlined
                         className="icon"
@@ -86,7 +86,20 @@ const Details = () => {
                     </div>
                 </div>
                 <p className="w-75">{product?.description}</p>
-                <hr style={{ height: "1px", backgroundColor: "rgba(0,0,0,0.1)" }} className="w-75" />
+                <Divider />
+                <div className="row">
+                    <div className="col-10">
+                        <Collapse
+                            items={[
+                                {
+                                    key: "1",
+                                    label: "Reviews",
+                                    children: <p>Hello world!</p>
+                                }
+                            ]}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     )
