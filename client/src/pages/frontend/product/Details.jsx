@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message, Divider, Collapse } from "antd"
+import { Button, Carousel, message, Divider, Collapse, Rate } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
 import { HeartOutlined } from "@ant-design/icons"
@@ -25,7 +25,7 @@ const Details = () => {
         }
     }
     useEffect(() => {
-        window.scrollTo(0, 0)
+        // window.scrollTo(0, 0)
         if (log.current) {
             getDetails()
             log.current = false
@@ -34,6 +34,20 @@ const Details = () => {
     if (loading) {
         return <div style={{ height: "100vh" }}>
             <Loader />
+        </div>
+    }
+    const CollapseItems = () => {
+        return <div className="review">
+            <div>
+                <p className="title">Great Class</p>
+            </div>
+            <div className="d-flex gap-3">
+                <Rate disabled defaultValue={2} style={{ color: "#111", fontSize: "16px" }} />
+                <p className="user">UserName-<span className="date">10-08-1023</span> </p>
+            </div>
+            <div>
+                <p className="description">Lorem ipsum dolor sit amet onsectetur adipisicing elit. Quis nobis doloremque asperiores quas aut? Ullam? Lorem ipsum dolor sit amet.</p>
+            </div>
         </div>
     }
     return (
@@ -86,7 +100,11 @@ const Details = () => {
                     </div>
                 </div>
                 <p className="w-75">{product?.description}</p>
-                <Divider />
+                <div className="row">
+                    <div className="col-10">
+                        <Divider className="mb-0" style={{ backgroundColor: "rgba(0,0,0,0.1)" }} />
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-10">
                         <Collapse
@@ -94,7 +112,7 @@ const Details = () => {
                                 {
                                     key: "1",
                                     label: "Reviews",
-                                    children: <p>Hello world!</p>
+                                    children: <CollapseItems />
                                 }
                             ]}
                         />
