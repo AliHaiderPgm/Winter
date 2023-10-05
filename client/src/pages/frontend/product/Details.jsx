@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message, Divider, Collapse, Rate } from "antd"
+import { Button, Carousel, message, Divider, Collapse, Rate, Image } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
 import { HeartOutlined } from "@ant-design/icons"
@@ -71,7 +71,8 @@ const Details = () => {
                     {
                         product?.images?.map((imageUrl, index) => {
                             return <div key={index} className="img-container">
-                                <img src={imageUrl} className="img-fluid" />
+                                <Image className="img-fluid image" src={imageUrl} />
+                                {/* <img src={imageUrl} className="img-fluid image" /> */}
                             </div>
                         })
                     }
