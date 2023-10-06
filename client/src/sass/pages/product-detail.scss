@@ -88,27 +88,37 @@
 			rotate: 180deg !important;
 		}
 	}
-	.review {
-		.title {
-			font-weight: 700;
-			font-size: 17px;
-		}
-		.user {
-			font-weight: 700;
-			color: rgba(0, 0, 0, 0.4);
-			font-size: 16px;
-		}
-		.description {
-			font-size: 16px;
-			color: #000;
+}
+
+.review {
+	.title {
+		font-weight: 700;
+		font-size: 17px;
+	}
+	.user {
+		font-weight: 700;
+		color: rgba(0, 0, 0, 0.4);
+		font-size: 16px;
+	}
+	.description {
+		font-size: 16px;
+		color: #000;
+	}
+	.ant-btn {
+		border-bottom: 1px solid #111;
+		border-radius: 0 !important;
+		&:hover {
+			background-color: transparent !important;
+			color: rgba(0, 0, 0, 0.6) !important;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.3);
 		}
 	}
 }
 
 .btn-filled {
 	height: auto;
-	background-color: #111;
-	color: #fff;
+	background-color: #111 !important;
+	color: #fff !important;
 	font-size: 18px;
 	&:hover {
 		background-color: #111111da !important;
@@ -127,4 +137,8 @@
 	.anticon {
 		vertical-align: 0 !important;
 	}
+}
+.ant-form-item-label label {
+	font-size: 16px !important;
+	font-weight: 500;
 }
