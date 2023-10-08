@@ -5,6 +5,7 @@ import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Moda
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
 import { HeartOutlined } from "@ant-design/icons"
+import { useAuth } from "../../../context/AuthContext"
 
 const Details = () => {
     const { id } = useParams()
@@ -15,6 +16,8 @@ const Details = () => {
     const log = useRef(true)
     const [open, setOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [selectedSized, setSelectedSized] = useState(null)
+    const { user } = useAuth()
     const getDetails = async () => {
         try {
             setLoading(true)
@@ -37,6 +40,48 @@ const Details = () => {
         return <div style={{ height: "100vh" }}>
             <Loader />
         </div>
+    }
+
+    const handleAddToCart = () => {
+        const productData = {
+            product: { ...product },
+            size: selectedSized
+        }
+        const dataObj = JSON.parse(localStorage.getItem("cartItems"))
+        const isAlreadyAdded = dataObj?.some(item => item.size === selectedSized)
+        console.log(isAlreadyAdded)
+        if (isAlreadyAdded) {
+            message.error("Already added to cart!")
+            return
+        }
+        const dataArray = dataObj ? dataObj : []
+        dataArray.push(productData)
+        localStorage.setItem("cartItems", JSON.stringify(dataArray))
+        message.success("Added to cart!")
+    }
+
+    const handleAddToFavorites = () => {
+        const dataObj = JSON.parse(localStorage.getItem("favProducts"))
+        const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
+        if (isAlreadyAdded) {
+            message.error("Already added to Favorites!")
+            return
+        }
+        const dataArray = dataObj ? dataObj : []
+        dataArray.push(product)
+        localStorage.setItem("favProducts", JSON.stringify(dataArray))
+        message.success("Added to Favorites!")
+    }
+
+    const handleAddReview = (values) => {
+        const rating = Math.ceil((values.rating + product.rating) / 2)
+        const reviews = [...product.reviews, { user, review: values }]
+        const productData = {
+            ...product,
+            rating,
+            reviews
+        }
+        console.log(productData)
     }
 
     const Review = ({ more, write }) => {
@@ -64,8 +109,8 @@ const Details = () => {
                 <img src={product?.images[0]} width={60} alt={product?.name} className="img-fluid rounded" />
                 <p className="fs-5">{product?.name}</p>
             </div>
-            <Form layout="vertical">
-                <Form.Item label="Overall rating" rules={[
+            <Form layout="vertical" onFinish={handleAddReview}>
+                <Form.Item label="Overall rating" name="rating" rules={[
                     {
                         required: true,
                         message: 'Please select some stars!',
@@ -74,7 +119,7 @@ const Details = () => {
                     <Rate style={{ color: "#111", fontSize: "26px" }} />
                 </Form.Item>
                 <Divider className="my-3" />
-                <Form.Item label="Your Review" rules={[
+                <Form.Item label="Your Review" name="review" rules={[
                     {
                         required: true,
                         message: "Please describe what you likes, what you didn't like!",
@@ -82,7 +127,7 @@ const Details = () => {
                 ]}>
                     <Input.TextArea autoSize={{ minRows: 4, maxRows: 7 }} showCount maxLength={200} style={{ resize: "none" }} />
                 </Form.Item>
-                <Form.Item label="Review Title" rules={[
+                <Form.Item label="Review Title" name="title" rules={[
                     {
                         required: true,
                         message: 'Summarize your review!',
@@ -100,7 +145,7 @@ const Details = () => {
     return (
         <>
             <div className="product-details-container row my-5">
-                <div className="carousel col-6 h-100">
+                <div className="carousel col-6">
                     <div className="card-controller">
                         {product?.images?.length === 1 ? null : <>
                             <KeyboardArrowLeftOutlined
@@ -133,21 +178,21 @@ const Details = () => {
                     <p>{product?.shoefor}'s Shoes</p>
                     <p>Rs.{product?.price}</p>
                     <p>Select Size</p>
-                    <div className="row gap-2 pb-3">
+                    <div className="row gap-2 pb-3 m-0">
                         {
                             product?.sizes?.map((size, index) => {
-                                return <div className="size p-3 col-5" key={index}>
+                                return <div className={`size p-3 col-5 ${selectedSized === size ? "active" : ""}`} key={index} onClick={() => setSelectedSized(size)}>
                                     <p>{size}</p>
                                 </div>
                             })
                         }
                     </div>
-                    <div className="row gap-2 pb-3">
+                    <div className="row gap-2 pb-3 m-0">
                         <div className="col-10 p-0">
-                            <Button type="primary" className="btn-filled p-4 w-100" shape="round">Add to Bag</Button>
+                            <Button type="primary" className="btn-filled p-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
                         </div>
                         <div className="col-10 p-0">
-                            <Button type="text" className="btn-outline p-4 w-100" shape="round">Favorite <HeartOutlined /></Button>
+                            <Button type="text" className="btn-outline p-4 w-100" shape="round" onClick={handleAddToFavorites}>Favorite <HeartOutlined /></Button>
                         </div>
                     </div>
                     <p className="w-75">{product?.description}</p>
