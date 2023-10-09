@@ -101,17 +101,13 @@ const addProduct = asyncHandler(async (req, res) => {
 const updateProduct = asyncHandler(async (req, res) => {
     try {
         const { ...productData } = req.body
-        if (req.user.type !== "admin") {
-            res.status(500).json({ message: "Not authorized for this action!" })
-            return
-        }
         //Get Product by id
-        const product = Product.findById(req.params.id)
-        if (!product) {
-            res.status(400)
-            throw new Error('Product not found!')
-        }
-        await Product.findByIdAndUpdate(req.params.id, productData, { new: true })
+        // const product = Product.findById(req.params.id)
+        // if (!product) {
+        //     res.status(400)
+        //     throw new Error('Product not found!')
+        // }
+        await Product.findByIdAndUpdate(req.params.id, { $set: productData }, { new: true })
         res.status(200).json({ message: "Product updated!" })
     } catch (error) {
         res.status(400).json(error)

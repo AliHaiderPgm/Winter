@@ -83,7 +83,7 @@ const UpdateProduct = () => {
 					return img
 				})
 			)
-			console.log(imagesBase64)
+			// console.log(imagesBase64)
 			const newImagesUrl = []
 			for (const image of imagesBase64) {
 				if (image.code) {

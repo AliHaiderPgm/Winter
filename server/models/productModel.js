@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 
+
 const productSchema = mongoose.Schema({
     name: {
         type: String,
@@ -51,7 +52,7 @@ const productSchema = mongoose.Schema({
     },
     reviews: {
         type: Array,
-        required: [true, "Please add product reviews!"]
+        required: [true, "Please add review field!"]
     },
     images: {
         type: Array,
