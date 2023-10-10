@@ -9,24 +9,24 @@ import { useAuth } from "../../../context/AuthContext"
 
 const Details = () => {
     const { id } = useParams()
-    const { GetDetails } = useProduct()
-    const [loading, setLoading] = useState(false)
+    const { GetDetails, UpdateProduct } = useProduct()
+    const [loading, setLoading] = useState({ product: false, addingReview: false })
     const [product, setProduct] = useState({})
     const carousel = useRef()
     const log = useRef(true)
+    const { user } = useAuth()
     const [open, setOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSized, setSelectedSized] = useState(null)
-    const { user } = useAuth()
     const getDetails = async () => {
         try {
-            setLoading(true)
+            setLoading(prev => ({ ...prev, product: true }))
             const res = await GetDetails(id)
             setProduct({ ...res })
         } catch (error) {
             message.error("Something went wrong!")
         } finally {
-            setLoading(false)
+            setLoading(prev => ({ ...prev, product: false }))
         }
     }
     useEffect(() => {
@@ -36,7 +36,7 @@ const Details = () => {
             log.current = false
         }
     }, [])
-    if (loading) {
+    if (loading.product) {
         return <div style={{ height: "100vh" }}>
             <Loader />
         </div>
@@ -73,15 +73,23 @@ const Details = () => {
         message.success("Added to Favorites!")
     }
 
-    const handleAddReview = (values) => {
+    const handleAddReview = async (values) => {
         const rating = Math.ceil((values.rating + product.rating) / 2)
         const reviews = [...product.reviews, { user, review: values }]
         const productData = {
-            ...product,
             rating,
             reviews
         }
-        console.log(productData)
+        try {
+            setLoading(prev => ({ ...prev, addingReview: true }))
+            await UpdateProduct(id, productData)
+            message.success("Your review has been added successfully!")
+            setIsModalOpen(false)
+        } catch (error) {
+            message.error("Failed to add your review!")
+        } finally {
+            setLoading(prev => ({ ...prev, addingReview: false }))
+        }
     }
 
     const Review = ({ more, write }) => {
@@ -136,7 +144,7 @@ const Details = () => {
                     <Input title="Review Title" />
                 </Form.Item>
                 <Form.Item >
-                    <Button className="btn-filled p-4 w-100" htmlType="submit" shape="round">Submit</Button>
+                    <Button className="btn-filled p-4 w-100" htmlType="submit" shape="round" loading={loading.addingReview}>Submit</Button>
                 </Form.Item>
             </Form>
         </div>
@@ -204,7 +212,7 @@ const Details = () => {
                                     {
                                         key: "1",
                                         label: "Reviews",
-                                        children: <Review more="true" write="true" />
+                                        children: product?.reviews?.length === 0 ? <>No reviews</> : <><Review more="true" write="true" /></>
                                     }
                                 ]}
                             />
