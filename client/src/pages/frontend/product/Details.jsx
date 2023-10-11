@@ -47,9 +47,12 @@ const Details = () => {
             product: { ...product },
             size: selectedSized
         }
+        if (!selectedSized) {
+            message.error("Select a size!")
+            return
+        }
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
         const isAlreadyAdded = dataObj?.some(item => item.size === selectedSized)
-        console.log(isAlreadyAdded)
         if (isAlreadyAdded) {
             message.error("Already added to cart!")
             return
@@ -75,10 +78,10 @@ const Details = () => {
 
     const handleAddReview = async (values) => {
         const rating = Math.ceil((values.rating + product.rating) / 2)
-        const reviews = [...product.reviews, { user, review: values }]
+        const reviews = [...product.reviews, { user, review: values, time: Date.now() }]
         const productData = {
             rating,
-            reviews
+            reviews,
         }
         try {
             setLoading(prev => ({ ...prev, addingReview: true }))
@@ -92,20 +95,30 @@ const Details = () => {
         }
     }
 
-    const Review = ({ more, write }) => {
+    const openReviewModal = () => {
+        product?.reviews.map(review => {
+            if (user._id === review.user._id) {
+                message.error("You have already submitted a review!")
+            } else {
+                setIsModalOpen(true)
+            }
+        })
+    }
+
+    const Review = ({ data }) => {
+        const date = new Date(data?.time)
+        console.log(date)
         return <div className="review">
-            {write ? <Button type="text" className="p-0 text-black mb-3" onClick={() => setIsModalOpen(true)}>Write a review</Button> : null}
             <div>
-                <p className="title">Great Class</p>
+                <p className="title">{data?.review.title}</p>
             </div>
             <div className="d-flex gap-3">
-                <Rate disabled defaultValue={2} style={{ color: "#111", fontSize: "16px" }} />
-                <p className="user">UserName-<span className="date">10-08-1023</span> </p>
+                <Rate disabled defaultValue={data?.review.rating} style={{ color: "#111", fontSize: "16px" }} />
+                <p className="user">{data?.user.name}<span className="date">-{date.toLocaleDateString()}</span> </p>
             </div>
             <div>
-                <p className="description">Lorem ipsum dolor sit amet onsectetur adipisicing elit. Quis nobis doloremque asperiores quas aut? Ullam? Lorem ipsum dolor sit amet.</p>
+                <p className="description">{data?.review.review}</p>
             </div>
-            {more ? <Button type="text" className="p-0 text-black" onClick={() => setOpen(true)}>More reviews</Button> : null}
         </div>
     }
 
@@ -211,22 +224,23 @@ const Details = () => {
                                 items={[
                                     {
                                         key: "1",
-                                        label: "Reviews",
-                                        children: product?.reviews?.length === 0 ? <>No reviews</> : <><Review more="true" write="true" /></>
+                                        label: `Reviews(${product?.reviews?.length})`,
+                                        children: product?.reviews?.length === 0 ? <>No reviews</> : <>
+                                            <Button type="text" className="p-0 text-black mb-3" onClick={openReviewModal}>Write a review</Button>
+                                            {product?.reviews?.slice(0, 3).map((review, index) => {
+                                                return <Review data={review} key={index} />
+                                            })}
+                                            <Button type="text" className="p-0 text-black" onClick={() => setOpen(true)}>More reviews</Button>
+                                        </>
                                     }
                                 ]}
                             />
                         </div>
                     </div>
                     <Drawer open={open} placement="bottom" key="bottom" title="Reviews" onClose={() => setOpen(false)} height={500}>
-                        <Review />
-                        <Review />
-                        <Review />
-                        <Review />
-                        <Review />
-                        <Review />
-                        <Review />
-                        <Review />
+                        {product?.reviews?.map((review, index) => {
+                            return <Review data={review} key={index} />
+                        })}
                     </Drawer>
                     <Modal open={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={() => setIsModalOpen(false)} footer={(_, { OkBtn, CancelBtn }) => (<></>)} width={700}>
                         <AddReviewModal />
