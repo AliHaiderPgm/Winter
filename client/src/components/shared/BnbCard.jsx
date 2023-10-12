@@ -1,7 +1,4 @@
 import { Carousel } from "antd"
-import Image1 from "../../assets/test-1.jpg"
-import Image2 from "../../assets/test-2.jpg"
-import Image3 from "../../assets/test-3.jpg"
 import {
 	KeyboardArrowLeftOutlined,
 	KeyboardArrowRightOutlined,

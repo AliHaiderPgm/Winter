@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
 import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form } from "antd"
@@ -14,10 +14,11 @@ const Details = () => {
     const [product, setProduct] = useState({})
     const carousel = useRef()
     const log = useRef(true)
-    const { user } = useAuth()
+    const { user, isAuthenticated } = useAuth()
     const [open, setOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSized, setSelectedSized] = useState(null)
+    const navigate = useNavigate()
     const getDetails = async () => {
         try {
             setLoading(prev => ({ ...prev, product: true }))
@@ -96,6 +97,10 @@ const Details = () => {
     }
 
     const openReviewModal = () => {
+        if (!isAuthenticated) {
+            navigate("/auth/login")
+            return
+        }
         product?.reviews.map(review => {
             if (user._id === review.user._id) {
                 message.error("You have already submitted a review!")
@@ -107,14 +112,14 @@ const Details = () => {
 
     const Review = ({ data }) => {
         const date = new Date(data?.time)
-        console.log(date)
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
         return <div className="review">
             <div>
                 <p className="title">{data?.review.title}</p>
             </div>
-            <div className="d-flex gap-3">
+            <div className="d-flex flex-column flex-md-row gap-3">
                 <Rate disabled defaultValue={data?.review.rating} style={{ color: "#111", fontSize: "16px" }} />
-                <p className="user">{data?.user.name}<span className="date">-{date.toLocaleDateString()}</span> </p>
+                <p className="user">{data?.user.name} -<span className="date"> {date.toLocaleDateString('en-US', options)}</span> </p>
             </div>
             <div>
                 <p className="description">{data?.review.review}</p>
@@ -165,8 +170,8 @@ const Details = () => {
 
     return (
         <>
-            <div className="product-details-container row my-5">
-                <div className="carousel col-6">
+            <div className="product-details-container row my-5 ">
+                <div className="carousel  col-12 col-md-6">
                     <div className="card-controller">
                         {product?.images?.length === 1 ? null : <>
                             <KeyboardArrowLeftOutlined
@@ -194,57 +199,68 @@ const Details = () => {
                         }
                     </Carousel>
                 </div>
-                <div className="col-6 p-5 content">
-                    <h1>{product?.name}</h1>
-                    <p>{product?.shoefor}'s Shoes</p>
-                    <p>Rs.{product?.price}</p>
-                    <p>Select Size</p>
-                    <div className="row gap-2 pb-3 m-0">
-                        {
-                            product?.sizes?.map((size, index) => {
-                                return <div className={`size p-3 col-5 ${selectedSized === size ? "active" : ""}`} key={index} onClick={() => setSelectedSized(size)}>
-                                    <p>{size}</p>
-                                </div>
-                            })
-                        }
-                    </div>
-                    <div className="row gap-2 pb-3 m-0">
-                        <div className="col-10 p-0">
-                            <Button type="primary" className="btn-filled p-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
+                <div className="content col-12 col-md-6 pt-5 d-flex justify-content-center">
+                    <div className="w-75">
+                        <h1>{product?.name}</h1>
+                        <p>{product?.shoefor}'s Shoes</p>
+                        <p>Rs.{product?.price}</p>
+                        <p>Select Size</p>
+
+                        <div className="row gap-2 pb-3 m-0">
+                            {
+                                product?.sizes?.map((size, index) => {
+                                    return <div className={`size p-3 col-5 flex-fill ${selectedSized === size ? "active" : ""}`} key={index} onClick={() => setSelectedSized(size)}>
+                                        <p>{size}</p>
+                                    </div>
+                                })
+                            }
                         </div>
-                        <div className="col-10 p-0">
-                            <Button type="text" className="btn-outline p-4 w-100" shape="round" onClick={handleAddToFavorites}>Favorite <HeartOutlined /></Button>
+
+                        <div className="row gap-2 pb-3 m-0">
+                            <div className="col-12 p-0">
+                                <Button type="primary" className="btn-filled p-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
+                            </div>
+                            <div className="col-12 p-0">
+                                <Button type="text" className="btn-outline p-4 w-100" shape="round" onClick={handleAddToFavorites}>Favorite <HeartOutlined /></Button>
+                            </div>
                         </div>
-                    </div>
-                    <p className="w-75">{product?.description}</p>
-                    <div className="row">
-                        <div className="col-10">
-                            <Divider className="mb-0" style={{ backgroundColor: "rgba(0,0,0,0.1)" }} />
-                            <Collapse
-                                items={[
-                                    {
-                                        key: "1",
-                                        label: `Reviews(${product?.reviews?.length})`,
-                                        children: product?.reviews?.length === 0 ? <>No reviews</> : <>
-                                            <Button type="text" className="p-0 text-black mb-3" onClick={openReviewModal}>Write a review</Button>
-                                            {product?.reviews?.slice(0, 3).map((review, index) => {
-                                                return <Review data={review} key={index} />
-                                            })}
-                                            <Button type="text" className="p-0 text-black" onClick={() => setOpen(true)}>More reviews</Button>
-                                        </>
-                                    }
-                                ]}
-                            />
+                        <p className="w-100">{product?.description}</p>
+
+                        <div className="row">
+                            <div className="col-12">
+                                <Divider className="mb-0" style={{ backgroundColor: "rgba(0,0,0,0.1)" }} />
+                                <Collapse
+                                    items={[
+                                        {
+                                            key: "1",
+                                            label: `Reviews (${product?.reviews?.length})`,
+                                            children: product?.reviews?.length === 0 ? <>No reviews</> : <>
+                                                <div className="d-flex gap-2">
+                                                    <Rate disabled defaultValue={product?.rating} style={{ color: "#111", fontSize: "18px" }} />
+                                                    <p style={{ fontSize: "18px", textAlign: "center", fontWeight: "700" }}>{product?.rating} Stars</p>
+                                                </div>
+                                                <Button type="text" className="p-0 text-black mb-3" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={openReviewModal}>Write a review</Button>
+                                                {product?.reviews?.slice(0, 3).map((review, index) => {
+                                                    return <Review data={review} key={index} />
+                                                })}
+                                                <Button type="text" className="p-0 text-black" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={() => setOpen(true)}>More reviews</Button>
+                                            </>
+                                        }
+                                    ]}
+                                />
+                            </div>
                         </div>
+
+                        <Drawer open={open} placement="bottom" key="bottom" title="Reviews" onClose={() => setOpen(false)} height={500}>
+                            {product?.reviews?.map((review, index) => {
+                                return <Review data={review} key={index} />
+                            })}
+                        </Drawer>
+
+                        <Modal open={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={() => setIsModalOpen(false)} footer={(_, { OkBtn, CancelBtn }) => (<></>)} width={700}>
+                            <AddReviewModal />
+                        </Modal>
                     </div>
-                    <Drawer open={open} placement="bottom" key="bottom" title="Reviews" onClose={() => setOpen(false)} height={500}>
-                        {product?.reviews?.map((review, index) => {
-                            return <Review data={review} key={index} />
-                        })}
-                    </Drawer>
-                    <Modal open={isModalOpen} onCancel={() => setIsModalOpen(false)} onOk={() => setIsModalOpen(false)} footer={(_, { OkBtn, CancelBtn }) => (<></>)} width={700}>
-                        <AddReviewModal />
-                    </Modal>
                 </div>
             </div>
         </>
