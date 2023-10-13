@@ -13,7 +13,7 @@ const CatalogSection = () => {
 			<div className="container d-flex flex-column my-5 gap-2">
 				<h2 className="text-center fw-bold">Catalog</h2>
 				<div className="row justify-content-center">
-					<div className="myCard" onClick={() => handleNavigate("men")} >
+					<div className="myCard" onClick={() => handleNavigate("Male")} >
 						<img
 							src={Men}
 							alt="Men Catalog winter"
@@ -22,7 +22,7 @@ const CatalogSection = () => {
 						<h1>Men</h1>
 						<ArrowUpwardOutlined className="arrow" />
 					</div>
-					<div className="myCard" onClick={() => handleNavigate("women")}>
+					<div className="myCard" onClick={() => handleNavigate("Female")}>
 						<img
 							src={Women}
 							alt="Women Catalog winter"
@@ -31,7 +31,7 @@ const CatalogSection = () => {
 						<h1>Women</h1>
 						<ArrowUpwardOutlined className="arrow" />
 					</div>
-					<div className="myCard" onClick={() => handleNavigate("child")}>
+					<div className="myCard" onClick={() => handleNavigate("Children")}>
 						<img
 							src={Child}
 							alt="Child Catalog winter"

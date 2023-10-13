@@ -80,6 +80,12 @@ const ProductContextProvider = (props) => {
 		const res = await axios.post(`${API_URL}/getRecentProducts`, { limit: count })
 		return res.data
 	}
+
+	// Get filtered products
+	const GetFilteredProducts = async (condition) => {
+		const res = await axios.post(`${API_URL}/getFilteredProducts`, condition)
+		return res.data
+	}
 	return (
 		<>
 			{contextHolder}
@@ -91,6 +97,7 @@ const ProductContextProvider = (props) => {
 					GetProducts,
 					GetDetails,
 					GetRecentProducts,
+					GetFilteredProducts,
 					UpdateProduct,
 					uploadImage,
 					DeleteProduct,

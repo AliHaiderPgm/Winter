@@ -4,9 +4,9 @@ const { getProducts, addProduct, updateProduct, deleteProduct, getProductDetails
 const { protect } = require('../middleware/authMiddleware')
 const { uploadImageController } = require('../controllers/imageController')
 
-router.post('/getRecentProducts', getRecentProducts)
+router.post('/getFilteredProducts', getFilteredProducts)
 
-router.get('/getFilteredProducts', getFilteredProducts)
+router.post('/getRecentProducts', getRecentProducts)
 
 router.route('/').get(getProducts).post(protect, addProduct)
 

@@ -45,6 +45,7 @@ const getRecentProducts = asyncHandler(async (req, res) => {
 // @access   PUBLIC
 const getFilteredProducts = asyncHandler(async (req, res) => {
     try {
+        console.log(req.body)
         const filteredProducts = await Product.find(req.body)
         res.status(200).json(filteredProducts)
     } catch (error) {

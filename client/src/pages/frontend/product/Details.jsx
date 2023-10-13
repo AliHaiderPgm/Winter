@@ -31,7 +31,7 @@ const Details = () => {
         }
     }
     useEffect(() => {
-        // window.scrollTo(0, 0)
+        window.scrollTo(0, 0)
         if (log.current) {
             getDetails()
             log.current = false
