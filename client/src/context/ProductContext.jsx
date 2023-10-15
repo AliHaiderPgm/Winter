@@ -86,6 +86,12 @@ const ProductContextProvider = (props) => {
 		const res = await axios.post(`${API_URL}/getFilteredProducts`, condition)
 		return res.data
 	}
+
+	// get products for scroll
+	const GetCustomizedProducts = async (field, value, page) => {
+		const res = await axios.post(`${API_URL}/customizedProducts?field=${field}&value=${value}&page=${page}`)
+		return res.data
+	}
 	return (
 		<>
 			{contextHolder}
@@ -98,6 +104,7 @@ const ProductContextProvider = (props) => {
 					GetDetails,
 					GetRecentProducts,
 					GetFilteredProducts,
+					GetCustomizedProducts,
 					UpdateProduct,
 					uploadImage,
 					DeleteProduct,

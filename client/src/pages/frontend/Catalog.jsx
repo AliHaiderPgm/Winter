@@ -3,40 +3,64 @@ import { useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
 import { message } from "antd"
 import Loader from "../../components/shared/Loader"
+import BnbCard from "../../components/shared/BnbCard"
 
 const Catalog = () => {
     const { type } = useParams()
     const [loading, setLoading] = useState(false)
-    const { GetFilteredProducts } = useProduct()
+    const { GetCustomizedProducts } = useProduct()
     const [products, setProducts] = useState([])
+    const [page, setPage] = useState(1)
     const log = useRef(true)
-    const getProducts = async () => {
+
+    const getScrollProducts = async () => {
         try {
             setLoading(true)
-            const res = await GetFilteredProducts({ shoefor: type })
-            console.log(res)
-            setProducts(res)
+            const res = await GetCustomizedProducts("shoefor", type, page)
+            setProducts(prev => [...prev, ...res])
         } catch (error) {
-            console.log(error)
             message.error("Something went wrong!")
         } finally {
             setLoading(false)
         }
     }
+
+    const handleScroll = () => {
+        if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
+            log.current = true
+            setPage(prev => prev + 1)
+        }
+    }
+
     useEffect(() => {
         if (log.current) {
-            getProducts()
+            getScrollProducts()
             log.current = false
         }
+    }, [page])
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll)
+        return () => { window.removeEventListener("scroll", handleScroll) }
     }, [])
 
-    if (loading) {
-        return <div style={{ height: "100vh" }}>
-            <Loader />
-        </div>
-    }
     return (
-        <div>Catalog</div>
+        <div className="row p-4">
+            <div className="col-3">
+                <p>Hello world!</p>
+            </div>
+            <div className="col-9 d-flex">
+                <div className="row">
+                    {
+                        products?.map((product, index) => {
+                            return <div className="col-3 flex-fill mb-4" key={index}>
+                                <BnbCard data={product} />
+                            </div>
+                        })
+                    }
+                </div>
+            </div>
+        </div>
     )
 }
 

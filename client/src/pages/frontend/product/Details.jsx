@@ -98,16 +98,16 @@ const Details = () => {
 
     const openReviewModal = () => {
         if (!isAuthenticated) {
-            navigate("/auth/login")
-            return
+            navigate("/auth/login");
+            return;
         }
-        product?.reviews.map(review => {
-            if (user._id === review.user._id) {
-                message.error("You have already submitted a review!")
-            } else {
-                setIsModalOpen(true)
-            }
-        })
+
+        if (product.reviews.some(review => user._id === review.user._id)) {
+            message.error("You have already submitted a review!");
+            return;
+        }
+
+        setIsModalOpen(true);
     }
 
     const Review = ({ data }) => {
@@ -234,16 +234,24 @@ const Details = () => {
                                         {
                                             key: "1",
                                             label: `Reviews (${product?.reviews?.length})`,
-                                            children: product?.reviews?.length === 0 ? <>No reviews</> : <>
-                                                <div className="d-flex gap-2">
-                                                    <Rate disabled defaultValue={product?.rating} style={{ color: "#111", fontSize: "18px" }} />
-                                                    <p style={{ fontSize: "18px", textAlign: "center", fontWeight: "700" }}>{product?.rating} Stars</p>
-                                                </div>
+                                            children: <>
                                                 <Button type="text" className="p-0 text-black mb-3" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={openReviewModal}>Write a review</Button>
-                                                {product?.reviews?.slice(0, 3).map((review, index) => {
-                                                    return <Review data={review} key={index} />
-                                                })}
-                                                <Button type="text" className="p-0 text-black" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={() => setOpen(true)}>More reviews</Button>
+                                                {
+                                                    product?.reviews?.length === 0 ? <>
+                                                        <div>
+                                                            <p>No reviews</p>
+                                                        </div>
+                                                    </> : <>
+                                                        <div className="d-flex gap-2">
+                                                            <Rate disabled defaultValue={product?.rating} style={{ color: "#111", fontSize: "18px" }} />
+                                                            <p style={{ fontSize: "18px", textAlign: "center", fontWeight: "700" }}>{product?.rating} Stars</p>
+                                                        </div>
+                                                        {product?.reviews?.slice(0, 3).map((review, index) => {
+                                                            return <Review data={review} key={index} />
+                                                        })}
+                                                        <Button type="text" className="p-0 text-black" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={() => setOpen(true)}>More reviews</Button>
+                                                    </>
+                                                }
                                             </>
                                         }
                                     ]}

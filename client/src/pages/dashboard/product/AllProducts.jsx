@@ -18,8 +18,8 @@ const AllProducts = () => {
 			label: i.toString(36) + i,
 		})
 	}
-	const onSearch = () => {}
-	const handleChange = (value) => {}
+	const onSearch = () => { }
+	const handleChange = (value) => { }
 
 	useEffect(() => {
 		if (shouldLog.current) {
@@ -57,7 +57,7 @@ const AllProducts = () => {
 				{products?.map((item, index) => {
 					return (
 						<div
-							className="col-3"
+							className="col-3 flex-fill mb-3"
 							key={index}
 							onClick={() => handleNavigate(item._id)}
 						>

@@ -45,9 +45,29 @@ const getRecentProducts = asyncHandler(async (req, res) => {
 // @access   PUBLIC
 const getFilteredProducts = asyncHandler(async (req, res) => {
     try {
-        console.log(req.body)
         const filteredProducts = await Product.find(req.body)
         res.status(200).json(filteredProducts)
+    } catch (error) {
+        res.status(400).json(error)
+    }
+})
+
+// @desc     Get filtered products
+// @route    GET /api/products/customized
+// @access   PUBLIC
+const customizedProducts = asyncHandler(async (req, res) => {
+    try {
+        const { field, value, page } = req.query
+        const obj = {}
+        if (field && value) {
+            obj[field] = value
+        }
+        const pageVal = parseInt(page) || 1
+        const perPage = 8
+        const skip = (pageVal - 1) * perPage
+
+        const data = await Product.find(obj).skip(skip).limit(perPage)
+        res.status(200).json(data)
     } catch (error) {
         res.status(400).json(error)
     }
@@ -142,6 +162,7 @@ module.exports = {
     getProductDetails,
     getRecentProducts,
     getFilteredProducts,
+    customizedProducts,
     addProduct,
     updateProduct,
     deleteProduct,
