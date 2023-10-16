@@ -66,30 +66,12 @@
 		.size.active {
 			border: 2px solid #111;
 		}
-		.ant-collapse {
-			background-color: transparent !important;
-			border: none !important;
-			.ant-collapse-item {
-				border-radius: 0px !important;
-				.ant-collapse-header {
-					flex-direction: row-reverse !important;
-					align-items: center !important;
-				}
-				.anticon-right {
-					rotate: 90deg !important;
-					font-size: 20px !important;
-				}
-				.ant-collapse-header-text {
-					font-size: 22px;
-					font-weight: 500;
-				}
-				.ant-collapse-content {
-					border: 0px !important;
-				}
-			}
+		.ant-collapse-header-text {
+			font-size: 22px;
+			font-weight: 500;
 		}
-		.ant-collapse-item.ant-collapse-item-active .anticon-right {
-			rotate: 180deg !important;
+		.anticon-right {
+			font-size: 20px !important;
 		}
 	}
 }
