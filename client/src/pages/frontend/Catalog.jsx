@@ -5,6 +5,7 @@ import { Button, Checkbox, Collapse, message } from "antd"
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
 import { FilterOutlined } from "@ant-design/icons"
+import data from "../dashboard/product/data"
 
 const Catalog = () => {
     const { type } = useParams()
@@ -15,7 +16,7 @@ const Catalog = () => {
     const log = useRef(true)
     const loader = useRef(true)
     const [isResEmpty, setIsResEmpty] = useState(false)
-    const [checkedVals, setCheckedVals] = useState([])
+    const [checkedVals, setCheckedVals] = useState([[], [], [], []])
 
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
@@ -50,11 +51,11 @@ const Catalog = () => {
         return () => { window.removeEventListener("scroll", handleScroll) }
     }, [])
 
-    ////////Sorting//////// 
+    ////////Sorting////////
     const sortingOptions = [
         {
             index: "0",
-            label: "Shop by Price",
+            label: `Shop by Price ${checkedVals[0].length === 0 ? "" : `(${checkedVals[0].length})`}`,
             options: [
                 {
                     label: "Rs.2000 - Rs.5000",
@@ -72,41 +73,18 @@ const Catalog = () => {
         },
         {
             index: "1",
-            label: "Types",
-            options: [
-                {
-                    value: "Sneakers",
-                    label: "Sneakers",
-                },
-                {
-                    value: "Sportswear",
-                    label: "Sportswear",
-                },
-                {
-                    value: "Running",
-                    label: "Running",
-                },
-                {
-                    value: "Golf",
-                    label: "Golf",
-                },
-                {
-                    value: "Workout & Gym",
-                    label: "Workout & Gym",
-                },
-                {
-                    value: "Football",
-                    label: "Football",
-                },
-                {
-                    value: "Basketball",
-                    label: "Basketball",
-                },
-                {
-                    value: "LifeStyle",
-                    label: "LifeStyle",
-                },
-            ]
+            label: `Types ${checkedVals[1].length === 0 ? "" : `(${checkedVals[1].length})`}`,
+            options: [...data.types].splice(1)
+        },
+        {
+            index: "2",
+            label: `Size ${checkedVals[2].length === 0 ? "" : `(${checkedVals[2].length})`}`,
+            options: data.sizes
+        },
+        {
+            index: "3",
+            label: `Brand ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
+            options: [...data.brands].splice(1)
         },
     ]
 
@@ -116,10 +94,10 @@ const Catalog = () => {
         setCheckedVals(newArray)
     }
 
-    return <div>
+    return <div className="product-catalog">
         <h1 className="px-5 py-3">Men's Shoes</h1>
         <div className="row justify-content-center p-4 gap-5">
-            <div className="col-2">
+            <div className="col-2 filter">
                 <p className="fw-bold fs-5">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
                 <div className="dropDowns d-flex flex-column gap-2">
                     {
@@ -137,7 +115,7 @@ const Catalog = () => {
                         })
                     }
                     <div>
-                        <Button className="btn-filled" type="primary" onClick={() => console.log(checkedVals)}>Filter</Button>
+                        <Button className="btn-filled w-100 py-2" type="primary" onClick={() => console.log(checkedVals)}>Filter</Button>
                     </div>
                 </div>
             </div>
