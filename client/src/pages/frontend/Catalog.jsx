@@ -17,6 +17,7 @@ const Catalog = () => {
     const loader = useRef(true)
     const [isResEmpty, setIsResEmpty] = useState(false)
     const [checkedVals, setCheckedVals] = useState([[], [], [], []])
+    const [selectedSize, setSelectedSize] = useState([])
 
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
@@ -78,12 +79,7 @@ const Catalog = () => {
         },
         {
             index: "2",
-            label: `Size ${checkedVals[2].length === 0 ? "" : `(${checkedVals[2].length})`}`,
-            options: data.sizes
-        },
-        {
-            index: "3",
-            label: `Brand ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
+            label: `Brand ${checkedVals[2].length === 0 ? "" : `(${checkedVals[2].length})`}`,
             options: [...data.brands].splice(1)
         },
     ]
@@ -93,6 +89,14 @@ const Catalog = () => {
         newArray[index] = checkedValue
         setCheckedVals(newArray)
     }
+
+    const handleSizeSelection = (e) => {
+        !selectedSize.includes(e) && setSelectedSize(prev => [...prev, e])
+    }
+    useEffect(() => {
+        console.log(selectedSize)
+        handleCheckBox(selectedSize, 3)
+    }, [selectedSize])
 
     return <div className="product-catalog">
         <h1 className="px-5 py-3">Men's Shoes</h1>
@@ -114,6 +118,21 @@ const Catalog = () => {
                             />
                         })
                     }
+                    <Collapse
+                        items={[
+                            {
+                                key: "3",
+                                label: `Size ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
+                                children: <div className="d-flex flex-wrap gap-2">
+                                    {data.sizes?.map((size, index) => {
+                                        return <div key={index} className={`custom-checkBox flex-fill ${selectedSize.includes(size.value) && "active"}`} onClick={() => handleSizeSelection(size.value)}>
+                                            <p>{size.label}</p>
+                                        </div>
+                                    })}
+                                </div>,
+                            },
+                        ]}
+                    />
                     <div>
                         <Button className="btn-filled w-100 py-2" type="primary" onClick={() => console.log(checkedVals)}>Filter</Button>
                     </div>
@@ -121,7 +140,7 @@ const Catalog = () => {
             </div>
             <div className="col-9 d-flex min-vh-100">
                 {
-                    loading ? <Loader /> : <div className="row">
+                    loading ? <Loader /> : <div className="row align-content-start">
                         {
                             products?.map((product, index) => {
                                 return <div className="col-3 flex-fill mb-4" key={index}>
