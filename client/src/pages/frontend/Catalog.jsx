@@ -94,13 +94,12 @@ const Catalog = () => {
         !selectedSize.includes(e) && setSelectedSize(prev => [...prev, e])
     }
     useEffect(() => {
-        console.log(selectedSize)
         handleCheckBox(selectedSize, 3)
     }, [selectedSize])
 
     return <div className="product-catalog">
         <h1 className="px-5 py-3">Men's Shoes</h1>
-        <div className="row justify-content-center p-4 gap-5">
+        <div className="row justify-content-center align-items-start p-4 me-0 gap-5 main-div">
             <div className="col-2 filter">
                 <p className="fw-bold fs-5">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
                 <div className="dropDowns d-flex flex-column gap-2">

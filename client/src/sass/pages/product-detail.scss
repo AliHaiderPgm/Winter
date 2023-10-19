@@ -1,10 +1,12 @@
 .product-details-container {
 	align-items: start;
 	.carousel {
-		position: relative;
+		position: sticky;
+		top: 20px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		max-height: 80%;
 		.card-controller {
 			z-index: 1;
 			display: flex;
@@ -29,6 +31,7 @@
 			width: 70%;
 			border-radius: 10px;
 			overflow: hidden;
+			max-height: 80dvh;
 			div:not([class]) {
 				display: flex;
 				justify-content: center;

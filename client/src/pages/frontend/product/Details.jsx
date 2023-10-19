@@ -170,8 +170,8 @@ const Details = () => {
 
     return (
         <>
-            <div className="product-details-container row my-5 ">
-                <div className="carousel  col-12 col-md-6">
+            <div className="product-details-container row me-0 my-5 ">
+                <div className="carousel col-12 col-md-6">
                     <div className="card-controller">
                         {product?.images?.length === 1 ? null : <>
                             <KeyboardArrowLeftOutlined

@@ -47,7 +47,7 @@ const Home = () => {
 		arrowClass = "third"
 	}
 	return (
-		<>
+		<div className="overflow-hidden">
 			<Header title="E-Store" />
 			<div className="wrapper">
 				<CatalogSection />
@@ -83,7 +83,7 @@ const Home = () => {
 				<AboutSection />
 				<Services />
 			</div>
-		</>
+		</div>
 	)
 }
 
