@@ -88,8 +88,19 @@ const ProductContextProvider = (props) => {
 	}
 
 	// get products for scroll
-	const GetCustomizedProducts = async (field, value, page) => {
-		const res = await axios.post(`${API_URL}/customizedProducts?field=${field}&value=${value}&page=${page}`)
+	const GetCustomizedProducts = async (field, value, page, filter) => {
+		console.log(filter)
+		const res = await axios.post(`${API_URL}/customizedProducts`, {
+			params: {
+				field,
+				value,
+				page,
+				prices: filter[0],
+				types: filter[1],
+				brands: filter[2],
+				sizes: filter[3],
+			}
+		})
 		return res.data
 	}
 	return (

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
-import { Button, Checkbox, Collapse, message } from "antd"
+import { Button, Checkbox, Collapse, Empty, message } from "antd"
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
 import { FilterOutlined } from "@ant-design/icons"
@@ -26,10 +26,10 @@ const Catalog = () => {
         }
     }
 
-    const getScrollProducts = async () => {
+    const getProducts = async (filter) => {
         try {
             loader.current ? setLoading(true) : setLoading(false)
-            const res = await GetCustomizedProducts("shoefor", type, page)
+            const res = await GetCustomizedProducts("shoefor", type, page, filter)
             res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
             setProducts(prev => [...prev, ...res])
         } catch (error) {
@@ -41,7 +41,7 @@ const Catalog = () => {
 
     useEffect(() => {
         if (log.current && !isResEmpty) {
-            getScrollProducts()
+            getProducts(checkedVals)
             log.current = false
             loader.current = false
         }
@@ -97,6 +97,20 @@ const Catalog = () => {
         handleCheckBox(selectedSize, 3)
     }, [selectedSize])
 
+    const handleFilterProducts = async () => {
+        try {
+            setLoading(true)
+            const res = await GetCustomizedProducts("shoefor", type, page, checkedVals)
+            console.log(res)
+            res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
+            setProducts([...res])
+        } catch (error) {
+            message.error("Something went wrong!")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return <div className="product-catalog">
         <h1 className="px-5 py-3">Men's Shoes</h1>
         <div className="row justify-content-center align-items-start p-4 me-0 gap-5 main-div">
@@ -133,21 +147,25 @@ const Catalog = () => {
                         ]}
                     />
                     <div>
-                        <Button className="btn-filled w-100 py-2" type="primary" onClick={() => console.log(checkedVals)}>Filter</Button>
+                        <Button className="btn-filled w-100 py-2" type="primary" onClick={handleFilterProducts}>Filter</Button>
                     </div>
                 </div>
             </div>
-            <div className="col-9 d-flex min-vh-100">
+            <div className="col-9 d-flex min-vh-100 justify-content-center">
                 {
-                    loading ? <Loader /> : <div className="row align-content-start">
-                        {
-                            products?.map((product, index) => {
-                                return <div className="col-3 flex-fill mb-4" key={index}>
-                                    <BnbCard data={product} />
-                                </div>
-                            })
-                        }
-                    </div>
+                    loading ? <Loader /> :
+                        products.length === 0 ? <Empty /> :
+                            <div className="row align-content-start">
+                                {
+                                    products?.map((product, index) => {
+                                        return <div className="col-3 flex-fill mb-4" key={index}>
+                                            <BnbCard data={product} />
+                                        </div>
+                                    })
+                                }
+                            </div>
+
+
                 }
             </div>
         </div>

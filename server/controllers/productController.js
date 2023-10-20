@@ -57,7 +57,8 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
 // @access   PUBLIC
 const customizedProducts = asyncHandler(async (req, res) => {
     try {
-        const { field, value, page } = req.query
+        const { field, value, page, prices, types, sizes, brands } = req.body.params
+        // Pagination
         const obj = {}
         if (field && value) {
             obj[field] = value
@@ -66,6 +67,11 @@ const customizedProducts = asyncHandler(async (req, res) => {
         const perPage = 8
         const skip = (pageVal - 1) * perPage
 
+        // Filter
+        console.log(sizes)
+        if (sizes && sizes.length > 0) {
+            obj.sizes = { $in: sizes }
+        }
         const data = await Product.find(obj).skip(skip).limit(perPage)
         res.status(200).json(data)
     } catch (error) {

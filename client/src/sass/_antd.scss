@@ -26,6 +26,7 @@
 		}
 		.ant-collapse-header-text {
 			font-weight: 500;
+			font-size: 16px;
 		}
 		.ant-collapse-content {
 			border: 0px !important;
@@ -34,4 +35,21 @@
 }
 .ant-collapse-item.ant-collapse-item-active .anticon-right {
 	rotate: 180deg !important;
+}
+
+.ant-checkbox-wrapper {
+	font-size: 16px;
+	.ant-checkbox-inner {
+		border-color: #111 !important;
+	}
+	&:hover {
+		.ant-checkbox-inner {
+			border-color: #1111116c !important;
+		}
+	}
+}
+.ant-checkbox-wrapper.ant-checkbox-wrapper-checked {
+	.ant-checkbox-inner {
+		background-color: #111 !important;
+	}
 }
