@@ -4,32 +4,42 @@ import { useProduct } from "../../context/ProductContext"
 import { Button, Checkbox, Collapse, Empty, message } from "antd"
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
-import { FilterOutlined } from "@ant-design/icons"
+import { CloseOutlined, FilterOutlined } from "@ant-design/icons"
 import data from "../dashboard/product/data"
 
+
+const initialState = new Array(4).fill([])
 const Catalog = () => {
     const { type } = useParams()
     const [loading, setLoading] = useState(false)
     const { GetCustomizedProducts } = useProduct()
     const [products, setProducts] = useState([])
+    const [filteredProducts, setFilteredProducts] = useState([])
     const [page, setPage] = useState(1)
     const log = useRef(true)
     const loader = useRef(true)
     const [isResEmpty, setIsResEmpty] = useState(false)
-    const [checkedVals, setCheckedVals] = useState([[], [], [], []])
+    const [checkedVals, setCheckedVals] = useState(initialState)
     const [selectedSize, setSelectedSize] = useState([])
+    const [clearFilterBtn, setClearFilterBtn] = useState(false)
 
+    // //////////Scroll /////////
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
             log.current = true
             setPage(prev => prev + 1)
         }
     }
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll)
+        return () => { window.removeEventListener("scroll", handleScroll) }
+    }, [])
 
-    const getProducts = async (filter) => {
+    /////////Get all products ////////
+    const getProducts = async () => {
         try {
-            loader.current ? setLoading(true) : setLoading(false)
-            const res = await GetCustomizedProducts("shoefor", type, page, filter)
+            loader.current ? setLoading(true) : setLoading(false) ////To show loader only first time when page mounts
+            const res = await GetCustomizedProducts("shoefor", type, page, initialState)
             res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
             setProducts(prev => [...prev, ...res])
         } catch (error) {
@@ -38,19 +48,6 @@ const Catalog = () => {
             setLoading(false)
         }
     }
-
-    useEffect(() => {
-        if (log.current && !isResEmpty) {
-            getProducts(checkedVals)
-            log.current = false
-            loader.current = false
-        }
-    }, [page])
-
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll)
-        return () => { window.removeEventListener("scroll", handleScroll) }
-    }, [])
 
     ////////Sorting////////
     const sortingOptions = [
@@ -91,19 +88,27 @@ const Catalog = () => {
     }
 
     const handleSizeSelection = (e) => {
-        !selectedSize.includes(e) && setSelectedSize(prev => [...prev, e])
+        setSelectedSize(prev => {
+            if (prev.includes(e)) {
+                return prev.filter(size => size !== e)
+            } else {
+                return [...prev, e]
+            }
+        })
     }
     useEffect(() => {
         handleCheckBox(selectedSize, 3)
     }, [selectedSize])
+    // so that when ever size value changes it immediately stores in checkedvals
 
+    //////////Get filter products ///////
     const handleFilterProducts = async () => {
         try {
             setLoading(true)
             const res = await GetCustomizedProducts("shoefor", type, page, checkedVals)
-            console.log(res)
             res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
-            setProducts([...res])
+            setFilteredProducts([...res])
+            setProducts([])
         } catch (error) {
             message.error("Something went wrong!")
         } finally {
@@ -111,11 +116,58 @@ const Catalog = () => {
         }
     }
 
+    ///////// clear filters  //////////
+    const showClearBtn = () => {
+        const res = checkedVals.map((val, i) => {
+            if (val.length === initialState[i].length) {
+                return false
+            } else {
+                return true
+            }
+        })
+        res.includes(true) && setClearFilterBtn(true)
+    }
+    useEffect(() => {
+        showClearBtn()
+    }, [checkedVals])
+
+    const handleClearFilters = async () => {
+        try {
+            setLoading(true)
+            setCheckedVals(initialState)
+            setSelectedSize([])
+            setClearFilterBtn(false)
+            setPage(1)
+            setFilteredProducts([])
+            await getProducts()
+        } catch (error) {
+
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    //////Get products on scroll ////////
+    useEffect(() => {
+        if (log.current && !isResEmpty) {
+            if (filteredProducts.length > 0) {
+                handleFilterProducts()
+            } else {
+                getProducts()
+            }
+            log.current = false
+            loader.current = false
+        }
+    }, [page])
+
     return <div className="product-catalog">
         <h1 className="px-5 py-3">Men's Shoes</h1>
         <div className="row justify-content-center align-items-start p-4 me-0 gap-5 main-div">
             <div className="col-2 filter">
-                <p className="fw-bold fs-5">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
+                <div className="d-flex align-items-center mb-2">
+                    <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
+                    {clearFilterBtn && <Button type="text btn-outline d-flex align-items-center ms-auto" size="small" onClick={handleClearFilters}>Clear <CloseOutlined /></Button>}
+                </div>
                 <div className="dropDowns d-flex flex-column gap-2">
                     {
                         sortingOptions.map((option, index) => {
@@ -125,7 +177,7 @@ const Catalog = () => {
                                     {
                                         key: index,
                                         label: option.label,
-                                        children: <Checkbox.Group options={option.options} onChange={val => handleCheckBox(val, option.index)} />,
+                                        children: <Checkbox.Group options={option.options} value={checkedVals[option.index]} onChange={val => handleCheckBox(val, option.index)} />,
                                     },
                                 ]}
                             />
@@ -152,20 +204,48 @@ const Catalog = () => {
                 </div>
             </div>
             <div className="col-9 d-flex min-vh-100 justify-content-center">
-                {
+                {/* {
                     loading ? <Loader /> :
-                        products.length === 0 ? <Empty /> :
-                            <div className="row align-content-start">
-                                {
-                                    products?.map((product, index) => {
-                                        return <div className="col-3 flex-fill mb-4" key={index}>
-                                            <BnbCard data={product} />
-                                        </div>
-                                    })
-                                }
-                            </div>
-
-
+                        filteredProducts.length > 0 ? <div className="row align-content-start">
+                            {
+                                filteredProducts?.map((product, index) => {
+                                    return <div className="col-3 flex-fill mb-4" key={index}>
+                                        <BnbCard data={product} />
+                                    </div>
+                                })
+                            }
+                        </div> :
+                            products.length === 0 ? <Empty /> :
+                                <div className="row align-content-start">
+                                    {
+                                        products?.map((product, index) => {
+                                            return <div className="col-3 flex-fill mb-4" key={index}>
+                                                <BnbCard data={product} />
+                                            </div>
+                                        })
+                                    }
+                                </div>
+                } */}
+                {
+                    loading ? <Loader /> : (
+                        <div className="row align-content-start">
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts?.map((product, index) => (
+                                    <div className="col-3 flex-fill mb-4" key={index}>
+                                        <BnbCard data={product} />
+                                    </div>
+                                ))
+                            ) : products.length > 0 ? (
+                                products?.map((product, index) => (
+                                    <div className="col-3 flex-fill mb-4" key={index}>
+                                        <BnbCard data={product} />
+                                    </div>
+                                ))
+                            ) : (
+                                <Empty />
+                            )}
+                        </div>
+                    )
                 }
             </div>
         </div>

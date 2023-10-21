@@ -68,9 +68,15 @@ const customizedProducts = asyncHandler(async (req, res) => {
         const skip = (pageVal - 1) * perPage
 
         // Filter
-        console.log(sizes)
         if (sizes && sizes.length > 0) {
-            obj.sizes = { $in: sizes }
+            const stringSizes = sizes.map(size => size.toString())
+            obj.sizes = { $in: stringSizes }
+        }
+        if (types && types.length > 0) {
+            obj.type = { $in: types }
+        }
+        if (brands && brands.length > 0) {
+            obj.brand = { $in: brands }
         }
         const data = await Product.find(obj).skip(skip).limit(perPage)
         res.status(200).json(data)
