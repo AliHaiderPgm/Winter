@@ -78,7 +78,27 @@ const customizedProducts = asyncHandler(async (req, res) => {
         if (brands && brands.length > 0) {
             obj.brand = { $in: brands }
         }
+        if (prices && prices.length > 0) {
+            const range = prices.map(price => {
+                const [min, max] = price.split('-')
+                return {
+                    price: {
+                        $gte: parseFloat(min),
+                        $lte: parseFloat(max)
+                    }
+                }
+            })
+
+            const wtf = {
+                $gte: parseFloat(prices[0].split('-')[0]),
+                $lte: parseFloat(prices[0].split('-')[1])
+            }
+            obj.price = { $or: range }
+            console.log(range)
+        }
+
         const data = await Product.find(obj).skip(skip).limit(perPage)
+
         res.status(200).json(data)
     } catch (error) {
         res.status(400).json(error)
