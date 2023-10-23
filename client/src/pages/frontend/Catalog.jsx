@@ -22,6 +22,7 @@ const Catalog = () => {
     const [checkedVals, setCheckedVals] = useState(initialState)
     const [selectedSize, setSelectedSize] = useState([])
     const [clearFilterBtn, setClearFilterBtn] = useState(false)
+    const makeRequest = useRef(false)
 
     // //////////Scroll /////////
     const handleScroll = () => {
@@ -60,6 +61,10 @@ const Catalog = () => {
             index: "0",
             label: `Shop by Price ${checkedVals[0].length === 0 ? "" : `(${checkedVals[0].length})`}`,
             options: [
+                {
+                    label: "Under Rs.1999",
+                    value: "0-1999"
+                },
                 {
                     label: "Rs.2000 - Rs.4999",
                     value: "2000-4999"
@@ -130,7 +135,16 @@ const Catalog = () => {
                 return true
             }
         })
-        res.includes(true) && setClearFilterBtn(true)
+        // res.includes(true) && setClearFilterBtn(true)
+        if (res.includes(true)) {
+            setClearFilterBtn(true)
+        } else {
+            setClearFilterBtn(false)
+            makeRequest.current = true
+        }
+        if (filteredProducts.length >= 0 && products.length === 0 && res.includes(false) && makeRequest.current) {
+            console.log("condition met")
+        }
     }
     useEffect(() => {
         showClearBtn()

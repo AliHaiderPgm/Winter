@@ -88,13 +88,7 @@ const customizedProducts = asyncHandler(async (req, res) => {
                     }
                 }
             })
-
-            const wtf = {
-                $gte: parseFloat(prices[0].split('-')[0]),
-                $lte: parseFloat(prices[0].split('-')[1])
-            }
-            obj.price = { $or: range }
-            console.log(range)
+            obj.$or = range
         }
 
         const data = await Product.find(obj).skip(skip).limit(perPage)
