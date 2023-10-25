@@ -53,7 +53,7 @@ const BnbCard = ({ data }) => {
 						<p>{data?.rating}</p>
 					</div>
 				</div>
-				<p>Category Type</p>
+				<p>{data?.type}</p>
 				<p>
 					Rs<span>{data?.price}</span>
 				</p>

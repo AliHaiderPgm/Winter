@@ -22,7 +22,6 @@ const Catalog = () => {
     const [checkedVals, setCheckedVals] = useState(initialState)
     const [selectedSize, setSelectedSize] = useState([])
     const [clearFilterBtn, setClearFilterBtn] = useState(false)
-    const makeRequest = useRef(false)
 
     // //////////Scroll /////////
     const handleScroll = () => {
@@ -32,6 +31,7 @@ const Catalog = () => {
         }
     }
     useEffect(() => {
+        window.scrollTo(0, 0)
         window.addEventListener("scroll", handleScroll)
         return () => { window.removeEventListener("scroll", handleScroll) }
     }, [])
@@ -112,14 +112,13 @@ const Catalog = () => {
 
     //////////Get filter products ///////
     const handleFilterProducts = async (e) => {
+        setLoading(true)
         try {
-            setLoading(true)
             const res = await GetCustomizedProducts("shoefor", type, page, checkedVals)
             res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false) ///same as for getProducts so to stop making requests when res is empty
             e.scrolling ? setFilteredProducts(prev => [...prev, ...res]) : setFilteredProducts([...res])   ///when ever user scroll add the new products in state but when he changes filter then don't store them
             setProducts([])
         } catch (error) {
-            console.log(error)
             message.error("Something went wrong!")
         } finally {
             setLoading(false)
@@ -135,15 +134,9 @@ const Catalog = () => {
                 return true
             }
         })
-        // res.includes(true) && setClearFilterBtn(true)
-        if (res.includes(true)) {
-            setClearFilterBtn(true)
-        } else {
-            setClearFilterBtn(false)
-            makeRequest.current = true
-        }
-        if (filteredProducts.length >= 0 && products.length === 0 && res.includes(false) && makeRequest.current) {
-            console.log("condition met")
+        res.includes(true) ? setClearFilterBtn(true) : setClearFilterBtn(false)
+        if (res.every(value => value === false) && products.length === 0 && filteredProducts.length >= 0) {
+            getProducts()
         }
     }
     useEffect(() => {
@@ -151,9 +144,9 @@ const Catalog = () => {
     }, [checkedVals])
 
     const handleClearFilters = async () => {
+        loader.current = true
         try {
             setPage(1)
-            setLoading(true)
             await getProducts()
             setClearFilterBtn(false)
             setSelectedSize([])
@@ -162,7 +155,7 @@ const Catalog = () => {
         } catch (error) {
 
         } finally {
-            setLoading(false)
+            // setLoading(false)
         }
     }
 
@@ -177,7 +170,7 @@ const Catalog = () => {
             log.current = false
             loader.current = false
         }
-        if (isResEmpty) {
+        if (isResEmpty && page > 1) {
             setPage(1)
         }
     }, [page])
@@ -225,10 +218,12 @@ const Catalog = () => {
                     </div>
                 </div>
             </div>
-            <div className="col-9 d-flex min-vh-100 justify-content-center">
+            <div className="col-9 d-flex min-vh-100">
                 {
-                    loading ? <Loader /> : (
-                        <div className="row align-content-start">
+                    loading ? (
+                        <Loader />
+                    ) : (
+                        <div className="row w-100">
                             {filteredProducts.length > 0 ? (
                                 filteredProducts?.map((product, index) => (
                                     <div className="col-3 flex-fill mb-4" key={index}>
@@ -241,12 +236,18 @@ const Catalog = () => {
                                         <BnbCard data={product} />
                                     </div>
                                 ))
-                            ) : (
-                                <Empty />
-                            )}
+                            ) : isResEmpty ?
+                                <div className="mx-auto">
+                                    <Empty />
+                                </div>
+                                : <Loader />
+                            }
                         </div>
                     )
                 }
+
+
+
             </div>
         </div>
     </div>
