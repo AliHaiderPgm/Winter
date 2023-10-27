@@ -112,6 +112,9 @@
 	&:hover {
 		background-color: #111111da !important;
 	}
+	&:disabled {
+		background-color: #11111179 !important;
+	}
 }
 .btn-outline {
 	height: auto;

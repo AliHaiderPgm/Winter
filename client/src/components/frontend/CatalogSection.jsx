@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom"
 const CatalogSection = () => {
 	const navigate = useNavigate()
 	const handleNavigate = (type) => {
-		navigate(`/catalog/${type}`)
+		navigate(`/${type}`)
 	}
 	return (
 		<div className="container-fluid catalog">

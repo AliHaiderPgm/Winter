@@ -1,10 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form } from "antd"
+import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Space } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
-import { HeartOutlined } from "@ant-design/icons"
+import { HeartOutlined, SwapOutlined, ZoomInOutlined, ZoomOutOutlined } from "@ant-design/icons"
 import { useAuth } from "../../../context/AuthContext"
 
 const Details = () => {
@@ -19,9 +19,10 @@ const Details = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSized, setSelectedSized] = useState(null)
     const navigate = useNavigate()
+
     const getDetails = async () => {
+        setLoading(prev => ({ ...prev, product: true }))
         try {
-            setLoading(prev => ({ ...prev, product: true }))
             const res = await GetDetails(id)
             setProduct({ ...res })
         } catch (error) {
@@ -168,8 +169,23 @@ const Details = () => {
         </div>
     }
 
+    const breadCrumbItems = [
+        {
+            title: <Link to="/">Home</Link>,
+        },
+        {
+            title: <Link to={`/${product?.shoefor}`}>{product?.shoefor}</Link>,
+        },
+        {
+            title: `${product?.name}`,
+        },
+    ]
+
     return (
         <>
+            <div className="px-5 py-3">
+                <Breadcrumb items={breadCrumbItems} />
+            </div>
             <div className="product-details-container row me-0 my-5 ">
                 <div className="carousel col-12 col-md-6">
                     <div className="card-controller">
@@ -193,7 +209,6 @@ const Details = () => {
                             product?.images?.map((imageUrl, index) => {
                                 return <div key={index} className="img-container">
                                     <Image className="img-fluid image" src={imageUrl} />
-                                    {/* <img src={imageUrl} className="img-fluid image" /> */}
                                 </div>
                             })
                         }

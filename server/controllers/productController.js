@@ -57,7 +57,7 @@ const getFilteredProducts = asyncHandler(async (req, res) => {
 // @access   PUBLIC
 const customizedProducts = asyncHandler(async (req, res) => {
     try {
-        const { field, value, page, prices, types, sizes, brands } = req.body.params
+        const { field, value, page, prices, types, sizes, brands, order } = req.body.params
         // Pagination
         const obj = {}
         if (field && value) {
@@ -68,16 +68,20 @@ const customizedProducts = asyncHandler(async (req, res) => {
         const skip = (pageVal - 1) * perPage
 
         // Filter
+        //by size
         if (sizes && sizes.length > 0) {
             const stringSizes = sizes.map(size => size.toString())
             obj.sizes = { $in: stringSizes }
         }
+        //by shoe type
         if (types && types.length > 0) {
             obj.type = { $in: types }
         }
+        //by shoe brand
         if (brands && brands.length > 0) {
             obj.brand = { $in: brands }
         }
+        //by price range
         if (prices && prices.length > 0) {
             const range = prices.map(price => {
                 const [min, max] = price.split('-')
@@ -90,8 +94,18 @@ const customizedProducts = asyncHandler(async (req, res) => {
             })
             obj.$or = range
         }
+        //sort by date
+        let sortByDate = 1
+        if (order && order[0] === "newest") {
+            sortByDate = -1
+        }
 
-        const data = await Product.find(obj).skip(skip).limit(perPage)
+        const data = await Product.find(obj).sort({ createdAt: sortByDate }).skip(skip).limit(perPage)
+
+        // sort products
+        // if (order) {
+        //     if()
+        // }
 
         res.status(200).json(data)
     } catch (error) {

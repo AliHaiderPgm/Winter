@@ -1,50 +1,60 @@
-import { Carousel } from "antd"
+import { Carousel, Skeleton } from "antd"
 import {
 	KeyboardArrowLeftOutlined,
 	KeyboardArrowRightOutlined,
 	StarRate,
 } from "@mui/icons-material"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { slugify } from "../../global"
 const BnbCard = ({ data }) => {
+	const [imageLoaded, setImageLoaded] = useState(false)
 	const carousel = useRef()
 	const navigate = useNavigate()
 	const handleNavigate = () => {
-		const shoefor = slugify(data.shoefor)
-		const name = slugify(data.name)
-		const id = slugify(data._id)
-		navigate(`/${shoefor}/${name}/${id}`)
+		navigate(`/${data?.shoefor}/${data._id}`)
 	}
+
+	useEffect(() => {
+		const img = new Image()
+		img.onload = () => {
+			setImageLoaded(true)
+		}
+		img.src = data?.images[0]
+	}, [data?.images])
 	return (
 		<div className="card-content-wrapper">
-			<div className="carousel d-flex flex-column justify-content-center">
-				{
-					data?.images.length === 1 ? null : <div className="card-controller">
-						<KeyboardArrowLeftOutlined
-							className="icon"
-							onClick={() => {
-								carousel.current.prev()
-							}}
-						/>
-						<KeyboardArrowRightOutlined
-							className="icon"
-							onClick={() => {
-								carousel.current.next()
-							}}
-						/>
-					</div>
-				}
-				<Carousel ref={carousel} dots={false}>
+			{
+				!imageLoaded && <><Skeleton.Image style={{ height: "300px", width: "280px" }} active /></>
+			}
+			{
+				imageLoaded && <div className="carousel d-flex flex-column justify-content-center">
 					{
-						data?.images.map((imageUrl, index) => {
-							return <div key={index} onClick={() => handleNavigate()}>
-								<img src={imageUrl} className="img-fluid" />
-							</div>
-						})
+						data?.images.length === 1 ? null : <div className="card-controller">
+							<KeyboardArrowLeftOutlined
+								className="icon"
+								onClick={() => {
+									carousel.current.prev()
+								}}
+							/>
+							<KeyboardArrowRightOutlined
+								className="icon"
+								onClick={() => {
+									carousel.current.next()
+								}}
+							/>
+						</div>
 					}
-				</Carousel>
-			</div>
+					<Carousel ref={carousel} dots={false}>
+						{
+							data?.images.map((imageUrl, index) => {
+								return <div key={index} onClick={() => handleNavigate()}>
+									<img src={imageUrl} className="img-fluid" loading="lazy" />
+								</div>
+							})
+						}
+					</Carousel>
+				</div>
+			}
 			<div className="content" onClick={() => handleNavigate()}>
 				<div>
 					<h1>{data?.name}</h1>

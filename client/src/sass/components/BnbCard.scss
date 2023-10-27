@@ -45,10 +45,14 @@
 			display: flex;
 			justify-content: space-between;
 			align-items: center;
+			gap: 10px;
 			h1 {
 				font-size: 1.3rem;
 				font-weight: 600;
 				margin: 0;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 			div {
 				display: flex;

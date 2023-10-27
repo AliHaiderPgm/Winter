@@ -17,8 +17,8 @@ const index = () => {
 				<Route path="/about" element={<About />} />
 				<Route path="/contact" element={<Contact />} />
 				<Route path="/search" element={<Search />} />
-				<Route path="/catalog/:type" element={<Catalog />} />
-				<Route path="/:catalog/:name/:id" element={<Details />} />
+				<Route path="/:type" element={<Catalog />} />
+				<Route path="/:type/:id" element={<Details />} />
 				<Route path="*" element={<>Page Not Found</>} />
 			</Routes>
 			<Footer />
