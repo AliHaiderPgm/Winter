@@ -100,6 +100,8 @@ const Catalog = () => {
     useEffect(() => {
         const hasChanged = checkedVals.slice(0, -1).some((val, i) => val.length !== initialState[i].length);
         setClearFilterBtn(hasChanged);
+
+        !hasChanged && getProducts(true)
     }, [checkedVals]);
 
     //////Get products on scroll ////////
@@ -166,15 +168,15 @@ const Catalog = () => {
         { label: "Price: Low-High", value: "acs" },
     ]
 
-    return <div className="product-catalog">
-        <div className="px-5 py-3 d-flex justify-content-between align-items-center">
+    return <div className="product-catalog container ">
+        <div className="px-5 py-4 d-flex justify-content-between align-items-center">
             <div>
                 <Breadcrumb items={breadCrumbItems} />
                 <h1>{ShoesFor}'s Shoes</h1>
             </div>
             <Select placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
         </div>
-        <div className="row justify-content-center align-items-start p-4 me-0 gap-5 main-div">
+        <div className="row justify-content-center align-items-start me-0 gap-5 main-div">
             <div className="col-2 filter">
                 <div className="d-flex align-items-center mb-2">
                     <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
@@ -221,7 +223,7 @@ const Catalog = () => {
                         firstLoading ? <Loader />
                             : state.length > 0 ?
                                 state?.map((product, index) => (
-                                    <div className="col-3 flex-fill mb-4" key={index}>
+                                    <div className="col-6 col-md-4 flex-fill mb-4" key={index}>
                                         <BnbCard data={product} />
                                     </div>
                                 ))
