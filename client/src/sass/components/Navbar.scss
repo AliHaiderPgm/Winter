@@ -57,20 +57,21 @@ header {
 			&:hover {
 				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
 			}
-			@media screen and (768px <= width <= 1024px) {
+			@media screen and (width <= 1024px) {
 				margin-left: 0px;
 			}
 			@media screen and (max-width: 768px) {
 				position: absolute;
 				top: 110%;
-				right: -100%;
+				right: 0%;
 				flex-direction: column;
 				transition: all $transition-2;
-				transition-delay: 0.03s;
+				transition-delay: 0.015s;
 				box-shadow: none;
 				border-radius: 0px;
 				border: none;
-				width: 50%;
+				width: 0%;
+				opacity: 0;
 				background-color: transparent;
 				&:hover {
 					box-shadow: none;
@@ -129,7 +130,11 @@ header {
 			}
 		}
 		.nav-links.active {
-			right: 0%;
+			width: 50%;
+			opacity: 1;
+			@media screen and (max-width: 400px) {
+				width: 70%;
+			}
 		}
 		.notFrontend {
 			display: flex;
@@ -139,10 +144,12 @@ header {
 				flex-direction: column;
 				align-items: center;
 				top: 370%;
-				right: -100%;
+				right: 0%;
 				transition: all $transition-2;
-				transition-delay: 0.07s;
-				width: 50%;
+				transition-delay: 0.015s;
+				width: 0%;
+				opacity: 0;
+				overflow: hidden;
 			}
 			.link {
 				text-align: center;
@@ -182,7 +189,11 @@ header {
 			}
 		}
 		.notFrontend.active {
-			right: 0%;
+			width: 50%;
+			opacity: 1;
+			@media screen and (max-width: 400px) {
+				width: 70%;
+			}
 		}
 		.hamburger {
 			display: none;
@@ -197,18 +208,38 @@ header {
 }
 .mb-res {
 	background-color: #fff;
-	height: 100vh;
-	width: 0vw;
+	width: 0%;
+	height: 130%;
 	position: absolute;
 	right: 0%;
 	top: 0;
+	bottom: 0;
 	z-index: 100;
 	display: none;
 	transition: all $transition-2;
+	transition-delay: 0.02s;
 	@media screen and (max-width: 768px) {
 		display: block;
 	}
 }
 .mb-res.active {
-	width: 50vw;
+	width: 50%;
+	@media screen and (max-width: 400px) {
+		width: 70%;
+	}
+}
+.mask {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: hsla(0, 0%, 7%, 0.36);
+	-webkit-backdrop-filter: blur(4px);
+	backdrop-filter: blur(4px);
+	z-index: 1;
+	width: 0;
+}
+.mask.active {
+	width: 100%;
 }

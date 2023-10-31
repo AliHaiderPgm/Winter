@@ -168,7 +168,7 @@ const Catalog = () => {
         { label: "Price: Low-High", value: "acs" },
     ]
 
-    return <div className="product-catalog container ">
+    return <div className="product-catalog ">
         <div className="px-5 py-4 d-flex justify-content-between align-items-center">
             <div>
                 <Breadcrumb items={breadCrumbItems} />

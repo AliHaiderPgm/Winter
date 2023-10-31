@@ -7,7 +7,7 @@ import {
 } from "@mui/icons-material"
 import { Icon } from "@mui/material"
 import { Button, Dropdown, message } from "antd"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 
@@ -113,13 +113,18 @@ const Navbar = () => {
 	const handleResize = () => {
 		setInnerWidth(window.innerWidth)
 	}
-	useEffect(() => {
-		window.addEventListener("resize", handleResize)
+	const handleScroll = () => {
+		setIsActive(false)
+	}
 
+	useEffect(() => {
+		window.addEventListener("resize", handleResize);
+		window.addEventListener("scroll", handleScroll);
 		return () => {
-			window.removeEventListener("resize", handleResize)
-		}
-	}, [])
+			window.removeEventListener("resize", handleResize);
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
 	return (
 		<>
 			<header>
@@ -190,6 +195,7 @@ const Navbar = () => {
 					</div>
 				</div>
 			</header>
+			<div className={isActive ? "mask active" : "mask"} onClick={() => handleSideBar()}></div>
 			<div className={isActive ? "mb-res active" : "mb-res"}></div>
 		</>
 	)
