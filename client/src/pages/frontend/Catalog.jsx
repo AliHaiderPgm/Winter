@@ -168,7 +168,7 @@ const Catalog = () => {
         { label: "Price: Low-High", value: "acs" },
     ]
 
-    return <div className="product-catalog ">
+    return <div className="product-catalog">
         <div className="px-5 py-4 d-flex justify-content-between align-items-center">
             <div>
                 <Breadcrumb items={breadCrumbItems} />
@@ -217,13 +217,13 @@ const Catalog = () => {
                     </div>
                 </div>
             </div>
-            <div className="col-9 d-flex min-vh-100 ">
-                <div className="row w-100 h-100">
+            <div className="col-9">
+                <div className="row justify-content-between min-vh-100 w-100">
                     {
                         firstLoading ? <Loader />
                             : state.length > 0 ?
                                 state?.map((product, index) => (
-                                    <div className="col-6 col-md-4 flex-fill mb-4" key={index}>
+                                    <div className="col-6 col-md-4 col-xxl-3 flex-fill mb-4" key={index}>
                                         <BnbCard data={product} />
                                     </div>
                                 ))

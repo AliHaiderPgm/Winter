@@ -1,7 +1,7 @@
 $transition-2: 1.2s cubic-bezier(0.25, 1, 0.3, 1);
 .header {
 	position: relative;
-	width: 100vw;
+	width: 100%;
 	img {
 		height: calc(100vh - 80px);
 		width: 100%;

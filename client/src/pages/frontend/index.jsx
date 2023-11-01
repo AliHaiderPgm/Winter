@@ -12,15 +12,19 @@ const index = () => {
 	return (
 		<>
 			<Navbar />
-			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/about" element={<About />} />
-				<Route path="/contact" element={<Contact />} />
-				<Route path="/search" element={<Search />} />
-				<Route path="/:type" element={<Catalog />} />
-				<Route path="/:type/:id" element={<Details />} />
-				<Route path="*" element={<>Page Not Found</>} />
-			</Routes>
+			<div className="d-flex justify-content-center">
+				<div style={{ maxWidth: 1920 }}>
+					<Routes>
+						<Route path="/" element={<Home />} />
+						<Route path="/about" element={<About />} />
+						<Route path="/contact" element={<Contact />} />
+						<Route path="/search" element={<Search />} />
+						<Route path="/:type" element={<Catalog />} />
+						<Route path="/:type/:id" element={<Details />} />
+						<Route path="*" element={<>Page Not Found</>} />
+					</Routes>
+				</div>
+			</div>
 			<Footer />
 		</>
 	)
