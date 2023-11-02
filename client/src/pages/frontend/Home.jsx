@@ -9,6 +9,7 @@ import { ArrowUpwardOutlined } from "@mui/icons-material"
 import Featured from "../../components/frontend/Featured"
 import { useProduct } from "../../context/ProductContext"
 import { message } from "antd"
+import FancyHeader from "../../components/shared/FancyHeader"
 
 const Home = () => {
 	const [recentProducts, setRecentProducts] = useState([])
@@ -78,6 +79,7 @@ const Home = () => {
 					</div>
 					<HorizontalScroll products={recentProducts} loading={loading} />
 				</div>
+				<FancyHeader front="featured" back="sneakers" small="products" />
 				<Featured />
 				<Trusted />
 				<AboutSection />

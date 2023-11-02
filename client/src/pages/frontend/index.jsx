@@ -13,7 +13,7 @@ const index = () => {
 		<>
 			<Navbar />
 			<div className="d-flex justify-content-center">
-				<div style={{ maxWidth: 1920 }}>
+				<div style={{ maxWidth: 1920, width: "100%" }}>
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/about" element={<About />} />

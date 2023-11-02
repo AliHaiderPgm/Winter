@@ -1,21 +1,16 @@
 @import "../transitions";
 .card-content-wrapper {
-	min-width: 300px;
-	max-width: 330px;
-	width: 100%;
-	border-radius: 7px;
+	max-width: 300px;
 	overflow: hidden;
 	cursor: pointer;
 	.carousel {
 		position: relative;
 		.card-controller {
-			position: absolute;
 			z-index: 1;
-			display: flex;
-			justify-content: space-between;
 			width: 100%;
-			align-items: center;
 			.icon {
+				position: absolute;
+				transform: translateY(-10px);
 				height: 25px;
 				width: 25px;
 				border-radius: 50%;
@@ -24,13 +19,26 @@
 				margin: 0px 10px;
 				opacity: 0;
 				transition: all $transition-2;
+				&:nth-child(1) {
+					top: 50%;
+				}
+				&:nth-child(2) {
+					top: 50%;
+					right: 0%;
+				}
 			}
 		}
 		img {
-			border-radius: 10px;
-			height: 300px;
-			width: 100%;
+			// border-radius: 10px;
+			// height: 300px;
+			// width: 100%;
+			aspect-ratio: 1/1;
 			object-fit: cover;
+		}
+		.ant-carousel {
+			.slick-list {
+				border-radius: 10px;
+			}
 		}
 	}
 	&:hover {
@@ -47,7 +55,7 @@
 			align-items: center;
 			gap: 10px;
 			h1 {
-				font-size: 1.3rem;
+				font-size: 1rem;
 				font-weight: 600;
 				margin: 0;
 				overflow: hidden;
@@ -59,10 +67,10 @@
 				align-items: center;
 				gap: 3px;
 				.icon {
-					font-size: 1.3rem;
+					font-size: 1rem;
 				}
 				p {
-					font-size: 1rem;
+					font-size: 0.8rem;
 					margin: 0;
 				}
 			}

@@ -4,6 +4,7 @@
 	display: flex;
 	align-items: center;
 	max-width: 1440px;
+	overflow-x: hidden;
 	width: 100%;
 	gap: 10px;
 	@media screen and (width <= 700px) {
@@ -111,9 +112,6 @@
 				aspect-ratio: 1/2;
 				object-fit: cover;
 				border-radius: 7px;
-				@media screen and (width <= 1199.98px) {
-					width: 250px !important;
-				}
 				@media screen and (width <= 700px) {
 					width: 80% !important;
 				}

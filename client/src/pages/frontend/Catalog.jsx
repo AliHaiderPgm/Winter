@@ -24,6 +24,7 @@ const Catalog = () => {
     const [clearFilterBtn, setClearFilterBtn] = useState(false)
     const [isDisabled, setIsDisabled] = useState(false)
     const [isResEmpty, setIsResEmpty] = useState(false)
+    const [width, setWidth] = useState(window.innerWidth)
     // //////////Scroll /////////
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
@@ -35,6 +36,7 @@ const Catalog = () => {
         window.addEventListener("scroll", handleScroll)
         return () => { window.removeEventListener("scroll", handleScroll) }
     }, [])
+
 
     /////////Get all products ////////
     const getProducts = async (firstLoader, scrolling) => {
@@ -176,7 +178,7 @@ const Catalog = () => {
             </div>
             <Select placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
         </div>
-        <div className="row justify-content-center align-items-start me-0 gap-5 main-div">
+        <div className="row justify-content-center align-items-start me-0 gap-2 main-div">
             <div className="col-2 filter">
                 <div className="d-flex align-items-center mb-2">
                     <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
