@@ -178,8 +178,8 @@ const Catalog = () => {
             </div>
             <Select placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
         </div>
-        <div className="row justify-content-center align-items-start me-0 gap-2 main-div">
-            <div className="col-2 filter">
+        <div className="row justify-content-center align-items-start px-3 main-div">
+            <div className="col-3 col-xxl-2 filter mb-3">
                 <div className="d-flex align-items-center mb-2">
                     <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
                     {clearFilterBtn && <Button type="text btn-outline d-flex align-items-center ms-auto" size="small" disabled={isDisabled} onClick={handleClearFilters}>Clear <CloseOutlined /></Button>}
@@ -220,12 +220,12 @@ const Catalog = () => {
                 </div>
             </div>
             <div className="col-9">
-                <div className="row justify-content-between min-vh-100 w-100">
+                <div className="row w-100">
                     {
-                        firstLoading ? <Loader />
+                        firstLoading ? <div style={{ minHeight: "50dvh" }}><Loader /></div>
                             : state.length > 0 ?
                                 state?.map((product, index) => (
-                                    <div className="col-6 col-md-4 col-xxl-3 flex-fill mb-4" key={index}>
+                                    <div className="col-6 col-md-4 col-xxl-3 mb-4" key={index}>
                                         <BnbCard data={product} />
                                     </div>
                                 ))

@@ -27,7 +27,8 @@ const Home = () => {
 			const res = await GetRecentProducts(6)
 			setRecentProducts(res)
 		} catch (error) {
-			message.error("Something went wrong!")
+			// message.error("Something went wrong!")
+			console.log(error)
 		} finally {
 			setLoading(false)
 		}

@@ -44,7 +44,7 @@ const HorizontalScroll = (props) => {
 						return <BnbCardLoading key={index} />
 					})
 						: props.products.map((product, index) => {
-							return <BnbCard data={product} key={index} />
+							return <div className="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3"><BnbCard data={product} key={index} /></div>
 						})
 				}
 			</div>
