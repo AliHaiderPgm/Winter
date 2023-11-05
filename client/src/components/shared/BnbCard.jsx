@@ -24,7 +24,7 @@ const BnbCard = ({ data }) => {
 	return (
 		<div className="card-content-wrapper">
 			{
-				!imageLoaded && <><Skeleton.Image style={{ height: "300px", width: "280px" }} active /></>
+				!imageLoaded && <Skeleton.Image style={{ height: "300px", width: "100%" }} active />
 			}
 			{
 				imageLoaded && <div className="carousel d-flex flex-column justify-content-center">
@@ -44,7 +44,7 @@ const BnbCard = ({ data }) => {
 							/>
 						</div>
 					}
-					<Carousel ref={carousel} dots={false}>
+					<Carousel ref={carousel} >
 						{
 							data?.images.map((imageUrl, index) => {
 								return <div key={index} onClick={() => handleNavigate()}>

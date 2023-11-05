@@ -53,9 +53,40 @@
 		background-color: #111 !important;
 	}
 }
+.ant-checkbox-group {
+	flex-direction: column !important;
+	gap: 5px;
+}
 
 .ant-breadcrumb-link {
 	a {
 		text-decoration: none;
+	}
+}
+
+.ant-drawer-content-wrapper {
+	.ant-drawer-header-title {
+		flex-direction: row-reverse !important;
+	}
+}
+
+.ant-radio-wrapper {
+	.ant-radio-checked {
+		.ant-radio-inner {
+			border-color: #111 !important;
+			background-color: #111 !important;
+		}
+	}
+}
+
+.ant-skeleton.ant-skeleton-element {
+	width: 100% !important;
+}
+
+.anticon-close-circle {
+	width: 15px;
+	svg {
+		height: 100%;
+		width: 100%;
 	}
 }

@@ -180,6 +180,7 @@ const Details = () => {
             title: `${product?.name}`,
         },
     ]
+    const underlineBtn = { borderBottom: "1px solid #111", borderRadius: "0px" }
 
     return (
         <>
@@ -250,7 +251,7 @@ const Details = () => {
                                             key: "1",
                                             label: `Reviews (${product?.reviews?.length})`,
                                             children: <>
-                                                <Button type="text" className="p-0 text-black mb-3" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={openReviewModal}>Write a review</Button>
+                                                <Button type="text" className="p-0 text-black mb-3" style={underlineBtn} onClick={openReviewModal}>Write a review</Button>
                                                 {
                                                     product?.reviews?.length === 0 ? <>
                                                         <div>
@@ -264,7 +265,7 @@ const Details = () => {
                                                         {product?.reviews?.slice(0, 3).map((review, index) => {
                                                             return <Review data={review} key={index} />
                                                         })}
-                                                        <Button type="text" className="p-0 text-black" style={{ borderBottom: "1px solid #111", borderRadius: "0px" }} onClick={() => setOpen(true)}>More reviews</Button>
+                                                        <Button type="text" className="p-0 text-black" style={underlineBtn} onClick={() => setOpen(true)}>More reviews</Button>
                                                     </>
                                                 }
                                             </>

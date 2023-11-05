@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
-import { Breadcrumb, Button, Checkbox, Collapse, Empty, Result, Select } from "antd"
+import { Breadcrumb, Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Select, Space } from "antd"
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
 import { CloseOutlined, FilterOutlined } from "@ant-design/icons"
@@ -25,28 +25,39 @@ const Catalog = () => {
     const [isDisabled, setIsDisabled] = useState(false)
     const [isResEmpty, setIsResEmpty] = useState(false)
     const [width, setWidth] = useState(window.innerWidth)
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+    const [isError, setIsError] = useState(false)
     // //////////Scroll /////////
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
             setPage(prev => prev + 1)
         }
     }
+    const handleResize = () => {
+        setWidth(window.innerWidth)
+    }
     useEffect(() => {
         window.scrollTo(0, 0)
         window.addEventListener("scroll", handleScroll)
-        return () => { window.removeEventListener("scroll", handleScroll) }
+        window.addEventListener("resize", handleResize)
+        return () => {
+            window.removeEventListener("scroll", handleScroll)
+            window.removeEventListener("resize", handleResize)
+        }
     }, [])
 
 
-    /////////Get all products ////////
-    const getProducts = async (firstLoader, scrolling) => {
+    /////////Get products ////////
+    const getProducts = async (scrolling) => {
         try {
-            setLoading(scrolling)
-            setFirstLoading(firstLoader)
+            setIsError(false)
+            const val = scrolling === true ? true : false
+            setLoading(val)
+            setFirstLoading(!val)
             setIsDisabled(true)
-            const pageNo = firstLoader ? 1 : page
+            const pageNo = !val ? 1 : page
 
-            scrolling === undefined && setState([])
+            val === false && setState([])
 
             const res = await GetCustomizedProducts("shoefor", newType, pageNo, checkedVals)
             setState(prev => {
@@ -58,15 +69,26 @@ const Catalog = () => {
             res.length === 0 && setPage(1)
             res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
         } catch (error) {
-            console.log(error)
+            setIsError(true)
         } finally {
             setFirstLoading(false)
             setLoading(false)
             setIsDisabled(false)
         }
     }
+    useEffect(() => {
+        if (!isResEmpty) {
+            if (state.length === 0) {
+                getProducts()
+            } else {
+                //////Get products on scroll ////////
+                getProducts(true)
+            }
+            log.current = false
+        }
+    }, [page])
 
-    ////////Sorting////////
+    ////////Filtering////////
     const handleCheckBox = (checkedValue, index) => {
         const newArray = [...checkedVals]
         newArray[index] = checkedValue
@@ -90,7 +112,7 @@ const Catalog = () => {
         sort === undefined ? handleCheckBox([], 4) : handleCheckBox([sort], 4)
     }
     useEffect(() => {
-        getProducts(true)
+        width > 768 && getProducts()
     }, [checkedVals[4]])
 
 
@@ -103,22 +125,8 @@ const Catalog = () => {
         const hasChanged = checkedVals.slice(0, -1).some((val, i) => val.length !== initialState[i].length);
         setClearFilterBtn(hasChanged);
 
-        !hasChanged && getProducts(true)
+        !hasChanged && getProducts()
     }, [checkedVals]);
-
-    //////Get products on scroll ////////
-    useEffect(() => {
-        if (!isResEmpty) {
-            if (state.length === 0) {
-                getProducts(true)
-            } else {
-                getProducts(false, true)
-            }
-            log.current = false
-        }
-    }, [page])
-
-
 
     /////other
     const sortingOptions = [
@@ -170,83 +178,130 @@ const Catalog = () => {
         { label: "Price: Low-High", value: "acs" },
     ]
 
+    const Size = () => {
+        return <div className="d-flex flex-wrap gap-2">
+            {data.sizes?.map((size, index) => {
+                return <div className={`custom-checkBox flex-fill ${selectedSize.includes(size.value) && "active"}`} onClick={() => handleSizeSelection(size.value)} key={index}>
+                    <p>{size.label}</p>
+                </div>
+            })}
+        </div>
+    }
+
+    const DrawerBody = () => {
+        return <>
+            <div className="mb-3">
+                <h5>Sort</h5>
+                <Radio.Group onChange={e => handleSort(e.target.value)} value={checkedVals[4][0]}>
+                    <Space direction="vertical">
+                        {sortBy.map((sort, index) => { return <Radio value={sort.value} key={index}>{sort.label}</Radio> })}
+                    </Space>
+                </Radio.Group>
+            </div>
+            {
+                sortingOptions.map((option, index) => {
+                    return <div key={index} className="mb-3">
+                        <h5>{option.label}</h5>
+                        <Checkbox.Group disabled={isDisabled} options={option.options} value={checkedVals[option.index]} onChange={val => handleCheckBox(val, option.index)} />
+                    </div>
+                })
+            }
+            <div>
+                <h5>{`Size ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`}</h5>
+                <Size />
+            </div>
+        </>
+    }
+    const DrawerFooter = () => {
+        return <div className="d-flex gap-3">
+            <Button className="btn-outline w-100" onClick={() => { setCheckedVals(initialState); setIsDrawerOpen(false); }}>Clear</Button>
+            <Button className="btn-filled w-100" onClick={() => { getProducts(); setIsDrawerOpen(false) }}>Apply</Button>
+        </div>
+    }
+
     return <div className="product-catalog">
-        <div className="px-5 py-4 d-flex justify-content-between align-items-center">
+        <div className="px-2 px-sm-4 px-md-5 py-4 d-flex justify-content-between align-items-center">
             <div>
                 <Breadcrumb items={breadCrumbItems} />
-                <h1>{ShoesFor}'s Shoes</h1>
+                <h1 className="m-0">{ShoesFor}'s Shoes</h1>
             </div>
-            <Select placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
+            {width > 768 && <Select className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />}
+            {
+                width <= 768 && <>
+                    <Button className="align-self-end" onClick={() => setIsDrawerOpen(true)}>Filter <FilterOutlined style={{ verticalAlign: "0" }} /></Button>
+                    <Drawer open={isDrawerOpen} placement="bottom" key="bottom" title="Filter" onClose={() => setIsDrawerOpen(false)} height="80dvh" footer={<DrawerFooter />}>
+                        {<DrawerBody />}
+                    </Drawer>
+                </>
+            }
         </div>
-        <div className="row justify-content-center align-items-start px-3 main-div">
-            <div className="col-3 col-xxl-2 filter mb-3">
-                <div className="d-flex align-items-center mb-2">
-                    <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
-                    {clearFilterBtn && <Button type="text btn-outline d-flex align-items-center ms-auto" size="small" disabled={isDisabled} onClick={handleClearFilters}>Clear <CloseOutlined /></Button>}
-                </div>
-                <div className="dropDowns d-flex flex-column gap-2">
-                    {
-                        sortingOptions.map((option, index) => {
-                            return <Collapse
-                                key={index}
-                                items={[
-                                    {
-                                        key: index,
-                                        label: option.label,
-                                        children: <Checkbox.Group disabled={isDisabled} options={option.options} value={checkedVals[option.index]} onChange={val => handleCheckBox(val, option.index)} />,
-                                    },
-                                ]}
-                            />
-                        })
-                    }
-                    <Collapse
-                        items={[
-                            {
-                                key: "3",
-                                label: `Size ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
-                                children: <div className="d-flex flex-wrap gap-2">
-                                    {data.sizes?.map((size, index) => {
-                                        return <div key={index} className={`custom-checkBox flex-fill ${selectedSize.includes(size.value) && "active"}`} onClick={() => handleSizeSelection(size.value)}>
-                                            <p>{size.label}</p>
-                                        </div>
-                                    })}
-                                </div>,
-                            },
-                        ]}
-                    />
-                    <div>
-                        <Button className="btn-filled w-100 py-2" type="primary" onClick={() => getProducts(true)} disabled={isDisabled}>Filter</Button>
+        <div className="row justify-content-center align-items-start px-3 main-div me-0">
+            {
+                width > 768 && <div className="col-3 col-xxl-2 filter mb-3">
+                    <div className="d-flex align-items-center mb-2">
+                        <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
+                        {clearFilterBtn && <Button type="text" className="btn-outline d-flex align-items-center ms-auto" size="small" disabled={isDisabled} onClick={handleClearFilters}>Clear <CloseOutlined /></Button>}
+                    </div>
+                    <div className="dropDowns d-flex flex-column gap-2">
+                        {
+                            sortingOptions.map((option, index) => {
+                                return <Collapse
+                                    key={index}
+                                    items={[
+                                        {
+                                            key: index,
+                                            label: option.label,
+                                            children: <Checkbox.Group disabled={isDisabled} options={option.options} value={checkedVals[option.index]} onChange={val => handleCheckBox(val, option.index)} />,
+                                        },
+                                    ]}
+                                />
+                            })
+                        }
+                        <Collapse
+                            items={[
+                                {
+                                    key: "3",
+                                    label: `Size ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
+                                    children: <Size />,
+                                },
+                            ]}
+                        />
+                        <div>
+                            <Button className="btn-filled w-100 py-2" type="primary" onClick={() => getProducts()} disabled={isDisabled}>Filter</Button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="col-9">
-                <div className="row w-100">
+            }
+            <div className="col-12 col-md-9">
+                <div style={{ minHeight: "50dvh" }}>
                     {
-                        firstLoading ? <div style={{ minHeight: "50dvh" }}><Loader /></div>
-                            : state.length > 0 ?
-                                state?.map((product, index) => (
-                                    <div className="col-6 col-md-4 col-xxl-3 mb-4" key={index}>
+                        firstLoading ? <Loader />
+                            :
+                            <div className="row">
+                                {state?.map((product, index) => (
+                                    <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 d-flex justify-content-center d-md-block" key={index}>
                                         <BnbCard data={product} />
                                     </div>
-                                ))
-                                : state.length === 0 ? <div className="mx-auto">
-                                    <Empty />
-                                </div>
-                                    : <Result
-                                        status="warning"
-                                        title="Something went wrong!"
-                                        extra={
-                                            <Button type="primary" className="btn-filled" onClick={() => getProducts(true)}>
-                                                Refresh
-                                            </Button>
-                                        }
-                                    />
+                                ))}
+                                {
+                                    state.length === 0 ? <div className="mx-auto"><Empty /></div>
+                                        : isError && <div className="d-flex justify-content-center align-items-center ">
+                                            <Result
+                                                status="warning"
+                                                title="Something went wrong!"
+                                                extra={
+                                                    <Button type="primary" className="btn-filled" onClick={() => getProducts()}>
+                                                        Refresh
+                                                    </Button>
+                                                }
+                                            />
+                                        </div>
+                                }
+                            </div>
                     }
-                    <div style={{ height: 42 }}>
-                        {
-                            loading && <Loader />
-                        }
-                    </div>
+                </div>
+                <div style={{ height: 42 }} className="mb-5">
+                    {loading && <Loader />}
                 </div>
             </div>
         </div>

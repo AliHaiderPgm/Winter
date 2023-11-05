@@ -7,6 +7,9 @@
 		justify-content: center;
 		align-items: center;
 		max-height: 80%;
+		@media screen and (width <= 768px) {
+			position: static;
+		}
 		.card-controller {
 			z-index: 1;
 			display: flex;
@@ -109,6 +112,7 @@
 	background-color: #111 !important;
 	color: #fff !important;
 	font-size: 18px;
+	border-radius: 15px;
 	&:hover {
 		background-color: #111111da !important;
 	}
