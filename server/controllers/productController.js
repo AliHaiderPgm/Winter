@@ -103,9 +103,12 @@ const customizedProducts = asyncHandler(async (req, res) => {
         const data = await Product.find(obj).sort({ createdAt: sortByDate }).skip(skip).limit(perPage)
 
         // sort products
-        // if (order) {
-        //     if()
-        // }
+        if (order[0] === "acs") {
+            data.sort((a, b) => a.price - b.price)
+        }
+        if (order && order[0] === "desc") {
+            data.sort((a, b) => b.price - a.price)
+        }
 
         res.status(200).json(data)
     } catch (error) {

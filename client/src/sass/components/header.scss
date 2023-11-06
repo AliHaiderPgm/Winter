@@ -3,7 +3,7 @@ $transition-2: 1.2s cubic-bezier(0.25, 1, 0.3, 1);
 	position: relative;
 	width: 100%;
 	img {
-		height: calc(100vh - 80px);
+		height: 75dvh;
 		width: 100%;
 		object-fit: cover;
 		object-position: 50%;

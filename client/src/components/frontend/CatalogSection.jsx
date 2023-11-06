@@ -1,49 +1,45 @@
 import Men from "../../assets/men.jpg"
 import Women from "../../assets/women.jpg"
-import Child from "../../assets/child.png"
+import Kids from "../../assets/child.jpg"
 import { ArrowUpwardOutlined } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
 const CatalogSection = () => {
 	const navigate = useNavigate()
 	const handleNavigate = (type) => {
-		navigate(`/${type}`)
+		let val;
+		type === "Men" ? val = "Male" : type === "Women" ? val = "Female" : val = "Children"
+		navigate(`/${val}`)
+	}
+	const Types = ["Men", "Women", "Kids"]
+	const Card = (props) => {
+		const type = props.type
+		let img;
+		type === "Men" ? img = Men : type === "Women" ? img = Women : img = Kids
+		return <>
+			<div className="myCard" onClick={() => handleNavigate(type)} >
+				<img
+					src={img}
+					alt={`${type} Catalog winter`}
+					className="img-fluid object-fit-cover rounded"
+				/>
+				<h1>{type}</h1>
+				<ArrowUpwardOutlined className="arrow" />
+			</div>
+		</>
 	}
 	return (
-		<div className="container-fluid catalog">
-			<div className="container d-flex flex-column my-5 gap-2">
-				<h2 className="text-center fw-bold">Catalog</h2>
-				<div className="row justify-content-center">
-					<div className="myCard" onClick={() => handleNavigate("Male")} >
-						<img
-							src={Men}
-							alt="Men Catalog winter"
-							className="men img-fluid object-fit-cover rounded"
-						/>
-						<h1>Men</h1>
-						<ArrowUpwardOutlined className="arrow" />
-					</div>
-					<div className="myCard" onClick={() => handleNavigate("Female")}>
-						<img
-							src={Women}
-							alt="Women Catalog winter"
-							className="women img-fluid object-fit-cover rounded"
-						/>
-						<h1>Women</h1>
-						<ArrowUpwardOutlined className="arrow" />
-					</div>
-					<div className="myCard" onClick={() => handleNavigate("Children")}>
-						<img
-							src={Child}
-							alt="Child Catalog winter"
-							className="child img-fluid object-fit-cover rounded"
-						/>
-						<h1>Child</h1>
-						<ArrowUpwardOutlined className="arrow" />
-					</div>
-				</div>
+		<div className="catalog d-flex flex-column my-5 gap-2 mx-5">
+			<h2 className="text-center fw-bold">Catalog</h2>
+			<div className="row gap-3 gap-md-1 justify-content-center">
+				{
+					Types.map((type, index) => {
+						return <div className="col-12 col-sm-4 col-md-3 flex-fill" key={index}>
+							<Card type={type} />
+						</div>
+					})
+				}
 			</div>
 		</div>
 	)
 }
-
 export default CatalogSection
