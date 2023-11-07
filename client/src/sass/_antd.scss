@@ -1,11 +1,6 @@
-.ant-dropdown-menu {
-	width: 200px;
-	li {
-		span {
-			a {
-				text-decoration: none;
-			}
-		}
+.dropdown-custom-width {
+	.ant-dropdown-menu {
+		width: 200px;
 	}
 }
 
@@ -88,5 +83,11 @@
 	svg {
 		height: 100%;
 		width: 100%;
+	}
+}
+
+.ant-drawer-right {
+	.ant-drawer-header {
+		border-bottom: none !important;
 	}
 }

@@ -1,21 +1,39 @@
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import Logo from "../../assets/logo.png"
 import {
-	CloseOutlined,
 	MenuOutlined,
 	SearchOutlined,
 } from "@mui/icons-material"
 import { Icon } from "@mui/material"
-import { Button, Dropdown, message } from "antd"
-import { useEffect, useRef, useState } from "react"
+import { Button, Drawer, Dropdown, message } from "antd"
+import { useEffect, useState } from "react"
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 
 const Navbar = () => {
-	const [isActive, setIsActive] = useState(false)
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { isAuthenticated, dispatch, user } = useAuth()
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const navigate = useNavigate()
+
+	const navItems = [
+		{
+			title: "Home",
+			navigateTo: "/"
+		},
+		{
+			title: "Men",
+			navigateTo: "/Male"
+		},
+		{
+			title: "Women",
+			navigateTo: "/Female"
+		},
+		{
+			title: "Kids",
+			navigateTo: "/Children"
+		},
+	]
 	const userSvg = () => (
 		<svg
 			version="1.0"
@@ -54,11 +72,11 @@ const Navbar = () => {
 	const unauthorizedItems = [
 		{
 			key: "0",
-			label: <Link to="/auth/login">Login</Link>,
+			label: <Link to="/auth/login" className="text-decoration-none">Login</Link>,
 		},
 		{
 			key: "1",
-			label: <Link to="/auth/register">Register</Link>,
+			label: <Link to="/auth/register" className="text-decoration-none">Register</Link>,
 		},
 		{
 			type: "divider",
@@ -71,10 +89,21 @@ const Navbar = () => {
 	const authorizedItems = [
 		{
 			key: "0",
-			label: <Link to="/">Profile</Link>,
+			label: <Link to="/" className="text-decoration-none">Profile</Link>,
+		},
+		user?.type === "admin" && {
+			key: "1",
+			label: <Link to="/dashboard/products" className="text-decoration-none">Dashboard</Link>,
 		},
 		{
-			key: "1",
+			key: "2",
+			label: "Help Center",
+		},
+		{
+			type: "divider",
+		},
+		{
+			key: "3",
 			label: (
 				<Button
 					type="primary"
@@ -86,15 +115,23 @@ const Navbar = () => {
 				</Button>
 			),
 		},
-		{
-			type: "divider",
-		},
-		{
-			key: "2",
-			label: "Help Center",
-		},
 	]
 	const items = isAuthenticated ? authorizedItems : unauthorizedItems
+	const DropMenu = () => {
+		return <Dropdown
+			menu={{ items }}
+			trigger={["click"]}
+			placement="bottomRight"
+			className="p-2"
+			overlayClassName="dropdown-custom-width"
+		>
+			<div className="auth">
+				<MenuOutlined className="icon" />
+				<UserIcon className="icon" />
+			</div>
+		</Dropdown>
+	}
+
 	const handleLogout = async () => {
 		try {
 			await AuthServices.logoutUser()
@@ -106,97 +143,104 @@ const Navbar = () => {
 		}
 	}
 
-	const handleSideBar = () => {
-		setIsActive(!isActive)
+	const handleDrawer = () => {
+		setIsDrawerOpen(!isDrawerOpen)
 	}
 	// check window inner width
 	const handleResize = () => {
 		setInnerWidth(window.innerWidth)
 	}
-	const handleScroll = () => {
-		setIsActive(false)
-	}
-
 	useEffect(() => {
 		window.addEventListener("resize", handleResize);
-		window.addEventListener("scroll", handleScroll);
 		return () => {
 			window.removeEventListener("resize", handleResize);
-			window.removeEventListener("scroll", handleScroll);
 		};
 	}, []);
+
+	const DrawerFooter = () => {
+		const currentHour = new Date().getHours();
+		const greeting =
+			currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+		return <>
+			{
+				user ? <Dropdown
+					menu={{ items }}
+					trigger={["click"]}
+					className="p-2"
+					arrow
+					placement="topRight"
+				>
+					<div className="d-flex align-items-center justify-content-between">
+						<p className="m-0">{greeting}! <span className="fw-bold">{user.name}</span></p>
+						<UserIcon className="icon" />
+					</div>
+				</Dropdown>
+					: <Button className="btn-filled w-100" onClick={() => navigate("/auth/login")}>Login</Button>
+			}
+		</>
+	}
 	return (
 		<>
-			<header>
+			<header className="px-3 px-md-5">
 				<div className="nav">
 					<div className="logo">
 						<NavLink to="/">
 							<img src={Logo} alt="Winter Store" className="img-fluid" />
 						</NavLink>
 					</div>
-					<div className={isActive ? "nav-links active" : "nav-links"}>
-						<NavLink
-							to="/"
-							className={({ isActive }) =>
-								isActive ? "active link" : "inactive link"
-							}
-						>
-							Home
-						</NavLink>
-						<span className="divider"></span>
-						<NavLink
-							to="/about"
-							className={({ isActive }) =>
-								isActive ? "active link" : "inactive link"
-							}
-						>
-							About
-						</NavLink>
-						<span className="divider"></span>
-						<NavLink
-							to="/contact"
-							className={({ isActive }) =>
-								isActive ? "active link" : "inactive link"
-							}
-						>
-							Contact
-						</NavLink>
-						<div className="icon" onClick={() => navigate("/search")}>
-							<div>
-								<SearchOutlined className="search" />
+					{
+						innerWidth > 768 && <>
+							<div className="nav-links">
+								{
+									navItems.map((item, index) => {
+										return <div className="d-flex align-items-center" key={index}>
+											<NavLink
+												to={item.navigateTo}
+												className={({ isActive }) =>
+													isActive ? "active link" : "inactive link"
+												}
+											>
+												{item.title}
+											</NavLink>
+											<span className="divider"></span>
+										</div>
+									})
+								}
+								<div className="icon" onClick={() => navigate("/search")}>
+									<div>
+										<SearchOutlined className="search" />
+									</div>
+								</div>
 							</div>
-						</div>
-					</div>
-					<div className={isActive ? "notFrontend active" : "notFrontend"}>
-						{user?.type === "admin" ? (
-							<Link to="/dashboard/products" className="link">
-								Dashboard
-							</Link>
-						) : null}
+							<div className="notFrontend">
+								<DropMenu />
+							</div>
+						</>
+					}
+					{
+						innerWidth <= 768 && <div className="d-flex align-items-center gap-1">
+							<SearchOutlined className="search" onClick={() => navigate("/search")} />
+							<MenuOutlined className="hamburger" onClick={handleDrawer} />
 
-						<Dropdown
-							menu={{ items }}
-							trigger={["click"]}
-							placement={innerWidth <= 768 ? "bottom" : "bottomRight"}
-							className="p-2"
-						>
-							<div className={isActive ? "auth active" : "auth"}>
-								<MenuOutlined className="icon" />
-								<UserIcon className="icon" />
-							</div>
-						</Dropdown>
-					</div>
-					<div className="hamburger" onClick={handleSideBar}>
-						{isActive ? (
-							<CloseOutlined className="icon" />
-						) : (
-							<MenuOutlined className="icon" />
-						)}
-					</div>
+							<Drawer placement="right" onClose={handleDrawer} open={isDrawerOpen} footer={<DrawerFooter />} footerStyle={{ boxShadow: '0px -2px 4px rgba(0, 0, 0, 0.05)' }}>
+								<div className="mobileMenu d-flex flex-column">
+									{navItems.map((item, index) => {
+										return <NavLink
+											onClick={() => setIsDrawerOpen(false)}
+											to={item.navigateTo}
+											className={({ isActive }) => isActive ? "active link" : "inactive link"}
+											key={index}
+										>
+											{item.title}
+										</NavLink>
+									})}
+
+								</div>
+							</Drawer>
+						</div>
+					}
 				</div>
 			</header>
-			<div className={isActive ? "mask active" : "mask"} onClick={() => handleSideBar()}></div>
-			<div className={isActive ? "mb-res active" : "mb-res"}></div>
 		</>
 	)
 }

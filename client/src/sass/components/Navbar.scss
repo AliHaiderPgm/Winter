@@ -10,16 +10,8 @@ header {
 	display: grid;
 	place-items: center;
 	box-shadow: rgb(0 0 0 / 8%) 0 1px 0;
-	padding: 0px 80px;
 	height: 80px;
-	@media screen and (max-width: 768px) {
-		position: relative;
-		z-index: 101;
-		background-color: #fff;
-	}
-	@media screen and (width <= 575.98px) {
-		padding: 0px 40px;
-	}
+	background-color: #fff;
 	.nav {
 		max-width: 1760px;
 		width: 100%;
@@ -46,7 +38,6 @@ header {
 		}
 		.nav-links {
 			display: flex;
-			align-items: center;
 			margin-left: 100px;
 			background-color: #fff;
 			border: 1px solid #ddd;
@@ -60,42 +51,8 @@ header {
 			@media screen and (width <= 1024px) {
 				margin-left: 0px;
 			}
-			@media screen and (max-width: 768px) {
-				position: absolute;
-				top: 110%;
-				right: 0%;
-				flex-direction: column;
-				transition: all $transition-2;
-				transition-delay: 0.015s;
-				box-shadow: none;
-				border-radius: 0px;
-				border: none;
-				width: 0%;
-				opacity: 0;
-				background-color: transparent;
-				&:hover {
-					box-shadow: none;
-				}
-			}
 			.link {
-				text-align: center;
-				line-height: 48px;
-				text-decoration: none;
-				color: #222;
-				font-weight: 400;
-				padding: 0px 20px;
-				background-color: transparent;
-				transition: background-color $transition;
 				&:hover {
-					background-color: rgba(0, 0, 0, 0.1);
-				}
-				@media screen and (max-width: 768px) {
-					width: 100%;
-				}
-			}
-			.link.active {
-				font-weight: 700;
-				@media screen and (max-width: 768px) {
 					background-color: rgba(0, 0, 0, 0.1);
 				}
 			}
@@ -110,9 +67,6 @@ header {
 				transition: background-color $transition;
 				&:hover {
 					background-color: rgba(0, 0, 0, 0.1);
-				}
-				@media screen and (max-width: 768px) {
-					width: 100%;
 				}
 				div {
 					display: flex;
@@ -129,28 +83,10 @@ header {
 				}
 			}
 		}
-		.nav-links.active {
-			width: 50%;
-			opacity: 1;
-			@media screen and (max-width: 400px) {
-				width: 70%;
-			}
-		}
 		.notFrontend {
 			display: flex;
 			gap: 10px;
-			@media screen and (max-width: 768px) {
-				position: absolute;
-				flex-direction: column;
-				align-items: center;
-				top: 370%;
-				right: 0%;
-				transition: all $transition-2;
-				transition-delay: 0.015s;
-				width: 0%;
-				opacity: 0;
-				overflow: hidden;
-			}
+			cursor: pointer;
 			.link {
 				text-align: center;
 				line-height: 48px;
@@ -179,67 +115,29 @@ header {
 				&:hover {
 					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
 				}
-				@media screen and (max-width: 768px) {
-					justify-content: center;
-					padding: 10px;
-				}
 				.icon {
 					font-size: 25px;
 				}
 			}
 		}
-		.notFrontend.active {
-			width: 50%;
-			opacity: 1;
-			@media screen and (max-width: 400px) {
-				width: 70%;
-			}
-		}
 		.hamburger {
-			display: none;
-			@media screen and (max-width: 768px) {
-				display: block;
-			}
-			.icon {
-				font-size: 36px;
-			}
+			font-size: 36px;
 		}
 	}
 }
-.mb-res {
-	background-color: #fff;
-	width: 0%;
-	height: 130%;
-	position: absolute;
-	right: 0%;
-	top: 0;
-	bottom: 0;
-	z-index: 100;
-	display: none;
-	transition: all $transition-2;
-	transition-delay: 0.02s;
+.link {
+	text-align: center;
+	line-height: 48px;
+	text-decoration: none;
+	color: #111;
+	font-weight: 400;
+	padding: 0px 20px;
+	background-color: transparent;
+	transition: background-color $transition;
+}
+.link.active {
+	font-weight: 700;
 	@media screen and (max-width: 768px) {
-		display: block;
+		background-color: rgba(0, 0, 0, 0.1);
 	}
-}
-.mb-res.active {
-	width: 50%;
-	@media screen and (max-width: 400px) {
-		width: 70%;
-	}
-}
-.mask {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background-color: hsla(0, 0%, 7%, 0.36);
-	-webkit-backdrop-filter: blur(4px);
-	backdrop-filter: blur(4px);
-	z-index: 1;
-	width: 0;
-}
-.mask.active {
-	width: 100%;
 }
