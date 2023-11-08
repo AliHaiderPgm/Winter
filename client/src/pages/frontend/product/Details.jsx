@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Space } from "antd"
+import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Space, Result } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
 import { HeartOutlined, SwapOutlined, ZoomInOutlined, ZoomOutOutlined } from "@ant-design/icons"
@@ -19,6 +19,7 @@ const Details = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSized, setSelectedSized] = useState(null)
     const navigate = useNavigate()
+    const [error, setError] = useState(false)
 
     const getDetails = async () => {
         setLoading(prev => ({ ...prev, product: true }))
@@ -26,7 +27,7 @@ const Details = () => {
             const res = await GetDetails(id)
             setProduct({ ...res })
         } catch (error) {
-            message.error("Something went wrong!")
+            setError(true)
         } finally {
             setLoading(prev => ({ ...prev, product: false }))
         }
@@ -181,7 +182,14 @@ const Details = () => {
         },
     ]
     const underlineBtn = { borderBottom: "1px solid #111", borderRadius: "0px" }
-
+    if (error) {
+        return <Result
+            status="404"
+            title="404"
+            subTitle="Sorry, no product found!"
+            extra={<Button type="primary" className="btn-filled" onClick={() => navigate('/')}>Back Home</Button>}
+        />
+    }
     return (
         <>
             <div className="px-5 py-3">

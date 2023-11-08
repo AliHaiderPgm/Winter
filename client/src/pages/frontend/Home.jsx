@@ -68,15 +68,15 @@ const Home = () => {
 							onClick={handleCarousel}
 							value="Trending"
 						>
-							What{"'"}s Trending
+							Top Rated
 						</button>
-						<button
+						{/* <button
 							className={isActive === "Members" ? "active" : ""}
 							onClick={handleCarousel}
 							value="Members"
 						>
 							Member Exclusive
-						</button>
+						</button> */}
 					</div>
 					<HorizontalScroll products={recentProducts} loading={loading} />
 				</div>

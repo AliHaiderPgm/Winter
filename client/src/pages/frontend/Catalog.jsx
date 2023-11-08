@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
 import { Breadcrumb, Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Select, Space } from "antd"
 import Loader from "../../components/shared/Loader"
@@ -14,6 +14,7 @@ const Catalog = () => {
     const [state, setState] = useState([])
     const { type } = useParams()
     const newType = type.charAt(0).toUpperCase() + type.slice(1)
+    const [prevType, setPrevType] = useState('')
     const [firstLoading, setFirstLoading] = useState(false)
     const [loading, setLoading] = useState(false)
     const { GetCustomizedProducts } = useProduct()
@@ -27,6 +28,7 @@ const Catalog = () => {
     const [width, setWidth] = useState(window.innerWidth)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isError, setIsError] = useState(false)
+    const navigate = useNavigate()
     // //////////Scroll /////////
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
@@ -76,6 +78,12 @@ const Catalog = () => {
             setIsDisabled(false)
         }
     }
+    useEffect(() => {
+        if (newType !== prevType) {
+            getProducts()
+            setPrevType(newType)
+        }
+    }, [newType])
     useEffect(() => {
         if (!isResEmpty) {
             if (state.length === 0) {
@@ -168,7 +176,7 @@ const Catalog = () => {
             title: <Link to="/">Home</Link>,
         },
         {
-            title: `${type}`,
+            title: `${newType}`,
         },
     ]
     const ShoesFor = type === 'Male' ? 'Men' : type === 'Female' ? 'Women' : 'Kid';
@@ -217,6 +225,14 @@ const Catalog = () => {
             <Button className="btn-outline w-100" onClick={() => { setCheckedVals(initialState); setIsDrawerOpen(false); }}>Clear</Button>
             <Button className="btn-filled w-100" onClick={() => { getProducts(); setIsDrawerOpen(false) }}>Apply</Button>
         </div>
+    }
+    if (newType !== "Male" && newType !== "Female" && newType !== "Children") {
+        return <Result
+            status="404"
+            title="404"
+            subTitle="Sorry, the page you visited does not exist."
+            extra={<Button type="primary" className="btn-filled" onClick={() => navigate('/')}>Back Home</Button>}
+        />
     }
 
     return <div className="product-catalog">

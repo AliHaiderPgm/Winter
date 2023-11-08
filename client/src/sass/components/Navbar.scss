@@ -84,23 +84,7 @@ header {
 			}
 		}
 		.notFrontend {
-			display: flex;
-			gap: 10px;
 			cursor: pointer;
-			.link {
-				text-align: center;
-				line-height: 48px;
-				text-decoration: none;
-				color: #222;
-				font-weight: 600;
-				padding: 0px 20px;
-				background-color: transparent;
-				transition: background-color $transition;
-				border-radius: 40px;
-				&:hover {
-					background-color: rgba(0, 0, 0, 0.1);
-				}
-			}
 			.auth {
 				display: flex;
 				align-items: center;
