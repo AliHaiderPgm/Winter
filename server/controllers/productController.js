@@ -31,9 +31,15 @@ const getProductDetails = asyncHandler(async (req, res) => {
 // @desc     Get recent products
 // @route    GET /api/products/recent
 // @access   PUBLIC
-const getRecentProducts = asyncHandler(async (req, res) => {
+const recentAndTopRated = asyncHandler(async (req, res) => {
     try {
-        const products = await Product.find().sort({ createdAt: -1 }).limit(req.body.limit)
+        const { limit, sort, topRated } = req.body
+        const sortBy = sort || 1
+        let val = {}
+        if (topRated) {
+            val = { "rating": { "$gte": 3 } }
+        }
+        const products = await Product.find(val).sort({ createdAt: sortBy }).limit(limit)
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json(error)
@@ -192,7 +198,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 module.exports = {
     getProducts,
     getProductDetails,
-    getRecentProducts,
+    recentAndTopRated,
     filterProducts,
     addProduct,
     updateProduct,

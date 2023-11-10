@@ -4,9 +4,11 @@ import {
 	KeyboardArrowRightOutlined,
 	StarRate,
 } from "@mui/icons-material"
-import { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-const BnbCard = ({ data }) => {
+import Loader from "./Loader"
+const BnbCard = React.forwardRef((props, ref) => {
+	const { data } = props
 	const [imageLoaded, setImageLoaded] = useState(false)
 	const carousel = useRef()
 	const navigate = useNavigate()
@@ -22,9 +24,10 @@ const BnbCard = ({ data }) => {
 		img.src = data?.images[0]
 	}, [data?.images])
 	return (
-		<div className="card-content-wrapper">
+		<div className="card-content-wrapper" ref={ref}>
 			{
-				!imageLoaded && <Skeleton.Image style={{ height: "300px", width: "100%" }} active />
+				!imageLoaded && <div style={{ height: "300px", width: "100%", backgroundColor: "rgba(0,0,0,0.1)" }} ><Loader /></div>
+				// !imageLoaded && <Skeleton.Image style={{ height: "300px", width: "100%" }} active />
 			}
 			{
 				imageLoaded && <div className="carousel d-flex flex-column justify-content-center">
@@ -70,6 +73,6 @@ const BnbCard = ({ data }) => {
 			</div>
 		</div>
 	)
-}
+})
 
 export default BnbCard

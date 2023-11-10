@@ -1,53 +1,59 @@
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import Header from "../../components/shared/Header"
 import Trusted from "../../components/frontend/Trusted"
 import Services from "../../components/frontend/Services"
 import AboutSection from "../../components/frontend/AboutSection"
 import CatalogSection from "../../components/frontend/CatalogSection"
 import HorizontalScroll from "../../components/frontend/HorizontalScroll"
-import { useEffect, useRef, useState } from "react"
 import { ArrowUpwardOutlined } from "@mui/icons-material"
 import Featured from "../../components/frontend/Featured"
 import { useProduct } from "../../context/ProductContext"
-import { message } from "antd"
 import FancyHeader from "../../components/shared/FancyHeader"
+import Loader from "../../components/shared/Loader"
 
 const Home = () => {
 	const [recentProducts, setRecentProducts] = useState([])
-	const [isActive, setIsActive] = useState("New")
+	const [topRatedProducts, setTopRatedProducts] = useState([])
+	const [isActive, setIsActive] = useState("new")
 	const [loading, setLoading] = useState(false)
-	const { GetRecentProducts } = useProduct()
+	const { RecentAndTopRated } = useProduct()
 	const log = useRef(true)
-	const handleCarousel = (e) => {
+	const products = useMemo(() => {
+		return isActive === "topRated" ? topRatedProducts : recentProducts;
+	}, [isActive, recentProducts, topRatedProducts]);
+	const handleCarousel = async (e) => {
 		setIsActive(e.target.value)
 	}
 	// get products
 	const getRecentProducts = async () => {
 		setLoading(true)
 		try {
-			const res = await GetRecentProducts(6)
+			const res = await RecentAndTopRated({ limit: 6, sort: -1 })
 			setRecentProducts(res)
 		} catch (error) {
-			// message.error("Something went wrong!")
 			console.log(error)
 		} finally {
 			setLoading(false)
 		}
 	}
-
+	const getTopRatedProducts = async () => {
+		setLoading(true)
+		try {
+			const res = await RecentAndTopRated({ limit: 6, topRated: true })
+			setTopRatedProducts(res)
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setLoading(false)
+		}
+	}
 	useEffect(() => {
 		if (log.current) {
 			getRecentProducts()
+			getTopRatedProducts()
 			log.current = false
 		}
 	}, [])
-	let arrowClass
-	if (isActive === "New") {
-		arrowClass = "first"
-	} else if (isActive === "Trending") {
-		arrowClass = "second"
-	} else {
-		arrowClass = "third"
-	}
 	return (
 		<>
 			<Header title="E-Store" />
@@ -55,33 +61,26 @@ const Home = () => {
 				<CatalogSection />
 				<div className="container my-4">
 					<div className="buttons-wrapper my-3">
-						<ArrowUpwardOutlined className={`arrow ${arrowClass}`} />
+						<ArrowUpwardOutlined className={`arrow ${isActive}`} />
 						<button
-							className={isActive === "New" ? "active" : ""}
+							className={isActive === "new" ? "active" : ""}
 							onClick={handleCarousel}
-							value="New"
+							value="new"
 						>
 							New Arrivals
 						</button>
 						<button
-							className={isActive === "Trending" ? "active" : ""}
+							className={isActive === "topRated" ? "active" : ""}
 							onClick={handleCarousel}
-							value="Trending"
+							value="topRated"
 						>
 							Top Rated
 						</button>
-						{/* <button
-							className={isActive === "Members" ? "active" : ""}
-							onClick={handleCarousel}
-							value="Members"
-						>
-							Member Exclusive
-						</button> */}
 					</div>
-					<HorizontalScroll products={recentProducts} loading={loading} />
+					<HorizontalScroll products={products} loading={loading} />
 				</div>
 				<FancyHeader front="featured" back="sneakers" small="products" />
-				<Featured />
+				{/* <Featured /> */}
 				<Trusted />
 				<AboutSection />
 				<Services />

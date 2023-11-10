@@ -1,4 +1,4 @@
-@import "./transitions";
+@import "../transitions";
 .wrapper {
 	width: 100%;
 	display: flex;
@@ -20,13 +20,13 @@
 			rotate: 90deg;
 			font-size: 2.5rem;
 			position: absolute;
-			transition: all $transition-2;
+			transition: left $transition-2;
 		}
-		.arrow.first {
+		.arrow.new {
 			left: 0;
 		}
-		.arrow.second {
-			left: 210px;
+		.arrow.topRated {
+			left: 15%;
 		}
 		.arrow.third {
 			left: 450px;
@@ -43,7 +43,7 @@
 		}
 		button.active {
 			color: #222;
-			margin-left: 50px;
+			margin-left: 40px;
 		}
 	}
 }

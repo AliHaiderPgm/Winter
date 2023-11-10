@@ -7,7 +7,7 @@ import {
 	useState,
 } from "react"
 import AuthServices from "./AuthServices"
-import { message } from "antd"
+// import { message } from "antd"
 
 const AuthContext = createContext()
 
@@ -25,7 +25,7 @@ const reducer = (state, actions) => {
 const AuthContextProvider = (props) => {
 	const [state, dispatch] = useReducer(reducer, initialState)
 	const [loading, setLoading] = useState(false)
-	const [messageApi, contextHolder] = message.useMessage()
+	// const [messageApi, contextHolder] = message.useMessage()
 	const log = useRef(true)
 	const getUser = async () => {
 		try {
@@ -46,7 +46,7 @@ const AuthContextProvider = (props) => {
 	}, [])
 	return (
 		<>
-			{contextHolder}
+			{/* {contextHolder} */}
 			<AuthContext.Provider value={{ ...state, dispatch, loading }}>
 				{props.children}
 			</AuthContext.Provider>

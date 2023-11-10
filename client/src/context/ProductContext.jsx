@@ -76,8 +76,8 @@ const ProductContextProvider = (props) => {
 		return res.data
 	}
 	// Get recent products
-	const GetRecentProducts = async (count) => {
-		const res = await axios.post(`${API_URL}/getRecentProducts`, { limit: count })
+	const RecentAndTopRated = async (query) => {
+		const res = await axios.post(`${API_URL}/recentAndTopRated`, query)
 		return res.data
 	}
 
@@ -109,7 +109,7 @@ const ProductContextProvider = (props) => {
 					AddProduct,
 					GetProducts,
 					GetDetails,
-					GetRecentProducts,
+					RecentAndTopRated,
 					GetCustomizedProducts,
 					UpdateProduct,
 					uploadImage,

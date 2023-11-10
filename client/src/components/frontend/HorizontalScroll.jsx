@@ -3,9 +3,9 @@ import {
 	KeyboardArrowRightOutlined,
 } from "@mui/icons-material"
 import BnbCard from "../shared/BnbCard"
-import { useRef } from "react"
+import React, { useRef } from "react"
 import BnbCardLoading from "../shared/BnbCardLoading"
-const HorizontalScroll = (props) => {
+const HorizontalScroll = React.memo((props) => {
 	const loading = props.loading
 	const scroll = useRef()
 	const scrollRight = () => {
@@ -44,11 +44,11 @@ const HorizontalScroll = (props) => {
 						return <BnbCardLoading key={index} />
 					})
 						: props.products.map((product, index) => {
-							return <div className="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3"><BnbCard data={product} key={index} /></div>
+							return <div className="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3" key={index}><BnbCard data={product} /></div>
 						})
 				}
 			</div>
 		</div>
 	)
-}
+})
 export default HorizontalScroll
