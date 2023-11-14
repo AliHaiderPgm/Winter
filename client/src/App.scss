@@ -16,21 +16,10 @@
 @import "./sass/pages/product-detail.scss";
 @import "./sass/pages/product-catalog.scss";
 @import "./sass/components/CheckBox.scss";
+@import "./sass/components/Footer.scss";
 
 #root {
 	font-family: "Ubuntu", "sans-serif";
-}
-
-.footer-wrapper {
-	border-radius: 85px 0px 0px 0px;
-	background: linear-gradient(
-		180deg,
-		rgba(14, 28, 38, 1) 0%,
-		rgba(53, 54, 37, 1) 100%
-	);
-	img {
-		width: 20%;
-	}
 }
 .bg-lightColor {
 	background-color: $lightColor;

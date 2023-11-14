@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Loader from "./Loader"
 const BnbCard = React.forwardRef((props, ref) => {
-	const { data } = props
+	const { data, uniqueKey } = props
 	const [imageLoaded, setImageLoaded] = useState(false)
 	const carousel = useRef()
 	const navigate = useNavigate()
@@ -24,13 +24,13 @@ const BnbCard = React.forwardRef((props, ref) => {
 		img.src = data?.images[0]
 	}, [data?.images])
 	return (
-		<div className="card-content-wrapper" ref={ref}>
+		<div className="card-content-wrapper" ref={ref} key={uniqueKey}>
 			{
-				!imageLoaded && <div style={{ height: "300px", width: "100%", backgroundColor: "rgba(0,0,0,0.1)" }} ><Loader /></div>
-				// !imageLoaded && <Skeleton.Image style={{ height: "300px", width: "100%" }} active />
+				// !imageLoaded && <div style={{ height: "300px", width: "100%", backgroundColor: "rgba(0,0,0,0.1)" }} ><Loader /></div>
+				!imageLoaded ? <Skeleton.Image style={{ height: "300px", width: "100%" }} active /> : null
 			}
 			{
-				imageLoaded && <div className="carousel d-flex flex-column justify-content-center">
+				imageLoaded ? <div className="carousel d-flex flex-column justify-content-center">
 					{
 						data?.images.length === 1 ? null : <div className="card-controller">
 							<KeyboardArrowLeftOutlined
@@ -57,6 +57,7 @@ const BnbCard = React.forwardRef((props, ref) => {
 						}
 					</Carousel>
 				</div>
+					: null
 			}
 			<div className="content" onClick={() => handleNavigate()}>
 				<div>

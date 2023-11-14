@@ -1,3 +1,4 @@
+import { Button } from "antd"
 import logo from "../../assets/logo.png"
 import { BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs"
 
@@ -6,13 +7,13 @@ export default function Footer() {
 	return (
 		<div className="container-fluid text-light footer-wrapper">
 			<div className="container p-5">
-				<div className="row gap-2">
+				<div className="row">
 					<div className="col-12 col-md-6 col-lg-3">
 						<div className="row gap-3">
 							<div className="col-12">
 								<img
 									src={logo}
-									alt="E-store logo"
+									alt="Winter logo"
 									className="img-fluid"
 									loading="lazy"
 								/>
@@ -39,7 +40,7 @@ export default function Footer() {
 							</div>
 							<div className="col-12">
 								<p>
-									<u>alihaider@gmail.com</u>
+									<u>admin@winter.com</u>
 								</p>
 							</div>
 						</div>
@@ -52,43 +53,38 @@ export default function Footer() {
 							<div className="col-12">
 								<ul className="navbar-nav">
 									<li>Home</li>
-									<li>About</li>
-									<li>Contact</li>
-									<li>Graph</li>
+									<li>Men</li>
+									<li>Women</li>
+									<li>Kids</li>
 								</ul>
 							</div>
 						</div>
 					</div>
 					<div className="col-12 col-md-6 col-lg-3">
-						<div className="row gap-3">
-							<div className="col-12">
-								<h3 className="fw-bold">Newletter</h3>
-							</div>
-							<div className="col-12">
-								<input type="text" className="form-control" />
-							</div>
-							<div className="col-12">
-								<ul className="navbar-nav flex-row gap-3">
-									<li>
-										<BsFacebook className="fs-2" />
-									</li>
-									<li>
-										<BsTwitter className="fs-2" />
-									</li>
-									<li>
-										<BsInstagram className="fs-2" />
-									</li>
-									<li>
-										<BsGithub className="fs-2" />
-									</li>
-								</ul>
-							</div>
-						</div>
+						<h3 className="fw-bold p-0">Newsletter</h3>
+						<input type="text" className="form-control" />
+						<Button className="mt-2">Subscribe</Button>
 					</div>
-					<hr />
-					<p className="text-muted text-center">
-						&#169; All Rights Reserved {year}.
-					</p>
+					<hr className="my-3" />
+					<div className="d-flex flex-column gap-2 justify-content-between align-items-center mt-1">
+						<p className="text-center m-0">
+							&#169; All Rights Reserved {year}.
+						</p>
+						<ul className="navbar-nav flex-row gap-3 text-light-emphasis ">
+							<li>
+								<BsFacebook className="fs-4" />
+							</li>
+							<li>
+								<BsTwitter className="fs-4" />
+							</li>
+							<li>
+								<BsInstagram className="fs-4" />
+							</li>
+							<li>
+								<BsGithub className="fs-4" />
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</div>

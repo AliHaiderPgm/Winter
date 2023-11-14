@@ -8,7 +8,7 @@ const config = {
 	withCredentials: true,
 }
 const ProductContextProvider = (props) => {
-	const [messageApi, contextHolder] = message.useMessage()
+	// const [messageApi, contextHolder] = message.useMessage()
 	const [loading, setLoading] = useState(false)
 	const [getProductLoading, setGetProductLoading] = useState(false)
 	const [products, setProducts] = useState()
@@ -83,13 +83,14 @@ const ProductContextProvider = (props) => {
 
 
 	// get products for scroll
-	const GetCustomizedProducts = async (field, value, page, filter) => {
+	const GetCustomizedProducts = async (field, value, page, filter, limit) => {
 		// console.log(filter)
 		const res = await axios.post(`${API_URL}/filter`, {
 			params: {
 				field,
 				value,
 				page,
+				limit,
 				prices: filter[0],
 				types: filter[1],
 				brands: filter[2],
@@ -101,7 +102,7 @@ const ProductContextProvider = (props) => {
 	}
 	return (
 		<>
-			{contextHolder}
+			{/* {contextHolder} */}
 			<ProductContext.Provider
 				value={{
 					loading,
