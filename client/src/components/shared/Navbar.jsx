@@ -1,3 +1,4 @@
+import React, { Suspense, useEffect, useMemo, useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import Logo from "../../assets/logo.png"
 import {
@@ -5,8 +6,8 @@ import {
 	SearchOutlined,
 } from "@mui/icons-material"
 import { Icon } from "@mui/material"
-import { Button, Drawer, Dropdown, message } from "antd"
-import { useEffect, useState } from "react"
+import { Button, Drawer, Input, message } from "antd"
+const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 
@@ -14,6 +15,7 @@ const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { isAuthenticated, dispatch, user } = useAuth()
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+	const [searchActive, setSearchActive] = useState(false)
 	const navigate = useNavigate()
 
 	const navItems = [
@@ -118,18 +120,20 @@ const Navbar = () => {
 	]
 	const items = isAuthenticated ? authorizedItems : unauthorizedItems
 	const DropMenu = () => {
-		return <Dropdown
-			menu={{ items }}
-			trigger={["click"]}
-			placement="bottomRight"
-			className="p-2"
-			overlayClassName="dropdown-custom-width"
-		>
-			<div className="auth">
-				<MenuOutlined className="icon" />
-				<UserIcon className="icon" />
-			</div>
-		</Dropdown>
+		return <Suspense fallback={<p>Loading...</p>}>
+			<Dropdown
+				menu={{ items }}
+				trigger={["click"]}
+				placement="bottomRight"
+				className="p-2"
+				overlayClassName="dropdown-custom-width"
+			>
+				<div className="auth">
+					<MenuOutlined className="icon" />
+					<UserIcon className="icon" />
+				</div>
+			</Dropdown>
+		</Suspense>
 	}
 
 	const handleLogout = async () => {
@@ -179,9 +183,19 @@ const Navbar = () => {
 			}
 		</>
 	}
+
+	// search
+	const handleSearch = () => {
+		navigate("/search")
+	}
+
+	// optimizing
+	const MemoizedDropMenu = useMemo(() => React.memo(DropMenu), [])
+
+
 	return (
 		<>
-			<header className="px-3 px-md-5">
+			<header className="px-3 px-md-5 position-relative z-3">
 				<div className="nav">
 					<div className="logo">
 						<NavLink to="/">
@@ -206,14 +220,15 @@ const Navbar = () => {
 										</div>
 									})
 								}
-								<div className="icon" onClick={() => navigate("/search")}>
+								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} />
+								<div className="icon" onClick={() => setSearchActive(true)}>
 									<div>
 										<SearchOutlined className="search" />
 									</div>
 								</div>
 							</div>
 							<div className="notFrontend">
-								<DropMenu />
+								<MemoizedDropMenu />
 							</div>
 						</>
 					}
@@ -241,6 +256,15 @@ const Navbar = () => {
 					}
 				</div>
 			</header>
+			<div className={`overlay ${searchActive && "active"}`} onClick={() => setSearchActive(false)}></div>
+			<div className={`pre-search d-flex justify-content-center ${searchActive && "active"}`}>
+				<div className="d-flex align-items-center outer">
+					<div className="d-flex justify-content-between inner w-100">
+						<img src={Logo} alt="Winter Store" className="img-fluid" />
+						<Button type="text">Cancel</Button>
+					</div>
+				</div>
+			</div>
 		</>
 	)
 }

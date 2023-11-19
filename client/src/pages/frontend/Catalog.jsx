@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react"
+import React, { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
-import { Breadcrumb, Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Select, Space } from "antd"
+import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space } from "antd"
+const Breadcrumb = React.lazy(() => import('antd').then(module => ({ default: module.Breadcrumb })));
+const Select = React.lazy(() => import('antd').then(module => ({ default: module.Select })));
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
 import { CloseOutlined, FilterOutlined } from "@ant-design/icons"
@@ -235,13 +237,23 @@ const Catalog = () => {
         />
     }
 
+    // optimizing
+    const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])
+    const MemoizedBreadCrumb = useMemo(() => React.memo(Breadcrumb), [])
+    const MemoizedSelect = useMemo(() => React.memo(Select), [])
+
     return <div className="product-catalog">
         <div className="px-2 px-sm-4 px-md-5 py-4 d-flex justify-content-between align-items-center">
             <div>
-                <Breadcrumb items={breadCrumbItems} />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <MemoizedBreadCrumb items={breadCrumbItems} />
+                </Suspense>
                 <h1 className="m-0">{ShoesFor}'s Shoes</h1>
             </div>
-            {width > 768 && <Select className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />}
+            {width > 768 &&
+                <Suspense fallback={<p>Loading...</p>}>
+                    <MemoizedSelect className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
+                </Suspense>}
             {
                 width <= 768 && <>
                     <Button className="align-self-end" onClick={() => setIsDrawerOpen(true)}>Filter <FilterOutlined style={{ verticalAlign: "0" }} /></Button>
@@ -296,7 +308,7 @@ const Catalog = () => {
                             <div className="row">
                                 {state?.map((product, index) => (
                                     <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 d-flex justify-content-center d-md-block" key={index}>
-                                        <BnbCard data={product} />
+                                        <MemoizedBnbCard data={product} />
                                     </div>
                                 ))}
                                 {

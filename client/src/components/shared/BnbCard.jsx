@@ -4,17 +4,16 @@ import {
 	KeyboardArrowRightOutlined,
 	StarRate,
 } from "@mui/icons-material"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Loader from "./Loader"
 const BnbCard = React.forwardRef((props, ref) => {
 	const { data, uniqueKey } = props
 	const [imageLoaded, setImageLoaded] = useState(false)
 	const carousel = useRef()
 	const navigate = useNavigate()
-	const handleNavigate = () => {
+	const handleNavigate = useCallback(() => {
 		navigate(`/${data?.shoefor}/${data._id}`)
-	}
+	}, [data, navigate])
 
 	useEffect(() => {
 		const img = new Image()
@@ -23,11 +22,15 @@ const BnbCard = React.forwardRef((props, ref) => {
 		}
 		img.src = data?.images[0]
 	}, [data?.images])
+
+	// optimizing
+	const MemoizedSkeletonImage = useMemo(() => React.memo(Skeleton.Image), [])
+	const MemoizedCarousel = useMemo(() => React.memo(Carousel), [])
+
 	return (
 		<div className="card-content-wrapper" ref={ref} key={uniqueKey}>
 			{
-				// !imageLoaded && <div style={{ height: "300px", width: "100%", backgroundColor: "rgba(0,0,0,0.1)" }} ><Loader /></div>
-				!imageLoaded ? <Skeleton.Image style={{ height: "300px", width: "100%" }} active /> : null
+				!imageLoaded ? <MemoizedSkeletonImage style={{ height: "300px", width: "100%" }} active /> : null
 			}
 			{
 				imageLoaded ? <div className="carousel d-flex flex-column justify-content-center">
@@ -47,7 +50,7 @@ const BnbCard = React.forwardRef((props, ref) => {
 							/>
 						</div>
 					}
-					<Carousel ref={carousel} >
+					<MemoizedCarousel ref={carousel} >
 						{
 							data?.images.map((imageUrl, index) => {
 								return <div key={index} onClick={() => handleNavigate()}>
@@ -55,7 +58,7 @@ const BnbCard = React.forwardRef((props, ref) => {
 								</div>
 							})
 						}
-					</Carousel>
+					</MemoizedCarousel>
 				</div>
 					: null
 			}

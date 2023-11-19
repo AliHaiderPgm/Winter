@@ -66,7 +66,7 @@ export default function Footer() {
 						<Button className="mt-2">Subscribe</Button>
 					</div>
 					<hr className="my-3" />
-					<div className="d-flex flex-column gap-2 justify-content-between align-items-center mt-1">
+					<div className="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-center mt-1">
 						<p className="text-center m-0">
 							&#169; All Rights Reserved {year}.
 						</p>

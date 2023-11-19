@@ -1,5 +1,7 @@
 $transition: 0.2s ease-in;
 $transition-2: 1.2s cubic-bezier(0.25, 1, 0.3, 1);
+$SearchBtnHeight: 48px;
+$SearchBtnWidth: 48px;
 .divider {
 	background-color: #dddddd;
 	flex: 0 0 1px;
@@ -43,30 +45,36 @@ header {
 			border: 1px solid #ddd;
 			border-radius: 40px;
 			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
-			transition: box-shadow $transition;
+			transition: all $transition;
 			overflow: hidden;
+			position: relative;
+
 			&:hover {
 				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+			}
+			&:focus-within {
+				border-color: #111;
 			}
 			@media screen and (width <= 1024px) {
 				margin-left: 0px;
 			}
 			.link {
 				&:hover {
-					background-color: rgba(0, 0, 0, 0.1);
+					background-color: rgba(0, 0, 0, 0.05);
 				}
 			}
 			.icon {
-				height: 48px;
-				width: 48px;
+				height: $SearchBtnHeight;
+				width: $SearchBtnWidth;
 				background-color: transparent;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				cursor: pointer;
 				transition: background-color $transition;
+				background-color: #111;
 				&:hover {
-					background-color: rgba(0, 0, 0, 0.1);
+					background-color: rgba(0, 0, 0, 0.7);
 				}
 				div {
 					display: flex;
@@ -74,13 +82,32 @@ header {
 					align-items: center;
 					height: 30px;
 					width: 30px;
-					background-color: #222;
 					border-radius: 50%;
 				}
 				.search {
 					color: #fff;
 					font-size: 18px;
 				}
+			}
+			.search-bar {
+				position: absolute;
+				right: $SearchBtnWidth;
+				z-index: 4;
+				overflow: hidden;
+				width: 0%;
+				transition: all $transition;
+				height: 50px;
+				visibility: hidden;
+				border-radius: 0px !important;
+				border-top-color: transparent;
+				border-bottom-color: transparent;
+				&:hover {
+					border-color: transparent !important;
+				}
+			}
+			.search-bar.active {
+				visibility: visible;
+				width: calc(100% - $SearchBtnWidth);
 			}
 		}
 		.notFrontend {
@@ -123,5 +150,45 @@ header {
 	font-weight: 700;
 	@media screen and (max-width: 768px) {
 		background-color: rgba(0, 0, 0, 0.1);
+	}
+}
+
+// /////////Search
+.overlay {
+	position: absolute;
+	top: 80px;
+	bottom: 0;
+	height: 100%;
+	width: 100%;
+	backdrop-filter: blur(4px);
+	overflow: hidden;
+	z-index: -10;
+	transition: all $transition;
+}
+.overlay.active {
+	z-index: 1;
+}
+.pre-search {
+	position: absolute;
+	top: -100%;
+	overflow: hidden;
+	z-index: 2;
+	visibility: hidden;
+	transition: all $transition;
+	width: 100%;
+	.outer {
+		background-color: #fff;
+		height: 80px;
+		width: 80%;
+		img {
+			width: 50px;
+		}
+	}
+}
+.pre-search.active {
+	top: 80px;
+	visibility: visible;
+	.outer {
+		width: 100%;
 	}
 }
