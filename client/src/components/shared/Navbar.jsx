@@ -1,11 +1,10 @@
 import React, { Suspense, useEffect, useMemo, useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import Logo from "../../assets/logo.png"
-import {
+import Icon, {
 	MenuOutlined,
 	SearchOutlined,
-} from "@mui/icons-material"
-import { Icon } from "@mui/material"
+} from "@ant-design/icons"
 import { Button, Drawer, Input, message } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
@@ -16,6 +15,7 @@ const Navbar = () => {
 	const { isAuthenticated, dispatch, user } = useAuth()
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const [searchActive, setSearchActive] = useState(false)
+	const [searchText, setSearchText] = useState("")
 	const navigate = useNavigate()
 
 	const navItems = [
@@ -186,7 +186,16 @@ const Navbar = () => {
 
 	// search
 	const handleSearch = () => {
-		navigate("/search")
+		if (!searchActive) {
+			setSearchActive(true)
+		} else {
+			setSearchActive(false)
+			console.log(searchText)
+			navigate(`result/${searchText}`)
+		}
+	}
+	const handleChange = (e) => {
+		setSearchText(e.target.value)
 	}
 
 	// optimizing
@@ -220,8 +229,8 @@ const Navbar = () => {
 										</div>
 									})
 								}
-								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} />
-								<div className="icon" onClick={() => setSearchActive(true)}>
+								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} onChange={e => handleChange(e)} onPressEnter={() => handleSearch()} />
+								<div className="icon" onClick={() => handleSearch()}>
 									<div>
 										<SearchOutlined className="search" />
 									</div>

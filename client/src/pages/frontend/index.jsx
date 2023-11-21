@@ -18,7 +18,7 @@ const index = () => {
 						<Route path="/" element={<Home />} />
 						<Route path="/about" element={<About />} />
 						<Route path="/contact" element={<Contact />} />
-						<Route path="/search" element={<Search />} />
+						<Route path="/result/:search_query?" element={<Search />} />
 						<Route path="/:type" element={<Catalog />} />
 						<Route path="/:type/:id" element={<Details />} />
 						<Route path="*" element={<>Page Not Found</>} />
