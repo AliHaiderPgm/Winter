@@ -8,7 +8,7 @@ import {
 	BgColorsOutlined,
 } from "@ant-design/icons"
 import { useProduct } from "../../../context/ProductContext"
-import data from "./data"
+import data from "../../../global/data"
 import { getBase64 } from "../../../global"
 
 const { TextArea } = Input

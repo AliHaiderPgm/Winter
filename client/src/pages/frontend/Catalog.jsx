@@ -7,7 +7,7 @@ const Select = React.lazy(() => import('antd').then(module => ({ default: module
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
 import { CloseOutlined, FilterOutlined } from "@ant-design/icons"
-import data from "../dashboard/product/data"
+import data, { shopByPrice, sortBy } from "../../global/data"
 
 
 const initialState = new Array(5).fill([])
@@ -143,24 +143,7 @@ const Catalog = () => {
         {
             index: "0",
             label: `Shop by Price ${checkedVals[0].length === 0 ? "" : `(${checkedVals[0].length})`}`,
-            options: [
-                {
-                    label: "Under Rs.1999",
-                    value: "0-1999"
-                },
-                {
-                    label: "Rs.2000 - Rs.4999",
-                    value: "2000-4999"
-                },
-                {
-                    label: "Rs.5000 - Rs.9999",
-                    value: "5000-9999"
-                },
-                {
-                    label: "Over Rs.10,000",
-                    value: "10000-999999999"
-                },
-            ]
+            options: shopByPrice
         },
         {
             index: "1",
@@ -182,11 +165,6 @@ const Catalog = () => {
         },
     ]
     const ShoesFor = type === 'Male' ? 'Men' : type === 'Female' ? 'Women' : 'Kid';
-    const sortBy = [
-        { label: "Newest", value: "newest" },
-        { label: "Price: High-Low", value: "desc" },
-        { label: "Price: Low-High", value: "acs" },
-    ]
 
     const Size = () => {
         return <div className="d-flex flex-wrap gap-2">

@@ -5,7 +5,7 @@ import {
 	FontSizeOutlined,
 	StockOutlined,
 } from "@ant-design/icons"
-import data from "../../pages/dashboard/product/data"
+import data from "../../global/data"
 import ImageUploader from "./ImageUploader"
 const FormProvider = ({
 	newImages,
