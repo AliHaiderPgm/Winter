@@ -52,7 +52,8 @@ const recentAndTopRated = asyncHandler(async (req, res) => {
 // @access   PUBLIC
 const filterProducts = asyncHandler(async (req, res) => {
     try {
-        const { field, value, page, prices, types, sizes, brands, order, limit } = req.body.params
+        const { name, field, value, page, prices, types, sizes, brands, order, limit } = req.body.params
+        // console.log(req.body.params)
         // Pagination
         const obj = {}
         if (field && value) {
@@ -90,18 +91,21 @@ const filterProducts = asyncHandler(async (req, res) => {
         }
         //sort by date
         let sortByDate = 1
-        if (order && order[0] === "newest") {
+        if (order && order === "newest") {
             sortByDate = -1
         }
-
+        // by name
+        if (name) {
+            obj.name = { $regex: new RegExp(name, "i") }
+        }
         const data = await Product.find(obj).sort({ createdAt: sortByDate }).skip(skip).limit(perPage)
         // console.log(data)
 
         // sort products
-        if (order && order[0] === "acs") {
+        if (order && order === "acs") {
             data.sort((a, b) => a.price - b.price)
         }
-        if (order && order[0] === "desc") {
+        if (order && order === "desc") {
             data.sort((a, b) => b.price - a.price)
         }
 

@@ -200,15 +200,15 @@ export const sortBy = [
 ]
 export const shoeFor = [
 	{
-		value: 'male',
+		value: 'Male',
 		label: 'Men',
 	},
 	{
-		value: 'female',
+		value: 'Female',
 		label: 'Women',
 	},
 	{
-		value: 'children',
+		value: 'Children',
 		label: 'Kids',
 	},
 ]

@@ -164,7 +164,6 @@ const Catalog = () => {
             title: `${newType}`,
         },
     ]
-    const ShoesFor = type === 'Male' ? 'Men' : type === 'Female' ? 'Women' : 'Kid';
 
     const Size = () => {
         return <div className="d-flex flex-wrap gap-2">
@@ -214,6 +213,7 @@ const Catalog = () => {
             extra={<Button type="primary" className="btn-filled" onClick={() => navigate('/')}>Back Home</Button>}
         />
     }
+    const ShoesFor = newType == 'Male' ? 'Men' : type == 'Female' ? 'Women' : 'Kid';
 
     // optimizing
     const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])

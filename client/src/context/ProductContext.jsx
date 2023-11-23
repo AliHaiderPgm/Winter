@@ -95,7 +95,23 @@ const ProductContextProvider = (props) => {
 				types: filter[1],
 				brands: filter[2],
 				sizes: filter[3],
-				order: filter[4],
+				order: filter[4][0],
+			}
+		})
+		return res.data
+	}
+	const SearchProduct = async (e) => {
+		console.log(e)
+		const res = await axios.post(`${API_URL}/filter`, {
+			params: {
+				name: e.name,
+				field: "shoefor",
+				value: e.shoefor,
+				prices: e.prices,
+				types: e.types,
+				brands: e.brands,
+				sizes: e.sizes,
+				order: e.sort
 			}
 		})
 		return res.data
@@ -112,6 +128,7 @@ const ProductContextProvider = (props) => {
 					GetDetails,
 					RecentAndTopRated,
 					GetCustomizedProducts,
+					SearchProduct,
 					UpdateProduct,
 					uploadImage,
 					DeleteProduct,

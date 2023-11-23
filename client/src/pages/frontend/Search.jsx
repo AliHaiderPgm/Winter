@@ -9,16 +9,16 @@ import data from "../../global/data"
 
 const Search = () => {
 	const { search_query } = useParams()
-	const { RecentAndTopRated } = useProduct()
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [products, setProducts] = useState([])
-	const [state, setState] = useState()
+	const [state, setState] = useState({})
 	const [sizeState, setSizeState] = useState([])
 	const [form] = Form.useForm()
-	const getRecentProducts = async () => {
+	const { SearchProduct } = useProduct()
+	const getProducts = async () => {
 		// setLoading(true)
 		try {
-			const res = await RecentAndTopRated({ limit: 6, sort: -1 })
+			const res = await SearchProduct(state)
 			setProducts(res)
 		} catch (error) {
 			console.log(error)
@@ -27,13 +27,12 @@ const Search = () => {
 		}
 	}
 	useEffect(() => {
-		getRecentProducts()
-	}, [])
-	const handleFormSubmit = () => {
-		form.validateFields().then((values) => {
-			console.log(values)
-		})
-	}
+		setState(prev => ({ ...prev, name: search_query }))
+	}, [search_query])
+	useEffect(() => {
+		getProducts()
+	}, [state])
+
 	const ModalBody = () => {
 		const sortOptions = [
 			{
@@ -104,9 +103,20 @@ const Search = () => {
 		</Form>
 	}
 	const ModalFooter = () => {
+		const handleClear = () => {
+			form.resetFields()
+			setSizeState([])
+		}
+		const handleApply = () => {
+			form.validateFields().then(async (e) => {
+				const values = e
+				values.sizes = sizeState
+				setState(prev => ({ ...prev, ...values }))
+			})
+		}
 		return <div className="d-flex gap-3">
-			<Button className="btn-outline w-100" onClick={() => { form.resetFields(); setSizeState([]) }}>Clear</Button>
-			<Button className="btn-filled w-100" onClick={() => { getProducts(); setIsDrawerOpen(false) }}>Apply</Button>
+			<Button className="btn-outline w-100" onClick={handleClear}>Clear</Button>
+			<Button className="btn-filled w-100" onClick={handleApply}>Apply</Button>
 		</div>
 	}
 
@@ -118,7 +128,7 @@ const Search = () => {
 					<p className="m-0 fw-bold fs-4">{search_query}</p>
 				</div>
 				<div className="d-flex align-items-center gap-2">
-					<Input.Search size="large" placeholder="Search" />
+					<Input.Search size="large" placeholder="Search" defaultValue={search_query} />
 					<Button className="d-flex align-items-center fs-6 h-75 btn-filled" onClick={() => setIsModalOpen(true)}><FilterOutlined />Filter</Button>
 				</div>
 			</div>
@@ -133,7 +143,7 @@ const Search = () => {
 			</div>
 		</div>
 
-		<Modal title="Filter" open={isModalOpen} onOk={handleFormSubmit} onCancel={() => setIsModalOpen(false)} width={700} footer={<ModalFooter />}>
+		<Modal title="Filter" open={isModalOpen} onCancel={() => setIsModalOpen(false)} width={700} footer={<ModalFooter />}>
 			<ModalBody />
 		</Modal>
 	</>

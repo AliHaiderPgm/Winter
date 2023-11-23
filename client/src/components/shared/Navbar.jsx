@@ -191,7 +191,7 @@ const Navbar = () => {
 		} else {
 			setSearchActive(false)
 			console.log(searchText)
-			navigate(`result/${searchText}`)
+			navigate(`find/${searchText}`)
 		}
 	}
 	const handleChange = (e) => {
