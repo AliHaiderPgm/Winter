@@ -128,8 +128,11 @@ header {
 				}
 			}
 		}
+		.searchIcon {
+			font-size: 32px;
+		}
 		.hamburger {
-			font-size: 36px;
+			font-size: 32px;
 		}
 	}
 }
@@ -173,14 +176,7 @@ header {
 	visibility: hidden;
 	transition: all $transition;
 	width: 100%;
-	.outer {
-		background-color: #fff;
-		height: 80px;
-		width: 80%;
-		img {
-			width: 50px;
-		}
-	}
+	background-color: #fff;
 }
 .pre-search.active {
 	top: 80px;

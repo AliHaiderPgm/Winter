@@ -101,7 +101,7 @@ const ProductContextProvider = (props) => {
 		return res.data
 	}
 	const SearchProduct = async (e) => {
-		console.log(e)
+		// console.log(e)
 		const res = await axios.post(`${API_URL}/filter`, {
 			params: {
 				name: e.name,

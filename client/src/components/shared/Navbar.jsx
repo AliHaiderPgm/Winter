@@ -5,15 +5,16 @@ import Icon, {
 	MenuOutlined,
 	SearchOutlined,
 } from "@ant-design/icons"
-import { Button, Drawer, Input, message } from "antd"
+import { Button, Drawer, Input, Modal, message } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 
 const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
-	const { isAuthenticated, dispatch, user } = useAuth()
+	const { isAuthenticated, dispatch, user, loading } = useAuth()
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [searchActive, setSearchActive] = useState(false)
 	const [searchText, setSearchText] = useState("")
 	const navigate = useNavigate()
@@ -119,6 +120,7 @@ const Navbar = () => {
 		},
 	]
 	const items = isAuthenticated ? authorizedItems : unauthorizedItems
+
 	const DropMenu = () => {
 		return <Suspense fallback={<p>Loading...</p>}>
 			<Dropdown
@@ -136,6 +138,47 @@ const Navbar = () => {
 		</Suspense>
 	}
 
+	const DrawerFooter = () => {
+		const currentHour = new Date().getHours();
+		const greeting =
+			currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+		return <Suspense fallback={<p>Loading...</p>}>
+			{
+				user ? <Dropdown
+					menu={{ items }}
+					trigger={["click"]}
+					className="p-2"
+					arrow
+					placement="topRight"
+				>
+					<div className="d-flex align-items-center justify-content-between">
+						<p className="m-0">{greeting}! <span className="fw-bold">{user?.name}</span></p>
+						<UserIcon className="icon" />
+					</div>
+				</Dropdown>
+					: <Button className="btn-filled w-100" onClick={() => navigate("/auth/login")}>Login</Button>
+			}
+		</Suspense>
+	}
+
+	const ModalFooter = () => {
+		return <>
+			<Button className="btn-filled">Search</Button>
+		</>
+	}
+
+	const PreSearch = () => {
+		const list = ["Air Force", "Air Jordan", "Air Max"]
+		return <>
+			<h5 className="text-black-50">Popular Search Terms</h5>
+			{
+				list.map((item, index) => {
+					return <p className="fs-5 m-0" key={index} onClick={() => setSearchText(item)}>{item}</p>
+				})
+			}
+		</>
+	}
+
 	const handleLogout = async () => {
 		try {
 			await AuthServices.logoutUser()
@@ -150,7 +193,6 @@ const Navbar = () => {
 	const handleDrawer = () => {
 		setIsDrawerOpen(!isDrawerOpen)
 	}
-	// check window inner width
 	const handleResize = () => {
 		setInnerWidth(window.innerWidth)
 	}
@@ -161,45 +203,21 @@ const Navbar = () => {
 		};
 	}, []);
 
-	const DrawerFooter = () => {
-		const currentHour = new Date().getHours();
-		const greeting =
-			currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
-		return <>
-			{
-				user ? <Dropdown
-					menu={{ items }}
-					trigger={["click"]}
-					className="p-2"
-					arrow
-					placement="topRight"
-				>
-					<div className="d-flex align-items-center justify-content-between">
-						<p className="m-0">{greeting}! <span className="fw-bold">{user.name}</span></p>
-						<UserIcon className="icon" />
-					</div>
-				</Dropdown>
-					: <Button className="btn-filled w-100" onClick={() => navigate("/auth/login")}>Login</Button>
-			}
-		</>
-	}
-
 	// search
 	const handleSearch = () => {
 		if (!searchActive) {
 			setSearchActive(true)
 		} else {
 			setSearchActive(false)
-			console.log(searchText)
 			navigate(`find/${searchText}`)
 		}
+	}
+	const handleSearch_mb = () => {
+		setIsModalOpen(true)
 	}
 	const handleChange = (e) => {
 		setSearchText(e.target.value)
 	}
-
-	// optimizing
-	const MemoizedDropMenu = useMemo(() => React.memo(DropMenu), [])
 
 
 	return (
@@ -229,7 +247,7 @@ const Navbar = () => {
 										</div>
 									})
 								}
-								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} onChange={e => handleChange(e)} onPressEnter={() => handleSearch()} />
+								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} onChange={e => handleChange(e)} value={searchText} onPressEnter={() => handleSearch()} />
 								<div className="icon" onClick={() => handleSearch()}>
 									<div>
 										<SearchOutlined className="search" />
@@ -237,15 +255,19 @@ const Navbar = () => {
 								</div>
 							</div>
 							<div className="notFrontend">
-								<MemoizedDropMenu />
+								<DropMenu />
 							</div>
 						</>
 					}
 					{
 						innerWidth <= 768 && <div className="d-flex align-items-center gap-1">
-							<SearchOutlined className="search" onClick={() => navigate("/search")} />
-							<MenuOutlined className="hamburger" onClick={handleDrawer} />
+							<SearchOutlined className="searchIcon" onClick={() => setIsModalOpen(true)} />
+							<Modal title="Search" open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={<ModalFooter />}>
+								<Input placeholder="Search" size="large" className="mb-2" onChange={e => handleChange(e)} onPressEnter={() => handleSearch()} value={searchText} allowClear />
+								<PreSearch />
+							</Modal>
 
+							<MenuOutlined className="hamburger" onClick={handleDrawer} />
 							<Drawer placement="right" onClose={handleDrawer} open={isDrawerOpen} footer={<DrawerFooter />} footerStyle={{ boxShadow: '0px -2px 4px rgba(0, 0, 0, 0.05)' }}>
 								<div className="mobileMenu d-flex flex-column">
 									{navItems.map((item, index) => {
@@ -265,15 +287,16 @@ const Navbar = () => {
 					}
 				</div>
 			</header>
-			<div className={`overlay ${searchActive && "active"}`} onClick={() => setSearchActive(false)}></div>
-			<div className={`pre-search d-flex justify-content-center ${searchActive && "active"}`}>
-				<div className="d-flex align-items-center outer">
-					<div className="d-flex justify-content-between inner w-100">
-						<img src={Logo} alt="Winter Store" className="img-fluid" />
-						<Button type="text">Cancel</Button>
+			{
+				innerWidth > 768 ? <>
+					<div className={`overlay ${searchActive && "active"}`} onClick={() => setSearchActive(false)}></div>
+					<div className={`pre-search d-flex justify-content-center ${searchActive && "active"}`}>
+						<div className="py-4">
+							<PreSearch />
+						</div>
 					</div>
-				</div>
-			</div>
+				</> : null
+			}
 		</>
 	)
 }

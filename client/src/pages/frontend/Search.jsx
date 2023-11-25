@@ -1,6 +1,6 @@
 import { Button, Checkbox, Form, Input, Modal, Radio, Select, Space } from "antd"
 import { FilterOutlined } from "@ant-design/icons"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
 import { useEffect, useState } from "react"
 import BnbCard from "../../components/shared/BnbCard"
@@ -12,9 +12,11 @@ const Search = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [products, setProducts] = useState([])
 	const [state, setState] = useState({})
+	const [searchedFor, setSearchedFor] = useState(search_query)
 	const [sizeState, setSizeState] = useState([])
 	const [form] = Form.useForm()
 	const { SearchProduct } = useProduct()
+	const navigate = useNavigate()
 	const getProducts = async () => {
 		// setLoading(true)
 		try {
@@ -28,10 +30,15 @@ const Search = () => {
 	}
 	useEffect(() => {
 		setState(prev => ({ ...prev, name: search_query }))
+		setSearchedFor(search_query)
 	}, [search_query])
 	useEffect(() => {
 		getProducts()
 	}, [state])
+
+	const handleSearch = (e) => {
+		navigate(`/find/${e}`)
+	}
 
 	const ModalBody = () => {
 		const sortOptions = [
@@ -125,10 +132,10 @@ const Search = () => {
 			<div className="d-flex justify-content-between p-2 search-controller mb-2">
 				<div>
 					<p className="m-0">Search results for</p>
-					<p className="m-0 fw-bold fs-4">{search_query}</p>
+					<p className="m-0 fw-bold fs-4">{searchedFor}</p>
 				</div>
 				<div className="d-flex align-items-center gap-2">
-					<Input.Search size="large" placeholder="Search" defaultValue={search_query} />
+					<Input.Search size="large" placeholder="Search" allowClear onSearch={handleSearch} />
 					<Button className="d-flex align-items-center fs-6 h-75 btn-filled" onClick={() => setIsModalOpen(true)}><FilterOutlined />Filter</Button>
 				</div>
 			</div>
