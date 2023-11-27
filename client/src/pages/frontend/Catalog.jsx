@@ -217,20 +217,18 @@ const Catalog = () => {
 
     // optimizing
     const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])
-    const MemoizedBreadCrumb = useMemo(() => React.memo(Breadcrumb), [])
-    const MemoizedSelect = useMemo(() => React.memo(Select), [])
 
     return <div className="product-catalog">
         <div className="px-2 px-sm-4 px-md-5 py-4 d-flex justify-content-between align-items-center">
             <div>
                 <Suspense fallback={<div>Loading...</div>}>
-                    <MemoizedBreadCrumb items={breadCrumbItems} />
+                    <Breadcrumb items={breadCrumbItems} />
                 </Suspense>
                 <h1 className="m-0">{ShoesFor}'s Shoes</h1>
             </div>
             {width > 768 &&
                 <Suspense fallback={<p>Loading...</p>}>
-                    <MemoizedSelect className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
+                    <Select className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
                 </Suspense>}
             {
                 width <= 768 && <>
@@ -279,7 +277,7 @@ const Catalog = () => {
                 </div>
             }
             <div className="col-12 col-md-9">
-                <div style={{ minHeight: "50dvh" }}>
+                <div style={{ minHeight: "65dvh" }}>
                     {
                         firstLoading ? <Loader />
                             :

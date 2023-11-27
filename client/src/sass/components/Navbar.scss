@@ -129,10 +129,10 @@ header {
 			}
 		}
 		.searchIcon {
-			font-size: 32px;
+			font-size: 28px;
 		}
 		.hamburger {
-			font-size: 32px;
+			font-size: 28px;
 		}
 	}
 }
@@ -177,6 +177,10 @@ header {
 	transition: all $transition;
 	width: 100%;
 	background-color: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+	p {
+		cursor: pointer;
+	}
 }
 .pre-search.active {
 	top: 80px;

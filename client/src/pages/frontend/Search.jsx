@@ -1,4 +1,4 @@
-import { Button, Checkbox, Form, Input, Modal, Radio, Select, Space } from "antd"
+import { Button, Checkbox, Empty, Form, Input, Modal, Radio, Select, Space } from "antd"
 import { FilterOutlined } from "@ant-design/icons"
 import { useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import BnbCard from "../../components/shared/BnbCard"
 import { shoeFor, shopByPrice, sortBy } from "../../global/data"
 import data from "../../global/data"
+import Loader from "../../components/shared/Loader"
 
 const Search = () => {
 	const { search_query } = useParams()
@@ -17,15 +18,21 @@ const Search = () => {
 	const [form] = Form.useForm()
 	const { SearchProduct } = useProduct()
 	const navigate = useNavigate()
+	const [isResEmpty, setIsResEmpty] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
+
 	const getProducts = async () => {
-		// setLoading(true)
+		setIsResEmpty(false)
+		setProducts([])
+		setIsLoading(true)
 		try {
 			const res = await SearchProduct(state)
 			setProducts(res)
+			res.length === 0 && setIsResEmpty(true)
 		} catch (error) {
 			console.log(error)
 		} finally {
-			// setLoading(false)
+			setIsLoading(false)
 		}
 	}
 	useEffect(() => {
@@ -38,6 +45,9 @@ const Search = () => {
 
 	const handleSearch = (e) => {
 		navigate(`/find/${e}`)
+	}
+	const handleChange = (e) => {
+		setSearchedFor(e.target.value)
 	}
 
 	const ModalBody = () => {
@@ -116,6 +126,7 @@ const Search = () => {
 		}
 		const handleApply = () => {
 			form.validateFields().then(async (e) => {
+				setIsModalOpen(false)
 				const values = e
 				values.sizes = sizeState
 				setState(prev => ({ ...prev, ...values }))
@@ -128,24 +139,31 @@ const Search = () => {
 	}
 
 	return <>
-		<div className="container-fluid search-page">
-			<div className="d-flex justify-content-between p-2 search-controller mb-2">
+		<div className="search-page mb-3">
+			<div className="d-flex flex-column flex-sm-row gap-2 justify-content-between p-2 search-controller mb-2 px-4">
 				<div>
 					<p className="m-0">Search results for</p>
-					<p className="m-0 fw-bold fs-4">{searchedFor}</p>
+					<p className="m-0 fw-bold fs-4">{search_query}</p>
 				</div>
 				<div className="d-flex align-items-center gap-2">
-					<Input.Search size="large" placeholder="Search" allowClear onSearch={handleSearch} />
-					<Button className="d-flex align-items-center fs-6 h-75 btn-filled" onClick={() => setIsModalOpen(true)}><FilterOutlined />Filter</Button>
+					<Input.Search size="large" placeholder="Search" allowClear onSearch={handleSearch} value={searchedFor} onChange={handleChange} />
+					<Button className="d-flex align-items-center fs-6 btn-filled" size="large" onClick={() => setIsModalOpen(true)}><FilterOutlined />Filters</Button>
 				</div>
 			</div>
-			<div className="row">
+			<div className="row justify-content-center justify-content-md-start align-items-center m-0" style={{ minHeight: "65dvh" }}>
 				{
+					isLoading ? <Loader /> : null
+				}
+				{
+
 					products?.map((product, index) => {
-						return <div className="col-3" key={index}>
+						return <div className="col-12 col-sm-6 col-md-3 d-flex justify-content-center" key={index}>
 							<BnbCard data={product} />
 						</div>
 					})
+				}
+				{
+					isResEmpty ? <Empty description={<p>No Product</p>} /> : null
 				}
 			</div>
 		</div>

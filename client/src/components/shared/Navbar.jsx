@@ -163,7 +163,7 @@ const Navbar = () => {
 
 	const ModalFooter = () => {
 		return <>
-			<Button className="btn-filled">Search</Button>
+			<Button className="btn-filled" onClick={handleSearch_mb}>Search</Button>
 		</>
 	}
 
@@ -213,7 +213,8 @@ const Navbar = () => {
 		}
 	}
 	const handleSearch_mb = () => {
-		setIsModalOpen(true)
+		setIsModalOpen(false)
+		navigate(`find/${searchText}`)
 	}
 	const handleChange = (e) => {
 		setSearchText(e.target.value)
@@ -260,10 +261,10 @@ const Navbar = () => {
 						</>
 					}
 					{
-						innerWidth <= 768 && <div className="d-flex align-items-center gap-1">
+						innerWidth <= 768 && <div className="d-flex align-items-center gap-2">
 							<SearchOutlined className="searchIcon" onClick={() => setIsModalOpen(true)} />
 							<Modal title="Search" open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={<ModalFooter />}>
-								<Input placeholder="Search" size="large" className="mb-2" onChange={e => handleChange(e)} onPressEnter={() => handleSearch()} value={searchText} allowClear />
+								<Input placeholder="Search" size="large" className="mb-2" onChange={e => handleChange(e)} value={searchText} allowClear />
 								<PreSearch />
 							</Modal>
 
@@ -280,7 +281,6 @@ const Navbar = () => {
 											{item.title}
 										</NavLink>
 									})}
-
 								</div>
 							</Drawer>
 						</div>
