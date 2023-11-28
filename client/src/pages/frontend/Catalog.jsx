@@ -31,7 +31,7 @@ const Catalog = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isError, setIsError] = useState(false)
     const navigate = useNavigate()
-    // //////////Scroll /////////
+    // //////////Scroll & resize /////////
     const handleScroll = () => {
         if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
             setPage(prev => prev + 1)
@@ -55,13 +55,12 @@ const Catalog = () => {
     const getProducts = async (scrolling) => {
         try {
             setIsError(false)
-            const val = scrolling === true ? true : false
-            setLoading(val)
-            setFirstLoading(!val)
             setIsDisabled(true)
-            const pageNo = !val ? 1 : page
-
+            const val = scrolling === true ? true : false
             val === false && setState([])
+            const pageNo = !val ? 1 : page
+            setFirstLoading(!val)
+            setLoading(val)
 
             const res = await GetCustomizedProducts("shoefor", newType, pageNo, checkedVals)
             setState(prev => {

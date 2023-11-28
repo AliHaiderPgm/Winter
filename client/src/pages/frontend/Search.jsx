@@ -8,44 +8,90 @@ import { shoeFor, shopByPrice, sortBy } from "../../global/data"
 import data from "../../global/data"
 import Loader from "../../components/shared/Loader"
 
+
+const initialLoadingState = {
+	firstLoader: false,
+	scrollingLoader: false
+}
 const Search = () => {
 	const { search_query } = useParams()
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [products, setProducts] = useState([])
-	const [state, setState] = useState({})
+	const [state, setState] = useState({ name: search_query })
 	const [searchedFor, setSearchedFor] = useState(search_query)
 	const [sizeState, setSizeState] = useState([])
 	const [form] = Form.useForm()
 	const { SearchProduct } = useProduct()
 	const navigate = useNavigate()
 	const [isResEmpty, setIsResEmpty] = useState(false)
-	const [isLoading, setIsLoading] = useState(false)
+	const [loading, setLoading] = useState(initialLoadingState)
+	const [page, setPage] = useState(1)
 
-	const getProducts = async () => {
-		setIsResEmpty(false)
-		setProducts([])
-		setIsLoading(true)
-		try {
-			const res = await SearchProduct(state)
-			setProducts(res)
-			res.length === 0 && setIsResEmpty(true)
-		} catch (error) {
-			console.log(error)
-		} finally {
-			setIsLoading(false)
+	// infinite scroll
+	const handleScroll = () => {
+		/////How much is scrolled from top
+		const scrollTop = document.documentElement.scrollTop
+		//// Max scroll value from top
+		const innerHeight = window.innerHeight
+		////Height of content even it is not visible
+		const contentHeight = document.documentElement.scrollHeight
+
+		if (scrollTop + innerHeight + 200 >= contentHeight) {
+			setPage(prev => prev + 1)
 		}
 	}
 	useEffect(() => {
+		window.addEventListener("scroll", handleScroll)
+		return () => {
+			window.removeEventListener("scroll", handleScroll)
+		}
+	}, [])
+
+	const getProducts = async ({ scrolling }) => {
+		try {
+			setLoading((prev) => ({
+				...prev,
+				firstLoader: !scrolling,
+				scrollingLoader: scrolling,
+			}));
+			const res = await SearchProduct(state, page)
+			setProducts(prev => {
+				const uniqueIds = new Set(prev.map(item => item._id))
+				const newItems = res.filter(item => !uniqueIds.has(item._id))
+				return [...prev, ...newItems]
+			})
+
+			res.length === 0 && setPage(1)
+			res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
+		} catch (error) {
+			console.log(error)
+		} finally {
+			setLoading(initialLoadingState)
+		}
+	}
+	useEffect(() => {
+		if (!isResEmpty) {
+			products.length === 0 ? getProducts({ scrolling: false }) : getProducts({ scrolling: true })
+		}
+	}, [state, page])
+
+
+	useEffect(() => {
+		resetSomeStuff()
 		setState(prev => ({ ...prev, name: search_query }))
 		setSearchedFor(search_query)
 	}, [search_query])
-	useEffect(() => {
-		getProducts()
-	}, [state])
 
 	const handleSearch = (e) => {
+		resetSomeStuff()
 		navigate(`/find/${e}`)
 	}
+	const resetSomeStuff = () => {
+		setPage(1)
+		setIsResEmpty(false)
+		setProducts([])
+	}
+
 	const handleChange = (e) => {
 		setSearchedFor(e.target.value)
 	}
@@ -125,6 +171,7 @@ const Search = () => {
 			setSizeState([])
 		}
 		const handleApply = () => {
+			resetSomeStuff()
 			form.validateFields().then(async (e) => {
 				setIsModalOpen(false)
 				const values = e
@@ -152,20 +199,20 @@ const Search = () => {
 			</div>
 			<div className="row justify-content-center justify-content-md-start align-items-center m-0" style={{ minHeight: "65dvh" }}>
 				{
-					isLoading ? <Loader /> : null
+					loading.firstLoader ? <Loader /> :
+						products?.map((product, index) => {
+							return <div className="col-12 col-sm-6 col-md-3 d-flex justify-content-center" key={index}>
+								<BnbCard data={product} />
+							</div>
+						})
 				}
-				{
-
-					products?.map((product, index) => {
-						return <div className="col-12 col-sm-6 col-md-3 d-flex justify-content-center" key={index}>
-							<BnbCard data={product} />
-						</div>
-					})
-				}
-				{
-					isResEmpty ? <Empty description={<p>No Product</p>} /> : null
-				}
+				{/* {
+					isResEmpty ? <div className="col-12"><Empty description={<p>No Product</p>} /></div> : null
+				} */}
 			</div>
+			{
+				loading.scrollingLoader ? <Loader /> : null
+			}
 		</div>
 
 		<Modal title="Filter" open={isModalOpen} onCancel={() => setIsModalOpen(false)} width={700} footer={<ModalFooter />}>
