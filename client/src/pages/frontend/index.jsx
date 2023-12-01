@@ -4,7 +4,8 @@ import Navbar from "../../components/shared/Navbar"
 import Footer from "../../components/shared/Footer"
 import About from "./About"
 import Contact from "./Contact"
-import Search from "./Search"
+import SearchPage from "./SearchPage"
+import SearchResult from "./SearchResults"
 import Catalog from "./Catalog"
 import Details from "./product/Details"
 
@@ -18,7 +19,8 @@ const index = () => {
 						<Route path="/" element={<Home />} />
 						<Route path="/about" element={<About />} />
 						<Route path="/contact" element={<Contact />} />
-						<Route path="/find/:search_query?" element={<Search />} />
+						<Route path="/find" element={<SearchPage />} />
+						<Route path="/find/:search_query?" element={<SearchResult />} />
 						<Route path="/:type" element={<Catalog />} />
 						<Route path="/:type/:id" element={<Details />} />
 						<Route path="*" element={<>Page Not Found</>} />

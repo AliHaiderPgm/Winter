@@ -14,6 +14,8 @@ header {
 	box-shadow: rgb(0 0 0 / 8%) 0 1px 0;
 	height: 80px;
 	background-color: #fff;
+	z-index: 22;
+	position: relative;
 	.nav {
 		max-width: 1760px;
 		width: 100%;
@@ -24,23 +26,15 @@ header {
 			img {
 				width: 50px;
 				rotate: 0deg;
-				animation: rotate 60s cubic-bezier(0.25, 1, 0.3, 1) infinite;
+				transition: rotate 40s cubic-bezier(0.25, 1, 0.3, 1);
 				&:hover {
 					rotate: 360deg;
-				}
-				@keyframes rotate {
-					from {
-						rotate: 0deg;
-					}
-					to {
-						rotate: 360deg;
-					}
 				}
 			}
 		}
 		.nav-links {
 			display: flex;
-			margin-left: 100px;
+			// margin-left: 100px;
 			background-color: #fff;
 			border: 1px solid #ddd;
 			border-radius: 40px;
@@ -55,9 +49,9 @@ header {
 			&:focus-within {
 				border-color: #111;
 			}
-			@media screen and (width <= 1024px) {
-				margin-left: 0px;
-			}
+			// @media screen and (width <= 1024px) {
+			// 	margin-left: 0px;
+			// }
 			.link {
 				&:hover {
 					background-color: rgba(0, 0, 0, 0.05);
@@ -166,13 +160,13 @@ header {
 	transition: all $transition;
 }
 .overlay.active {
-	z-index: 1;
+	z-index: 20;
 }
 .pre-search {
 	position: absolute;
 	top: -100%;
 	overflow: hidden;
-	z-index: 2;
+	z-index: 21;
 	visibility: hidden;
 	transition: all $transition;
 	width: 100%;

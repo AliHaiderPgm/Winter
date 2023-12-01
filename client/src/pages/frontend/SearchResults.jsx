@@ -1,4 +1,4 @@
-import { Button, Checkbox, Empty, Form, Input, Modal, Radio, Select, Space } from "antd"
+import { Button, Checkbox, Empty, Form, Input, Modal, Select } from "antd"
 import { FilterOutlined } from "@ant-design/icons"
 import { useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
@@ -7,6 +7,7 @@ import BnbCard from "../../components/shared/BnbCard"
 import { shoeFor, shopByPrice, sortBy } from "../../global/data"
 import data from "../../global/data"
 import Loader from "../../components/shared/Loader"
+
 
 
 const initialLoadingState = {
@@ -26,7 +27,7 @@ const Search = () => {
 	const [isResEmpty, setIsResEmpty] = useState(false)
 	const [loading, setLoading] = useState(initialLoadingState)
 	const [page, setPage] = useState(1)
-
+	const [width, setWidth] = useState()
 	// infinite scroll
 	const handleScroll = () => {
 		/////How much is scrolled from top
@@ -36,14 +37,19 @@ const Search = () => {
 		////Height of content even it is not visible
 		const contentHeight = document.documentElement.scrollHeight
 
-		if (scrollTop + innerHeight + 200 >= contentHeight) {
+		if (scrollTop + innerHeight + 300 >= contentHeight) {
 			setPage(prev => prev + 1)
 		}
 	}
+	const handleResize = () => {
+		setWidth(window.innerWidth)
+	}
 	useEffect(() => {
 		window.addEventListener("scroll", handleScroll)
+		window.addEventListener("resize", handleResize)
 		return () => {
 			window.removeEventListener("scroll", handleScroll)
+			window.removeEventListener("resize", handleResize)
 		}
 	}, [])
 
@@ -82,19 +88,19 @@ const Search = () => {
 		setSearchedFor(search_query)
 	}, [search_query])
 
-	const handleSearch = (e) => {
-		resetSomeStuff()
-		navigate(`/find/${e}`)
-	}
 	const resetSomeStuff = () => {
 		setPage(1)
 		setIsResEmpty(false)
 		setProducts([])
 	}
 
-	const handleChange = (e) => {
-		setSearchedFor(e.target.value)
+	const handleSort = (e) => {
+		resetSomeStuff()
+		setState(prev => ({ ...prev, sort: e }))
 	}
+	useEffect(() => {
+		getProducts({ scrolling: false })
+	}, [state?.sort])
 
 	const ModalBody = () => {
 		const sortOptions = [
@@ -138,14 +144,16 @@ const Search = () => {
 		}
 		return <Form layout="vertical" form={form}>
 			<div className="d-flex gap-3">
-				<Form.Item label="Sort By" name="sort" className="w-100">
-					<Select
-						placeholder="Sort"
-						allowClear
-						options={sortBy}
-					/>
-				</Form.Item>
-				<Form.Item label="Shoe For" name="shoefor" className="w-100">
+				{
+					width <= 576 && <Form.Item label="Sort By" name="sort" className="w-100">
+						<Select
+							placeholder="Sort"
+							allowClear
+							options={sortBy}
+						/>
+					</Form.Item>
+				}
+				<Form.Item label="Shoe For" name="shoefor" className={`${width <= 576 ? "w-100" : "w-50"}`}>
 					<Select
 						placeholder="Shoe For"
 						allowClear
@@ -187,28 +195,43 @@ const Search = () => {
 
 	return <>
 		<div className="search-page mb-3">
-			<div className="d-flex flex-column flex-sm-row gap-2 justify-content-between p-2 search-controller mb-2 px-4">
+			<div className="d-flex gap-2 justify-content-between p-2 search-controller mb-2 px-4">
 				<div>
 					<p className="m-0">Search results for</p>
 					<p className="m-0 fw-bold fs-4">{search_query}</p>
 				</div>
 				<div className="d-flex align-items-center gap-2">
-					<Input.Search size="large" placeholder="Search" allowClear onSearch={handleSearch} value={searchedFor} onChange={handleChange} />
+					{
+						width > 576 && <Select
+							placeholder="Sort"
+							allowClear
+							options={sortBy}
+							size="large"
+							style={{
+								width: 150
+							}}
+							onChange={handleSort}
+						/>
+					}
 					<Button className="d-flex align-items-center fs-6 btn-filled" size="large" onClick={() => setIsModalOpen(true)}><FilterOutlined />Filters</Button>
 				</div>
 			</div>
-			<div className="row justify-content-center justify-content-md-start align-items-center m-0" style={{ minHeight: "65dvh" }}>
+			<div className="row justify-content-center justify-content-md-start align-items-center m-0">
 				{
-					loading.firstLoader ? <Loader /> :
+					loading.firstLoader ? <div style={{ minHeight: "65dvh" }}>
+						<Loader />
+					</div>
+						:
 						products?.map((product, index) => {
-							return <div className="col-12 col-sm-6 col-md-3 d-flex justify-content-center" key={index}>
+							return <div className="col-10 col-sm-6 col-md-3 d-flex justify-content-center" key={index}>
 								<BnbCard data={product} />
 							</div>
 						})
 				}
-				{/* {
-					isResEmpty ? <div className="col-12"><Empty description={<p>No Product</p>} /></div> : null
-				} */}
+				{
+					isResEmpty && products.length === 0 && !loading.firstLoader
+						? <div className="col-12" style={{ minHeight: "65dvh" }}><Empty description={<p>No Product</p>} /></div> : null
+				}
 			</div>
 			{
 				loading.scrollingLoader ? <Loader /> : null

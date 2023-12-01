@@ -38,3 +38,22 @@ export const slugify = (text) => {
 		.replace(/^-+/, '')  // Remove leading hyphens
 		.replace(/-+$/, ''); // Remove trailing hyphens
 }
+
+export const addToHistory = (e) => {
+	const dataObj = JSON.parse(localStorage.getItem("history"))
+	const dataArray = dataObj ? dataObj : []
+	const isAlreadyAdded = dataArray?.some(val => val?.value.toLowerCase() === e?.toLowerCase())
+	if (!isAlreadyAdded && e !== "" && e !== undefined && e !== null) {
+		const dataToStore = {
+			value: e,
+			date: new Date().getTime()
+		}
+		dataArray.push(dataToStore)
+		localStorage.setItem("history", JSON.stringify(dataArray))
+	}
+}
+
+export const getHistory = () => {
+	const dataObj = JSON.parse(localStorage.getItem("history"))
+	return dataObj
+}

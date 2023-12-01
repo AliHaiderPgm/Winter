@@ -1,10 +1,10 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Space, Result } from "antd"
+import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Result } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
-import { HeartOutlined, SwapOutlined, ZoomInOutlined, ZoomOutOutlined } from "@ant-design/icons"
+import { HeartOutlined } from "@ant-design/icons"
 import { useAuth } from "../../../context/AuthContext"
 
 const Details = () => {

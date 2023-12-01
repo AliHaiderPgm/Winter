@@ -1,5 +1,5 @@
-import React, { Suspense, useEffect, useMemo, useState } from "react"
-import { Link, NavLink, useNavigate } from "react-router-dom"
+import React, { Suspense, useEffect, useState } from "react"
+import { Link, NavLink, useNavigate, useParams } from "react-router-dom"
 import Logo from "../../assets/logo.png"
 import Icon, {
 	MenuOutlined,
@@ -9,15 +9,24 @@ import { Button, Drawer, Input, Modal, message } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
+import { addToHistory } from "../../global"
 
 const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
-	const { isAuthenticated, dispatch, user, loading } = useAuth()
+	const { isAuthenticated, dispatch, user } = useAuth()
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [searchActive, setSearchActive] = useState(false)
-	const [searchText, setSearchText] = useState("")
 	const navigate = useNavigate()
+	const queryParams = useParams()
+	const query = Object.values(queryParams)[0].split('/')
+	const [searchText, setSearchText] = useState("")
+	useEffect(() => {
+		if (query[0] === "find") {
+			setSearchText(query[1])
+		}
+	}, [queryParams])
+
 
 	const navItems = [
 		{
@@ -207,10 +216,16 @@ const Navbar = () => {
 	const handleSearch = () => {
 		if (!searchActive) {
 			setSearchActive(true)
+			document.body.style.overflow = "hidden"
 		} else {
-			setSearchActive(false)
+			closeCustomDrawer()
+			addToHistory(searchText)
 			navigate(`find/${searchText}`)
 		}
+	}
+	const closeCustomDrawer = () => {
+		setSearchActive(false)
+		document.body.removeAttribute("style")
 	}
 	const handleSearch_mb = () => {
 		setIsModalOpen(false)
@@ -223,7 +238,7 @@ const Navbar = () => {
 
 	return (
 		<>
-			<header className="px-3 px-md-5 position-relative z-3">
+			<header className="px-3 px-md-5">
 				<div className="nav">
 					<div className="logo">
 						<NavLink to="/">
@@ -289,9 +304,9 @@ const Navbar = () => {
 			</header>
 			{
 				innerWidth > 768 ? <>
-					<div className={`overlay ${searchActive && "active"}`} onClick={() => setSearchActive(false)}></div>
+					<div className={`overlay ${searchActive && "active"}`} onClick={() => closeCustomDrawer()}></div>
 					<div className={`pre-search d-flex justify-content-center ${searchActive && "active"}`}>
-						<div className="py-4">
+						<div className="py-4 col-6 col-lg-5 col-xl-3">
 							<PreSearch />
 						</div>
 					</div>

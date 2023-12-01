@@ -11,7 +11,7 @@ const Featured = () => {
 			const res = await GetCustomizedProducts("type", "Sneakers", 1, [], 4)
 			setProducts(res)
 		} catch (error) {
-			console.log(error)
+			console.error(error)
 		}
 	}
 	useEffect(() => {
