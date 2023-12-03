@@ -8,6 +8,7 @@ import SearchPage from "./SearchPage"
 import SearchResult from "./SearchResults"
 import Catalog from "./Catalog"
 import Details from "./product/Details"
+import Cart from "./Cart"
 
 const index = () => {
 	return (
@@ -23,6 +24,7 @@ const index = () => {
 						<Route path="/find/:search_query?" element={<SearchResult />} />
 						<Route path="/:type" element={<Catalog />} />
 						<Route path="/:type/:id" element={<Details />} />
+						<Route path="/cart" element={<Cart />} />
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
 				</div>

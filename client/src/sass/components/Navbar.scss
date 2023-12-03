@@ -34,7 +34,6 @@ header {
 		}
 		.nav-links {
 			display: flex;
-			// margin-left: 100px;
 			background-color: #fff;
 			border: 1px solid #ddd;
 			border-radius: 40px;
@@ -49,9 +48,6 @@ header {
 			&:focus-within {
 				border-color: #111;
 			}
-			// @media screen and (width <= 1024px) {
-			// 	margin-left: 0px;
-			// }
 			.link {
 				&:hover {
 					background-color: rgba(0, 0, 0, 0.05);
@@ -119,6 +115,24 @@ header {
 				overflow: hidden;
 				&:hover {
 					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+				}
+			}
+			.cart-container {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 42px;
+				width: 42px;
+				border-radius: 40px;
+				background-color: transparent;
+				transition: background-color $transition;
+				border: none;
+				&:hover {
+					background-color: rgba(0, 0, 0, 0.1);
+				}
+				.cart {
+					color: #111;
+					font-size: 1.6rem;
 				}
 			}
 		}

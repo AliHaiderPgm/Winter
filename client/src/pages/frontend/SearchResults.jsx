@@ -1,6 +1,6 @@
 import { Button, Checkbox, Empty, Form, Input, Modal, Select } from "antd"
 import { FilterOutlined } from "@ant-design/icons"
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
 import { useEffect, useState } from "react"
 import BnbCard from "../../components/shared/BnbCard"
@@ -19,15 +19,13 @@ const Search = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [products, setProducts] = useState([])
 	const [state, setState] = useState({ name: search_query })
-	const [searchedFor, setSearchedFor] = useState(search_query)
 	const [sizeState, setSizeState] = useState([])
 	const [form] = Form.useForm()
 	const { SearchProduct } = useProduct()
-	const navigate = useNavigate()
 	const [isResEmpty, setIsResEmpty] = useState(false)
 	const [loading, setLoading] = useState(initialLoadingState)
 	const [page, setPage] = useState(1)
-	const [width, setWidth] = useState()
+	const [innerWidth, setInnerWidth] = useState(0)
 	// infinite scroll
 	const handleScroll = () => {
 		/////How much is scrolled from top
@@ -42,10 +40,11 @@ const Search = () => {
 		}
 	}
 	const handleResize = () => {
-		setWidth(window.innerWidth)
+		setInnerWidth(window.innerWidth)
 	}
 	useEffect(() => {
 		window.addEventListener("scroll", handleScroll)
+		setInnerWidth(window.innerWidth)
 		window.addEventListener("resize", handleResize)
 		return () => {
 			window.removeEventListener("scroll", handleScroll)
@@ -85,7 +84,6 @@ const Search = () => {
 	useEffect(() => {
 		resetSomeStuff()
 		setState(prev => ({ ...prev, name: search_query }))
-		setSearchedFor(search_query)
 	}, [search_query])
 
 	const resetSomeStuff = () => {
@@ -145,7 +143,7 @@ const Search = () => {
 		return <Form layout="vertical" form={form}>
 			<div className="d-flex gap-3">
 				{
-					width <= 576 && <Form.Item label="Sort By" name="sort" className="w-100">
+					innerWidth <= 576 && <Form.Item label="Sort By" name="sort" className="w-100">
 						<Select
 							placeholder="Sort"
 							allowClear
@@ -153,7 +151,7 @@ const Search = () => {
 						/>
 					</Form.Item>
 				}
-				<Form.Item label="Shoe For" name="shoefor" className={`${width <= 576 ? "w-100" : "w-50"}`}>
+				<Form.Item label="Shoe For" name="shoefor" className={`${innerWidth <= 576 ? "w-100" : "w-50"}`}>
 					<Select
 						placeholder="Shoe For"
 						allowClear
@@ -202,7 +200,7 @@ const Search = () => {
 				</div>
 				<div className="d-flex align-items-center gap-2">
 					{
-						width > 576 && <Select
+						innerWidth > 576 && <Select
 							placeholder="Sort"
 							allowClear
 							options={sortBy}

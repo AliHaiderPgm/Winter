@@ -4,12 +4,15 @@ import Logo from "../../assets/logo.png"
 import Icon, {
 	MenuOutlined,
 	SearchOutlined,
+	ShoppingCartOutlined,
 } from "@ant-design/icons"
 import { Button, Drawer, Input, Modal, message } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 import { addToHistory } from "../../global"
+import Svg from "../../global/svg"
+
 
 const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
@@ -46,40 +49,8 @@ const Navbar = () => {
 			navigateTo: "/Children"
 		},
 	]
-	const userSvg = () => (
-		<svg
-			version="1.0"
-			xmlns="http://www.w3.org/2000/svg"
-			width="20.000000pt"
-			height="20.000000pt"
-			viewBox="0 0 512.000000 512.000000"
-			preserveAspectRatio="xMidYMid meet"
-		>
-			<g
-				transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
-				fill="#000000"
-				stroke="none"
-			>
-				<path
-					d="M2330 5114 c-92 -9 -298 -45 -395 -70 -447 -112 -853 -344 -1184
--675 -331 -331 -563 -737 -675 -1184 -57 -227 -70 -340 -70 -620 -1 -278 8
--365 59 -582 219 -933 938 -1669 1860 -1903 248 -63 353 -75 645 -74 286 0
-398 14 647 79 839 220 1507 856 1782 1695 38 118 76 277 98 418 28 169 25 584
--5 757 -81 471 -256 861 -547 1223 -289 358 -716 656 -1155 805 -273 93 -479
-128 -785 132 -126 1 -250 1 -275 -1z m370 -949 c385 -58 696 -351 775 -731 21
--100 21 -285 1 -382 -67 -314 -303 -584 -602 -687 -208 -72 -420 -72 -628 0
--306 106 -550 391 -603 705 -19 113 -18 267 2 364 78 375 389 672 765 731 114
-18 176 18 290 0z m-637 -1915 c142 -71 343 -120 497 -120 154 0 355 49 499
-121 l81 40 53 -17 c143 -46 348 -158 496 -270 297 -223 537 -556 650 -903 l31
--93 -56 -64 c-97 -110 -261 -251 -414 -356 -314 -215 -679 -351 -1065 -399
--128 -15 -420 -15 -550 0 -383 47 -753 185 -1065 399 -153 105 -317 246 -414
-357 l-56 63 36 104 c167 483 511 870 970 1090 92 44 196 85 218 87 5 1 45 -17
-89 -39z"
-				/>
-			</g>
-		</svg>
-	)
-	const UserIcon = (props) => <Icon component={userSvg} {...props} />
+
+	const UserIcon = (props) => <Icon component={Svg.userSvg} {...props} />
 
 	const unauthorizedItems = [
 		{
@@ -245,6 +216,7 @@ const Navbar = () => {
 							<img src={Logo} alt="Winter Store" className="img-fluid" />
 						</NavLink>
 					</div>
+					{/* ////////////////////DESKTOP VIEW ///////////////////////////////// */}
 					{
 						innerWidth > 768 && <>
 							<div className="nav-links">
@@ -263,18 +235,22 @@ const Navbar = () => {
 										</div>
 									})
 								}
-								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} onChange={e => handleChange(e)} value={searchText} onPressEnter={() => handleSearch()} />
+								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} onChange={e => handleChange(e)} value={searchText} onPressEnter={() => handleSearch()} allowClear />
 								<div className="icon" onClick={() => handleSearch()}>
 									<div>
 										<SearchOutlined className="search" />
 									</div>
 								</div>
 							</div>
-							<div className="notFrontend">
+							<div className="notFrontend d-flex align-items-center gap-1">
+								<Button className="py-3 cart-container" onClick={() => navigate("/cart")}>
+									<ShoppingCartOutlined className="cart" />
+								</Button>
 								<DropMenu />
 							</div>
 						</>
 					}
+					{/* ////////////////////MOBILE VIEW ////////////////////////// */}
 					{
 						innerWidth <= 768 && <div className="d-flex align-items-center gap-2">
 							<SearchOutlined className="searchIcon" onClick={() => setIsModalOpen(true)} />
@@ -302,6 +278,7 @@ const Navbar = () => {
 					}
 				</div>
 			</header>
+			{/* ////////Part to desktop view //////////// */}
 			{
 				innerWidth > 768 ? <>
 					<div className={`overlay ${searchActive && "active"}`} onClick={() => closeCustomDrawer()}></div>
