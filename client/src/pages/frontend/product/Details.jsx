@@ -6,6 +6,7 @@ import Loader from "../../../components/shared/Loader"
 import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
 import { HeartOutlined } from "@ant-design/icons"
 import { useAuth } from "../../../context/AuthContext"
+import { handleAddToFavorites } from "../../../global"
 
 const Details = () => {
     const { id } = useParams()
@@ -48,7 +49,8 @@ const Details = () => {
     const handleAddToCart = () => {
         const productData = {
             product: { ...product },
-            size: selectedSized
+            size: selectedSized,
+            quantity: 1
         }
         if (!selectedSized) {
             message.error("Select a size!")
@@ -66,18 +68,18 @@ const Details = () => {
         message.success("Added to cart!")
     }
 
-    const handleAddToFavorites = () => {
-        const dataObj = JSON.parse(localStorage.getItem("favProducts"))
-        const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
-        if (isAlreadyAdded) {
-            message.error("Already added to Favorites!")
-            return
-        }
-        const dataArray = dataObj ? dataObj : []
-        dataArray.push(product)
-        localStorage.setItem("favProducts", JSON.stringify(dataArray))
-        message.success("Added to Favorites!")
-    }
+    // const handleAddToFavorites = () => {
+    //     const dataObj = JSON.parse(localStorage.getItem("favProducts"))
+    //     const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
+    //     if (isAlreadyAdded) {
+    //         message.error("Already added to Favorites!")
+    //         return
+    //     }
+    //     const dataArray = dataObj ? dataObj : []
+    //     dataArray.push(product)
+    //     localStorage.setItem("favProducts", JSON.stringify(dataArray))
+    //     message.success("Added to Favorites!")
+    // }
 
     const handleAddReview = async (values) => {
         const rating = Math.ceil((values.rating + product.rating) / 2)
@@ -245,7 +247,7 @@ const Details = () => {
                                 <Button type="primary" className="btn-filled p-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
                             </div>
                             <div className="col-12 p-0">
-                                <Button type="text" className="btn-outline p-4 w-100" shape="round" onClick={handleAddToFavorites}>Favorite <HeartOutlined /></Button>
+                                <Button type="text" className="btn-outline p-4 w-100" shape="round" onClick={() => handleAddToFavorites(product)}>Favorite <HeartOutlined /></Button>
                             </div>
                         </div>
                         <p className="w-100">{product?.description}</p>
