@@ -5,14 +5,17 @@ import AuthContextProvider from "./context/AuthContext"
 import { ThemeProvider } from "@mui/material"
 import { theme } from "./components/muiTheme"
 import ProductContextProvider from "./context/ProductContext"
+import CartContextProvider from "./context/CartContext"
 function App() {
 	return (
 		<>
 			<AuthContextProvider>
 				<ProductContextProvider>
-					<ThemeProvider theme={theme}>
-						<Router />
-					</ThemeProvider>
+					<CartContextProvider>
+						<ThemeProvider theme={theme}>
+							<Router />
+						</ThemeProvider>
+					</CartContextProvider>
 				</ProductContextProvider>
 			</AuthContextProvider>
 		</>

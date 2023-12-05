@@ -60,9 +60,11 @@ export const getHistory = () => {
 	return dataObj
 }
 
+
+// --------------FAVORITE PRODUCTS -------------------//
+
 export const handleAddToFavorites = (product) => {
 	const dataObj = JSON.parse(localStorage.getItem("favProducts"))
-	// const isAlreadyAdded = 
 	if (checkInFavorites(product)) {
 		message.error("Already added to Favorites!")
 		return
@@ -77,3 +79,6 @@ export const checkInFavorites = (product) => {
 	const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
 	return isAlreadyAdded
 }
+
+
+// ---------------CART PRODUCTS ------------------------//

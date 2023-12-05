@@ -7,6 +7,7 @@ import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icon
 import { HeartOutlined } from "@ant-design/icons"
 import { useAuth } from "../../../context/AuthContext"
 import { handleAddToFavorites } from "../../../global"
+import { useCart } from "../../../context/CartContext"
 
 const Details = () => {
     const { id } = useParams()
@@ -21,6 +22,7 @@ const Details = () => {
     const [selectedSized, setSelectedSized] = useState(null)
     const navigate = useNavigate()
     const [error, setError] = useState(false)
+    const { addToCart } = useCart()
 
     const getDetails = async () => {
         setLoading(prev => ({ ...prev, product: true }))
@@ -57,14 +59,15 @@ const Details = () => {
             return
         }
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
-        const isAlreadyAdded = dataObj?.some(item => item.size === selectedSized)
-        if (isAlreadyAdded) {
+        const isSizeAdded = dataObj?.some(item => item.size === selectedSized)
+        if (isSizeAdded) {
             message.error("Already added to cart!")
             return
         }
-        const dataArray = dataObj ? dataObj : []
-        dataArray.push(productData)
-        localStorage.setItem("cartItems", JSON.stringify(dataArray))
+        addToCart(productData)
+        // const dataArray = dataObj ? dataObj : []
+        // dataArray.push(productData)
+        // localStorage.setItem("cartItems", JSON.stringify(dataArray))
         message.success("Added to cart!")
     }
 

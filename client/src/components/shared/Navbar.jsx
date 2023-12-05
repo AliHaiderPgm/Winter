@@ -6,12 +6,13 @@ import Icon, {
 	SearchOutlined,
 	ShoppingCartOutlined,
 } from "@ant-design/icons"
-import { Button, Drawer, Input, Modal, message } from "antd"
+import { Badge, Button, Drawer, Input, Modal, message } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 import { addToHistory } from "../../global"
 import Svg from "../../global/svg"
+import { useCart } from "../../context/CartContext"
 
 
 const Navbar = () => {
@@ -20,6 +21,7 @@ const Navbar = () => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [searchActive, setSearchActive] = useState(false)
+	const { products } = useCart()
 	const navigate = useNavigate()
 	const queryParams = useParams()
 	const query = Object.values(queryParams)[0].split('/')
@@ -244,7 +246,9 @@ const Navbar = () => {
 							</div>
 							<div className="notFrontend d-flex align-items-center gap-1">
 								<Button className="py-3 cart-container" onClick={() => navigate("/cart")}>
-									<ShoppingCartOutlined className="cart" />
+									<Badge count={products.length} color="#111">
+										<ShoppingCartOutlined className="cart" />
+									</Badge>
 								</Button>
 								<DropMenu />
 							</div>

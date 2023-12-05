@@ -3,6 +3,7 @@ import Icon, { DeleteOutlined } from "@ant-design/icons"
 import Svg from "../../global/svg";
 import { useEffect, useRef, useState } from "react";
 import { handleAddToFavorites } from "../../global";
+import { useCart } from "../../context/CartContext";
 
 const HeartIcon = (props) => <Icon component={Svg.heart} {...props} />
 
@@ -11,6 +12,7 @@ const CartCard = ({ product, updateProduct }) => {
     const data = product.product
     const quantity = Array.from({ length: 10 }, (_, index) => ({ label: index + 1, value: index + 1 }))
     const [qtyValue, setQtyVal] = useState(product.quantity)
+    const { removeFromCart } = useCart()
     const sizes = data?.sizes.map(size => {
         return {
             value: size,
@@ -64,25 +66,14 @@ const CartCard = ({ product, updateProduct }) => {
             </div>
             <div className="d-flex gap-2 my-2">
                 <HeartIcon onClick={() => handleAddToFavorites(data)} />
-                <DeleteOutlined className="fs-4" />
+                <DeleteOutlined className="fs-4" onClick={() => removeFromCart(product)} />
             </div>
         </div>
     </div>
 }
 
 const Cart = () => {
-    const [products, setProducts] = useState([])
-    const log = useRef(true)
-    const getProducts = () => {
-        const dataObj = JSON.parse(localStorage.getItem("cartItems"))
-        setProducts(dataObj ? dataObj : [])
-    }
-    useEffect(() => {
-        if (log) {
-            getProducts()
-            log.current = false
-        }
-    }, [])
+    const { products, setProducts } = useCart()
 
     const handleUpdate = (e) => {
         setProducts(prev => prev.map(product =>
