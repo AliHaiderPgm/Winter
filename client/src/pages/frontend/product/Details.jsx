@@ -58,12 +58,12 @@ const Details = () => {
             message.error("Select a size!")
             return
         }
-        const dataObj = JSON.parse(localStorage.getItem("cartItems"))
-        const isSizeAdded = dataObj?.some(item => item.size === selectedSized)
-        if (isSizeAdded) {
-            message.error("Already added to cart!")
-            return
-        }
+        // const dataObj = JSON.parse(localStorage.getItem("cartItems"))
+        // // const isSizeAdded = dataObj?.some(item => item.size === selectedSized)
+        // // if (isSizeAdded) {
+        // //     message.error("Already added to cart!")
+        // //     return
+        // // }
         addToCart(productData)
         // const dataArray = dataObj ? dataObj : []
         // dataArray.push(productData)

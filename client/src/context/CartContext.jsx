@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { getRandomId } from "../global"
+import { message } from "antd"
 
 const CartContext = createContext()
 const CartContextProvider = ({ children }) => {
@@ -24,12 +25,41 @@ const CartContextProvider = ({ children }) => {
 
     const addToCart = (newData) => {
         getCartProducts()
-        const data = {
-            ...newData,
-            cartId: getRandomId()
+        const checkSize = products.some(e => e.size === newData.size)
+        const checkProduct = products.some(e => e.product._id === newData.product._id)
+        // let quantity = 0;
+        // const an = products.map(item => {
+        //     let val = 0;
+        //     if (item.product._id === newData.product._id) {
+        //         val + item.quantity + newData.quantity
+        //     }
+        //     return val
+        // })
+        // console.log(an)
+
+        if (checkProduct) {
+            const totalQuantity = products.reduce((acc, item) => {
+                return item.product._id === newData.product._id ? acc + item.quantity + newData.quantity : acc
+            }, 0)
+            console.log(totalQuantity)
         }
-        products.push(data)
-        localStorage.setItem("cartItems", JSON.stringify(products))
+
+
+        if (checkProduct && checkSize) {
+            const data = products.map((item) =>
+                item.product._id === newData.product._id && item.size === newData.size
+                    ? { ...item, quantity: item.quantity + newData.quantity }
+                    : item
+            )
+            localStorage.setItem("cartItems", JSON.stringify(data))
+        } else {
+            const data = {
+                ...newData,
+                cartId: getRandomId()
+            }
+            products.push(data)
+            localStorage.setItem("cartItems", JSON.stringify(products))
+        }
         getCartProducts()
     }
     const removeFromCart = (data) => {
