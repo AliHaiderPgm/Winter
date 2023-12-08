@@ -68,7 +68,7 @@ const Details = () => {
         // const dataArray = dataObj ? dataObj : []
         // dataArray.push(productData)
         // localStorage.setItem("cartItems", JSON.stringify(dataArray))
-        message.success("Added to cart!")
+        // message.success("Added to cart!")
     }
 
     // const handleAddToFavorites = () => {

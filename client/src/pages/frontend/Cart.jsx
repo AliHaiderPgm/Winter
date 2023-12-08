@@ -8,11 +8,11 @@ import { useCart } from "../../context/CartContext";
 const HeartIcon = (props) => <Icon component={Svg.heart} {...props} />
 
 
-const CartCard = ({ product, updateProduct }) => {
+const CartCard = ({ product }) => {
     const data = product.product
     const quantity = Array.from({ length: 10 }, (_, index) => ({ label: index + 1, value: index + 1 }))
     const [qtyValue, setQtyVal] = useState(product.quantity)
-    const { removeFromCart } = useCart()
+    const { removeFromCart, updateCart } = useCart()
     const sizes = data?.sizes.map(size => {
         return {
             value: size,
@@ -26,7 +26,7 @@ const CartCard = ({ product, updateProduct }) => {
             [key]: val,
         }
         key === "quantity" && setQtyVal(val)
-        updateProduct(updatedData)
+        updateCart(updatedData)
     }
 
     return <div className="cart-card row">
@@ -75,11 +75,11 @@ const CartCard = ({ product, updateProduct }) => {
 const Cart = () => {
     const { products, setProducts } = useCart()
 
-    const handleUpdate = (e) => {
-        setProducts(prev => prev.map(product =>
-            product.product._id === e.product._id ? e : product
-        ))
-    }
+    // const handleUpdate = (e) => {
+    //     setProducts(prev => prev.map(product =>
+    //         product.product._id === e.product._id ? e : product
+    //     ))
+    // }
     return (
         <div className="cart d-flex justify-content-center py-3">
             <div className="wrapper">
@@ -89,7 +89,7 @@ const Cart = () => {
                         <div className="d-flex flex-column gap-2">
                             {
                                 products.map((product, index) => {
-                                    return <CartCard product={product} updateProduct={handleUpdate} key={index} />
+                                    return <CartCard product={product} key={index} />
                                 })
                             }
                         </div>
