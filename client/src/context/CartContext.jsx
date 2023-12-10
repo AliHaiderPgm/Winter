@@ -26,19 +26,17 @@ const CartContextProvider = ({ children }) => {
         }
     }, [])
 
-    const handleTotalQuantity = (e) => {
+    const totalQuantity = (e) => {
         return products
             .filter(item => item.product._id === e.product._id)
             .reduce((acc, item) => acc + item.quantity, 0)
-            + e.quantity
     }
 
     const addToCart = (newData) => {
         getCartProducts()
         const checkSize = products.some(e => e.size === newData.size)
         const checkProduct = products.some(e => e.product._id === newData.product._id)
-        const totalCount = handleTotalQuantity(newData)
-
+        const totalCount = totalQuantity(newData) + newData.quantity
         if (totalCount > 10) {
             message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
             return
@@ -77,6 +75,13 @@ const CartContextProvider = ({ children }) => {
     const updateCart = (data) => {
         const checkSize = products.some(e => e.size === data.size)
         const checkProduct = products.some(e => e.product._id === data.product._id)
+        const totalCount = totalQuantity(data)
+
+        if (totalCount > 10) {
+            message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
+            return
+        }
+
         if (checkSize && checkProduct) {
             const productIndex = products.findIndex(e => e.cartId === data.cartId)
             const array = [...products]
@@ -87,7 +92,7 @@ const CartContextProvider = ({ children }) => {
     }
     return (
         <>
-            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart }}>
+            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart, totalQuantity }}>
                 {children}
             </CartContext.Provider>
         </>
