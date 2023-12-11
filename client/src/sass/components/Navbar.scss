@@ -166,7 +166,6 @@ header {
 	position: absolute;
 	top: 80px;
 	bottom: 0;
-	height: 100%;
 	width: 100%;
 	backdrop-filter: blur(4px);
 	overflow: hidden;
@@ -175,6 +174,7 @@ header {
 }
 .overlay.active {
 	z-index: 20;
+	height: 100%;
 }
 .pre-search {
 	position: absolute;

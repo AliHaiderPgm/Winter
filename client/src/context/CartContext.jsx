@@ -34,8 +34,10 @@ const CartContextProvider = ({ children }) => {
 
     const addToCart = (newData) => {
         getCartProducts()
-        const checkSize = products.some(e => e.size === newData.size)
         const checkProduct = products.some(e => e.product._id === newData.product._id)
+        const matchedProducts = products.filter(e => e.product._id === newData.product._id)
+        const checkSize = matchedProducts.some(e => e.size === newData.size)
+
         const totalCount = totalQuantity(newData) + newData.quantity
         if (totalCount > 10) {
             message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
@@ -72,22 +74,23 @@ const CartContextProvider = ({ children }) => {
     }
 
 
-    const updateCart = (data) => {
-        const checkSize = products.some(e => e.size === data.size)
-        const checkProduct = products.some(e => e.product._id === data.product._id)
-        const totalCount = totalQuantity(data)
+    const updateCart = (newData) => {
+        // const checkProduct = products.some(e => e.product._id === newData.product._id)
+        // const matchedProducts = products.filter(e => e.product._id === newData.product._id)
+        // const checkSize = matchedProducts.some(e => e.size === newData.size)
 
-        if (totalCount > 10) {
-            message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
-            return
-        }
+        // const totalCount = totalQuantity(newData)
+        // if (totalCount > 10) {
+        //     message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
+        //     return
+        // }
 
-        if (checkSize && checkProduct) {
-            const productIndex = products.findIndex(e => e.cartId === data.cartId)
-            const array = [...products]
-            array[productIndex] = data
-            localStorage.setItem("cartItems", JSON.stringify(array))
-        }
+        const productIndex = products.findIndex(e => e.cartId === newData.cartId)
+        const array = [...products]
+        array[productIndex] = newData
+        localStorage.setItem("cartItems", JSON.stringify(array))
+        // if (checkSize && checkProduct) {
+        // }
         getCartProducts()
     }
     return (

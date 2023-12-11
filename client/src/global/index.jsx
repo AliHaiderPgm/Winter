@@ -79,6 +79,3 @@ export const checkInFavorites = (product) => {
 	const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
 	return isAlreadyAdded
 }
-
-
-// ---------------CART PRODUCTS ------------------------//

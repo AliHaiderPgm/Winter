@@ -30,7 +30,7 @@ const BnbCard = React.forwardRef((props, ref) => {
 	return (
 		<div className="card-content-wrapper" ref={ref} key={uniqueKey}>
 			{
-				!imageLoaded ? <MemoizedSkeletonImage style={{ height: "350px", width: "100%" }} active /> : null
+				!imageLoaded ? <MemoizedSkeletonImage style={{ height: "330px", width: "100%" }} active /> : null
 			}
 			{
 				imageLoaded ? <div className="carousel d-flex flex-column justify-content-center">
