@@ -19,18 +19,21 @@ const CartCard = ({ product }) => {
             label: size
         }
     })
-    const defaultSize = product?.size
     const handleChange = (key, val) => {
-        const newQty = key === "quantity" && val
-        const totalCount = totalQuantity(product) + newQty
+        const newVal = key === 'quantity' && val
+        const totalCount = totalQuantity(product)
         console.log(totalCount)
-        if (totalCount <= 10) {
+        console.log(totalCount)
+        if (totalCount > 10) {
+            updateCart(product)
+            // setQtyVal(product?.quantity)
+        } else {
             const updatedData = {
                 ...product,
                 [key]: val,
             }
-            key === "quantity" && setQtyVal(val)
             updateCart(updatedData)
+            key === "quantity" && setQtyVal(val)
         }
     }
 
@@ -60,7 +63,7 @@ const CartCard = ({ product }) => {
                             style={{
                                 width: 60,
                             }}
-                            defaultValue={defaultSize}
+                            value={product?.size}
                             options={sizes}
                             onChange={e => handleChange("size", e)}
                         />
@@ -71,6 +74,7 @@ const CartCard = ({ product }) => {
                             style={{
                                 width: 60,
                             }}
+                            value={product?.quantity}
                             options={quantity}
                             onChange={e => handleChange("quantity", e)}
                         />

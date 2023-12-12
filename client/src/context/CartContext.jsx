@@ -70,11 +70,13 @@ const CartContextProvider = ({ children }) => {
     const removeFromCart = (data) => {
         const leftOver = products.filter(e => e.cartId !== data.cartId)
         localStorage.setItem("cartItems", JSON.stringify(leftOver))
+
         getCartProducts()
     }
 
 
     const updateCart = (newData) => {
+        // console.log(newData)
         // const checkProduct = products.some(e => e.product._id === newData.product._id)
         // const matchedProducts = products.filter(e => e.product._id === newData.product._id)
         // const checkSize = matchedProducts.some(e => e.size === newData.size)
