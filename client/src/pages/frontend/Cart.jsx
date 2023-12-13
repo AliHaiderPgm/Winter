@@ -11,7 +11,6 @@ const HeartIcon = (props) => <Icon component={Svg.heart} {...props} />
 const CartCard = ({ product }) => {
     const data = product.product
     const quantity = Array.from({ length: 10 }, (_, index) => ({ label: index + 1, value: index + 1 }))
-    const [qtyValue, setQtyVal] = useState(product.quantity)
     const { removeFromCart, updateCart, totalQuantity } = useCart()
     const sizes = data?.sizes.map(size => {
         return {
@@ -19,23 +18,35 @@ const CartCard = ({ product }) => {
             label: size
         }
     })
+
+    const [qtyValue, setQtyVal] = useState(product.quantity);
+    const [prevQuantity, setPrevQuantity] = useState(product.quantity);
+
     const handleChange = (key, val) => {
-        const newVal = key === 'quantity' && val
-        const totalCount = totalQuantity(product)
-        console.log(totalCount)
-        console.log(totalCount)
-        if (totalCount > 10) {
-            updateCart(product)
-            // setQtyVal(product?.quantity)
-        } else {
-            const updatedData = {
-                ...product,
-                [key]: val,
+        const updatedData = {
+            ...product,
+            [key]: val,
+        };
+
+        if (key === "quantity") {
+            const currentTotalQuantity = totalQuantity(updatedData);
+            const newTotalQuantity = currentTotalQuantity - prevQuantity + val;
+
+            if (newTotalQuantity <= 10) {
+                // Update state with new quantity
+                setQtyVal(val);
+                setPrevQuantity(val);
+                updateCart(updatedData);
+            } else {
+                // Revert to the previous quantity
+                setQtyVal(prevQuantity);
+                // Update state with previous quantity
+                updateCart({ ...product, quantity: prevQuantity });
             }
-            updateCart(updatedData)
-            key === "quantity" && setQtyVal(val)
+        } else {
+            updateCart(updatedData);
         }
-    }
+    };
 
     // Get the current date
     const currentDate = new Date();
@@ -49,12 +60,12 @@ const CartCard = ({ product }) => {
     const Arrival = futureDate.toLocaleDateString('en-US', options);
 
     return <div className="cart-card row">
-        <div className="col-3">
+        <div className="col-4 col-sm-3">
             <img src={data?.images[0]} alt={data?.name} className="img-fluid image rounded object-fit-cover h-100" />
         </div>
         <div className="col-8">
-            <div className="row">
-                <div className="col-9">
+            <div className="row flex-column-reverse flex-sm-row">
+                <div className="col-12 col-sm-9">
                     <p className="fw-semibold">{data?.name}</p>
                     <p className="text-black-50">{data?.type}</p>
                     <div className="d-flex gap-2">
@@ -80,7 +91,7 @@ const CartCard = ({ product }) => {
                         />
                     </div>
                 </div>
-                <div className="col-3">
+                <div className="col-12 col-sm-3">
                     <p className="fw-semibold">Rs.{data?.price * qtyValue}</p>
                 </div>
             </div>
@@ -89,7 +100,7 @@ const CartCard = ({ product }) => {
                 <DeleteOutlined className="fs-4" onClick={() => removeFromCart(product)} />
             </div>
         </div>
-        <div className="mt-2">
+        <div className="col-12 col-md-11 mt-2">
             <p className="m-0 fw-semibold">Shipping</p>
             <p className="m-0 text-black-50 ">Arrives by {Arrival}</p>
         </div>
@@ -100,6 +111,14 @@ const Cart = () => {
     const { products } = useCart()
     const [subTotal, setSubTotal] = useState(0)
     const [tax, setTax] = useState(0)
+    const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+
+    useEffect(() => {
+        window.addEventListener("resize", () => { setInnerWidth(window.innerWidth) })
+        return () => {
+            window.removeEventListener("resize", () => { setInnerWidth(window.innerWidth) })
+        }
+    }, [])
 
     useEffect(() => {
         const val = products.map(i => {
@@ -133,11 +152,20 @@ const Cart = () => {
         <div className="cart d-flex justify-content-center py-3">
             <div className="wrapper">
                 <div className="row w-100 pt-4">
-                    <div className="col-7">
-                        <h3>Bag</h3>
+                    <div className="col-12 col-md-7">
+                        <h3 className="text-center">Bag</h3>
                         {
-                            products.length === 0 ? <p>There are no items in your bag.</p>
-                                : <div className="d-flex flex-column gap-3">
+                            innerWidth <= 768 &&
+                            <>
+                                <p className="text-center mb-3">
+                                    {products.length > 0 ? products.length : 0} items | {products.length > 0 ? `Rs.${subTotal + tax}` : "—"}
+                                </p>
+                                <Divider />
+                            </>
+                        }
+                        {
+                            products.length === 0 ? <p className="mb-3">There are no items in your bag.</p>
+                                : <div className="d-flex flex-column align-items-center  gap-3">
                                     {
                                         products.map((product, index) => {
                                             return <CartCard product={product} key={index} />
@@ -147,7 +175,7 @@ const Cart = () => {
                                 </div>
                         }
                     </div>
-                    <div className="col-4">
+                    <div className="col-12 col-md-4">
                         <h3>Summary</h3>
                         <div className="d-flex flex-column gap-2 mb-3">
                             {

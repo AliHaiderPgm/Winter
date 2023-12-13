@@ -257,6 +257,11 @@ const Navbar = () => {
 					{/* ////////////////////MOBILE VIEW ////////////////////////// */}
 					{
 						innerWidth <= 768 && <div className="d-flex align-items-center gap-2">
+							<Button className="py-3 cart-container" onClick={() => navigate("/cart")}>
+								<Badge count={products.length} color="#111">
+									<ShoppingCartOutlined className="cart" />
+								</Badge>
+							</Button>
 							<SearchOutlined className="searchIcon" onClick={() => setIsModalOpen(true)} />
 							<Modal title="Search" open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={<ModalFooter />}>
 								<Input placeholder="Search" size="large" className="mb-2" onChange={e => handleChange(e)} value={searchText} allowClear />
