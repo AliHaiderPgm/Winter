@@ -9,6 +9,7 @@ const multer = require('multer')
 const upload = multer();
 const port = process.env.PORT || 5000
 
+
 connectDB()
 
 const app = express()
@@ -26,6 +27,7 @@ app.use(express.urlencoded({ limit: '20mb', extended: true }))
 
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/products', require('./routes/productRoutes'))
+app.use('/api/checkout', require('./routes/checkoutRoute'))
 
 app.use(errorHandler)
 

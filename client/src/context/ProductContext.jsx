@@ -18,7 +18,7 @@ const ProductContextProvider = (props) => {
 			setLoading(true)
 			const res = await axios.post(API_URL, productData, config)
 			if (res.status === 200) {
-				messageApi.success("Product added successfully!")
+				message.success("Product added successfully!")
 				return res.status
 			}
 		} catch (error) {

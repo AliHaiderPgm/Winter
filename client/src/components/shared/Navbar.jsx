@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate, useParams } from "react-router-dom"
 import Logo from "../../assets/logo.png"
 import Icon, {
 	MenuOutlined,
+	RightOutlined,
 	SearchOutlined,
 	ShoppingCartOutlined,
 } from "@ant-design/icons"
@@ -122,25 +123,25 @@ const Navbar = () => {
 
 	const DrawerFooter = () => {
 		const currentHour = new Date().getHours();
-		const greeting =
-			currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
-		return <Suspense fallback={<p>Loading...</p>}>
+		const greeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening';
+		return <>
 			{
-				user ? <Dropdown
-					menu={{ items }}
-					trigger={["click"]}
-					className="p-2"
-					arrow
-					placement="topRight"
-				>
-					<div className="d-flex align-items-center justify-content-between">
-						<p className="m-0">{greeting}! <span className="fw-bold">{user?.name}</span></p>
-						<UserIcon className="icon" />
-					</div>
-				</Dropdown>
+				user ?
+					<Suspense fallback={<p>Loading...</p>}>
+						<Dropdown
+							menu={{ items }}
+							trigger={["click"]}
+							className="p-2"
+						>
+							<div className="d-flex align-items-center justify-content-between">
+								<p className="m-0">{greeting}! <span className="fw-bold">{user?.name}</span></p>
+								<UserIcon className="icon" />
+							</div>
+						</Dropdown>
+					</Suspense>
 					: <Button className="btn-filled w-100" onClick={() => navigate("/auth/login")}>Login</Button>
 			}
-		</Suspense>
+		</>
 	}
 
 	const ModalFooter = () => {
@@ -262,6 +263,7 @@ const Navbar = () => {
 									<ShoppingCartOutlined className="cart" />
 								</Badge>
 							</Button>
+
 							<SearchOutlined className="searchIcon" onClick={() => setIsModalOpen(true)} />
 							<Modal title="Search" open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={<ModalFooter />}>
 								<Input placeholder="Search" size="large" className="mb-2" onChange={e => handleChange(e)} value={searchText} allowClear />
@@ -278,7 +280,10 @@ const Navbar = () => {
 											className={({ isActive }) => isActive ? "active link" : "inactive link"}
 											key={index}
 										>
-											{item.title}
+											<div className="d-flex fw-semibold justify-content-between align-items-center">
+												<p className="m-0 fs-3">{item.title}</p>
+												<RightOutlined />
+											</div>
 										</NavLink>
 									})}
 								</div>

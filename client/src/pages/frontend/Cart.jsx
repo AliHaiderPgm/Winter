@@ -4,6 +4,7 @@ import Svg from "../../global/svg";
 import { useEffect, useState } from "react";
 import { handleAddToFavorites } from "../../global";
 import { useCart } from "../../context/CartContext";
+import axios from "axios";
 
 const HeartIcon = (props) => <Icon component={Svg.heart} {...props} />
 
@@ -112,6 +113,7 @@ const Cart = () => {
     const [subTotal, setSubTotal] = useState(0)
     const [tax, setTax] = useState(0)
     const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+    const { checkout } = useCart()
 
     useEffect(() => {
         window.addEventListener("resize", () => { setInnerWidth(window.innerWidth) })
@@ -148,14 +150,23 @@ const Cart = () => {
         },
     ]
 
+    const handleCheckOut = () => {
+        try {
+            checkout()
+            console.log("clicked")
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div className="cart d-flex justify-content-center py-3">
             <div className="wrapper">
                 <div className="row w-100 pt-4">
                     <div className="col-12 col-md-7">
-                        <h3 className="text-center">Bag</h3>
+                        <h3 className="text-center text-md-start">Bag</h3>
                         {
-                            innerWidth <= 768 &&
+                            innerWidth < 768 &&
                             <>
                                 <p className="text-center mb-3">
                                     {products.length > 0 ? products.length : 0} items | {products.length > 0 ? `Rs.${subTotal + tax}` : "—"}
@@ -201,7 +212,7 @@ const Cart = () => {
                             </div>
                             <Divider className="m-0" />
                         </div>
-                        <Button className="btn-filled w-100" size="large" onClick={() => console.log(products)}>Check out</Button>
+                        <Button className="btn-filled w-100" size="large" onClick={handleCheckOut}>Check out</Button>
                     </div>
                 </div>
             </div>

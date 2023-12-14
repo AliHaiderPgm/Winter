@@ -1,9 +1,12 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { getRandomId } from "../global"
 import { message } from "antd"
+import axios from "axios"
 
 const CartContext = createContext()
+
 const CartContextProvider = ({ children }) => {
+
     const [products, setProducts] = useState([])
     const log = useRef(true)
     const successMessage = "Added to Cart!"
@@ -95,9 +98,15 @@ const CartContextProvider = ({ children }) => {
         // }
         getCartProducts()
     }
+
+    //------------CHECKOUT------------// 
+    const checkout = () => {
+        const url = axios.post(`${import.meta.env.VITE_API_URL}/checkout/create-checkout-session`, { items: [{ id: 1, quantity: 3 }, { id: 2, quantity: 1 }] })
+        console.log(url)
+    }
     return (
         <>
-            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart, totalQuantity }}>
+            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart, totalQuantity, checkout }}>
                 {children}
             </CartContext.Provider>
         </>
