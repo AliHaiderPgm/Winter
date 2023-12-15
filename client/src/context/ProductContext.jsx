@@ -3,7 +3,7 @@ import { message } from "antd"
 import axios from "axios"
 
 const ProductContext = createContext()
-const API_URL = "http://localhost:5000/api/products"
+const API_URL = `${import.meta.env.VITE_API_URL}/products`
 const config = {
 	withCredentials: true,
 }

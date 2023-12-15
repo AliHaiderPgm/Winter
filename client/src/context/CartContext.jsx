@@ -100,9 +100,13 @@ const CartContextProvider = ({ children }) => {
     }
 
     //------------CHECKOUT------------// 
-    const checkout = () => {
-        const url = axios.post(`${import.meta.env.VITE_API_URL}/checkout/create-checkout-session`, { items: [{ id: 1, quantity: 3 }, { id: 2, quantity: 1 }] })
-        console.log(url)
+    const checkout = async () => {
+        try {
+            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/create-checkout-session`, { items: products })
+            window.location = data.url
+        } catch (error) {
+            console.error(error)
+        }
     }
     return (
         <>
