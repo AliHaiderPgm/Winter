@@ -108,9 +108,15 @@ const CartContextProvider = ({ children }) => {
             console.error(error)
         }
     }
+
+    //-------------CONFIRM ORDER----------//
+    const confirmOrder = async (id) => {
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/confirm-order?session_id=${id}`)
+        return res.data
+    }
     return (
         <>
-            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart, totalQuantity, checkout }}>
+            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart, totalQuantity, checkout, confirmOrder }}>
                 {children}
             </CartContext.Provider>
         </>

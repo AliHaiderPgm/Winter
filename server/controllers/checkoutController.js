@@ -29,7 +29,7 @@ const checkoutController = asyncHandler(async (req, res) => {
                     quantity: item.quantity,
                 }
             }),
-            success_url: `${process.env.CLIENT_URL}/cart/success`,
+            success_url: `${process.env.CLIENT_URL}/success/{CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.CLIENT_URL}/cart`,
         })
         // console.log(session)
@@ -40,4 +40,20 @@ const checkoutController = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = checkoutController
+const confirmOrder = asyncHandler(async (req, res) => {
+    try {
+        const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+        // console.log(session)
+        // const customer = await stripe.customers.retrieve(session.id);
+        // console.log(customer)
+
+        res.status(200).json(session.customer_details)
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+})
+
+module.exports = {
+    checkoutController,
+    confirmOrder
+}
