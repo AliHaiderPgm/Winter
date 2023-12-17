@@ -79,3 +79,20 @@ export const checkInFavorites = (product) => {
 	const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
 	return isAlreadyAdded
 }
+
+
+//-------------------CALCULATE ARRIVAL------------------//
+export const formatDate = (val) => {
+	// Get the current date
+	const currentDate = new Date();
+
+	// Calculate the date 7 days from now
+	const futureDate = new Date(currentDate);
+	futureDate.setDate(currentDate.getDate() + val ? val : 0);
+
+	// Format the date
+	const options = { weekday: 'short', month: 'short', day: 'numeric' };
+	const Arrival = futureDate.toLocaleDateString('en-US', options);
+
+	return Arrival
+}

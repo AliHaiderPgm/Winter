@@ -8,6 +8,8 @@ const CartContext = createContext()
 const CartContextProvider = ({ children }) => {
 
     const [products, setProducts] = useState([])
+    const [subTotal, setSubTotal] = useState(0)
+    const [tax, setTax] = useState(0)
     const log = useRef(true)
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
@@ -21,13 +23,24 @@ const CartContextProvider = ({ children }) => {
             getCartProducts()
             log.current = false
         }
-    }, [])
-    useEffect(() => {
+
         window.addEventListener("storage", getCartProducts)
         return () => {
             window.removeEventListener("storage", getCartProducts)
         }
     }, [])
+
+    useEffect(() => {
+        const val = products.map(i => {
+            const quantity = i.quantity
+            const price = i.product.price
+            return quantity * price
+
+        }).reduce((acc, val) => acc + val, 0)
+        setSubTotal(val)
+        const totalTax = Math.round(0.18 * val)
+        setTax(totalTax)
+    }, [products])
 
     const totalQuantity = (e) => {
         return products
@@ -69,14 +82,12 @@ const CartContextProvider = ({ children }) => {
         getCartProducts()
     }
 
-
     const removeFromCart = (data) => {
         const leftOver = products.filter(e => e.cartId !== data.cartId)
         localStorage.setItem("cartItems", JSON.stringify(leftOver))
 
         getCartProducts()
     }
-
 
     const updateCart = (newData) => {
         // console.log(newData)
@@ -114,9 +125,21 @@ const CartContextProvider = ({ children }) => {
         const res = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/confirm-order?session_id=${id}`)
         return res.data
     }
+
+    const contextValue = {
+        products,
+        updateCart,
+        addToCart,
+        removeFromCart,
+        totalQuantity,
+        subTotal,
+        tax,
+        checkout,
+        confirmOrder
+    }
     return (
         <>
-            <CartContext.Provider value={{ products, updateCart, addToCart, removeFromCart, totalQuantity, checkout, confirmOrder }}>
+            <CartContext.Provider value={contextValue}>
                 {children}
             </CartContext.Provider>
         </>

@@ -10,6 +10,7 @@ import Catalog from "./Catalog"
 import Details from "./product/Details"
 import Cart from "./Cart"
 import CheckoutSuccess from "./CheckoutSuccess"
+import Checkout from "./Checkout"
 
 const index = () => {
 	return (
@@ -26,6 +27,7 @@ const index = () => {
 						<Route path="/:type" element={<Catalog />} />
 						<Route path="/:type/:id" element={<Details />} />
 						<Route path="/cart" element={<Cart />} />
+						<Route path="/checkout" element={<Checkout />} />
 						<Route path="/success/:id" element={<CheckoutSuccess />} />
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
