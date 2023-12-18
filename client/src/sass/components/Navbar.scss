@@ -26,7 +26,8 @@ header {
 			img {
 				width: 50px;
 				rotate: 0deg;
-				transition: rotate 40s cubic-bezier(0.25, 1, 0.3, 1);
+				transition: rotate 90s cubic-bezier(0.25, 1, 0.3, 1);
+				transition-delay: 5s;
 				&:hover {
 					rotate: 360deg;
 				}

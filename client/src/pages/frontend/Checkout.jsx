@@ -1,4 +1,4 @@
-import { Divider, Segmented } from "antd"
+import { Divider, Form, Input, Radio, Segmented, Select } from "antd"
 import SummaryElements from "../../components/frontend/cart/SummaryElements"
 import { useCart } from "../../context/CartContext"
 import { formatDate } from "../../global"
@@ -9,10 +9,139 @@ const Checkout = () => {
     return (
         <div className="row vh-100 w-100">
             <div className="col-6">
-                <Segmented options={['Cash on Delivery', 'Pay online']} />
+                <h3 className="pb-4">Checkout</h3>
+                <Form layout="vertical">
+                    <div className="d-flex gap-4">
+                        <Form.Item
+                            name="firstName"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your first name.',
+                                },
+                            ]}>
+                            <Input placeholder="First Name" size="large" />
+                        </Form.Item>
+                        <Form.Item
+                            name="secondName"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your second name.',
+                                },
+                            ]}>
+                            <Input placeholder="Second Name" size="large" />
+                        </Form.Item>
+                    </div>
+                    <Form.Item
+                        name="address"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please enter a valid address.',
+                            },
+                        ]}>
+                        <Input placeholder="Address" size="large" />
+                    </Form.Item>
+                    <div className="d-flex gap-3">
+                        <Form.Item
+                            name="district"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please enter a valid district.',
+                                },
+                            ]}>
+                            <Input placeholder="District" size="large" />
+                        </Form.Item>
+                        <Form.Item
+                            name="state"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Select a state.',
+                                },
+                            ]}>
+                            <Select
+                                placeholder="State"
+                                size="large"
+                                // style={{
+                                //     width: 120,
+                                // }}
+                                // onChange={handleChange}
+                                options={[
+                                    {
+                                        value: 'Punjab',
+                                        label: 'Punjab',
+                                    },
+                                    {
+                                        value: 'Sindh',
+                                        label: 'Sindh',
+                                    },
+                                    {
+                                        value: 'Balochistan',
+                                        label: 'Balochistan',
+                                    },
+                                    {
+                                        value: 'KPK',
+                                        label: 'KPK',
+                                    },
+                                ]}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="postalCode"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please enter your postal code.',
+                                },
+                            ]}>
+                            <Input placeholder="Postal Code" size="large" />
+                        </Form.Item>
+                    </div>
+                    <div className="d-flex gap-3">
+                        <Form.Item
+                            name="email"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please enter a valid email address.',
+                                },
+                            ]}>
+                            <Input placeholder="Email" size="large" />
+                        </Form.Item>
+                        <Form.Item
+                            name="phoneNumber"
+                            className="w-100"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'This field is required.',
+                                },
+                            ]}>
+                            <Input placeholder="Phone Number" size="large" />
+                        </Form.Item>
+                    </div>
+                    <Form.Item
+                        label="Payment Method"
+                        name="paymentMethod">
+                        <Radio.Group size="large">
+                            <Radio value="onlinePayment">Online Payment</Radio>
+                            <Radio value="cashOnDelivery">Cash on Delivery</Radio>
+                        </Radio.Group>
+                    </Form.Item>
+                </Form>
             </div>
-            <div className="col-3">
-                <h2>In Your Bag</h2>
+
+            <div className="col-3 p-3">
+                <h3 className="pb-4">In Your Bag</h3>
                 <SummaryElements />
                 <p>Arrival {ArrivalDate}</p>
                 <div className="d-flex flex-column gap-2">

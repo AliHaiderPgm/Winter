@@ -23,7 +23,7 @@ const SummaryElements = () => {
         <div className="d-flex flex-column gap-2 mb-3">
             {Summary.map((elem, index) => {
                 return <div className="d-flex justify-content-between" key={index}>
-                    <p className="fw-semibold">{elem.title}{" "}
+                    <p className="fw-semibold m-0">{elem.title}{" "}
                         {
                             elem.toolTip ?
                                 <Tooltip title={elem.toolTip} placement="bottom" trigger={"click"}>
@@ -32,13 +32,13 @@ const SummaryElements = () => {
                                 : null
                         }
                     </p>
-                    <p>{elem.value}</p>
+                    <p className="m-0">{elem.value}</p>
                 </div>
             })}
             <Divider className="m-0" />
-            <div className="d-flex justify-content-between ">
-                <p className="fw-semibold">Total</p>
-                <p>{products.length === 0 ? "_" : `Rs.${subTotal + tax}`}</p>
+            <div className="d-flex justify-content-between">
+                <p className="fw-semibold m-0">Total</p>
+                <p className="m-0">{products.length === 0 ? "_" : `Rs.${subTotal + tax}`}</p>
             </div>
             <Divider className="m-0" />
         </div>

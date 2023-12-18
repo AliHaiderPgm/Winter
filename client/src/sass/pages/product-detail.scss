@@ -34,16 +34,16 @@
 			width: 70%;
 			border-radius: 10px;
 			overflow: hidden;
-			max-height: 80dvh;
 			div:not([class]) {
 				display: flex;
 				justify-content: center;
 				.img-container {
 					.ant-image {
 						display: block;
-					}
-					.image {
-						object-fit: contain;
+						img {
+							max-height: 80dvh;
+							object-fit: cover;
+						}
 					}
 				}
 			}
