@@ -1,11 +1,8 @@
 const asyncHandler = require('express-async-handler')
 const stripe = require('stripe')(process.env.STRIP_PRIVATE_KEY)
 const Products = require('../models/productModel')
+const Order = require('../models/orderModel')
 
-// const storeItems = new Map([
-//     [1, { price: 10000, name: "Learn React Today" }],
-//     [2, { price: 20000, name: "Learn CSS Today" }],
-// ])
 
 const checkoutController = asyncHandler(async (req, res) => {
     try {
@@ -29,10 +26,10 @@ const checkoutController = asyncHandler(async (req, res) => {
                     quantity: item.quantity,
                 }
             }),
-            success_url: `${process.env.CLIENT_URL}/success/{CHECKOUT_SESSION_ID}`,
+            success_url: `${process.env.CLIENT_URL}/checkout/{CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.CLIENT_URL}/cart`,
         })
-        // console.log(session)
+        console.log(session)
         res.status(200).json({ url: session.url })
     } catch (error) {
         console.log(error.message)
@@ -53,7 +50,31 @@ const confirmOrder = asyncHandler(async (req, res) => {
     }
 })
 
+const newOrder = asyncHandler(async (req, res) => {
+    try {
+        const orderId = randomId()
+        const data = {
+            ...req.body,
+            orderId,
+            paymentMethod: "Cash on delivery",
+            paymentDetails: {}
+        }
+        const order = await Order.create(data)
+
+        res.status(200).json(order)
+    } catch (error) {
+        // console.log(error)
+        res.status(500).json(error)
+    }
+})
+
+const randomId = () => {
+    const randomId = Math.floor(100000 + Math.random() * 900000);
+    return randomId;
+}
+
 module.exports = {
     checkoutController,
-    confirmOrder
+    confirmOrder,
+    newOrder,
 }

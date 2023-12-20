@@ -4,8 +4,10 @@ import Router from "../src/pages/Router"
 import AuthContextProvider from "./context/AuthContext"
 import { ThemeProvider } from "@mui/material"
 import { theme } from "./components/muiTheme"
+import { ConfigProvider } from "antd"
 import ProductContextProvider from "./context/ProductContext"
 import CartContextProvider from "./context/CartContext"
+import antdTheme from "./components/antdTheme"
 function App() {
 	return (
 		<>
@@ -13,7 +15,9 @@ function App() {
 				<ProductContextProvider>
 					<CartContextProvider>
 						<ThemeProvider theme={theme}>
-							<Router />
+							<ConfigProvider theme={antdTheme}>
+								<Router />
+							</ConfigProvider>
 						</ThemeProvider>
 					</CartContextProvider>
 				</ProductContextProvider>

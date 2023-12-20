@@ -28,7 +28,7 @@ const index = () => {
 						<Route path="/:type/:id" element={<Details />} />
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/checkout" element={<Checkout />} />
-						<Route path="/success/:id" element={<CheckoutSuccess />} />
+						<Route path="/checkout/:id" element={<CheckoutSuccess />} />
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
 				</div>

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { getRandomId } from "../global"
 import { message } from "antd"
 import axios from "axios"
+import { useAuth } from "./AuthContext"
 
 const CartContext = createContext()
 
@@ -11,8 +12,10 @@ const CartContextProvider = ({ children }) => {
     const [subTotal, setSubTotal] = useState(0)
     const [tax, setTax] = useState(0)
     const log = useRef(true)
+    const { user } = useAuth()
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
+    const API_URL = `${import.meta.env.VITE_API_URL}/checkout`
 
     const getCartProducts = () => {
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
@@ -113,11 +116,23 @@ const CartContextProvider = ({ children }) => {
     //------------CHECKOUT------------// 
     const checkout = async () => {
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/create-checkout-session`, { items: products })
+            const { data } = await axios.post(`${API_URL}/create-checkout-session`, { items: products })
             window.location = data.url
         } catch (error) {
             console.error(error)
         }
+    }
+
+    const newOrder = async (data) => {
+        const newData = {
+            user,
+            receiver: data,
+            order: products,
+            status: "pending"
+        }
+
+        const res = await axios.post(`${API_URL}/newOrder`, newData)
+        return res
     }
 
     //-------------CONFIRM ORDER----------//
@@ -135,6 +150,7 @@ const CartContextProvider = ({ children }) => {
         subTotal,
         tax,
         checkout,
+        newOrder,
         confirmOrder
     }
     return (

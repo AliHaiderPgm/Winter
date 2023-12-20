@@ -1,16 +1,57 @@
-import { Divider, Form, Input, Radio, Segmented, Select } from "antd"
+import { Button, Divider, Form, Input, Radio, Segmented, Select } from "antd"
 import SummaryElements from "../../components/frontend/cart/SummaryElements"
 import { useCart } from "../../context/CartContext"
 import { formatDate } from "../../global"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+
+// const initialState = {
+//     address: "",
+//     district: "",
+//     email: "",
+//     firstName: "",
+//     paymentMethod: "",
+//     phoneNumber: "",
+//     postalCode: "",
+//     secondName: "",
+//     state: "",
+// }
 
 const Checkout = () => {
-    const { products } = useCart()
+    const { products, newOrder } = useCart()
     const ArrivalDate = formatDate(7)
+    const [loading, setLoading] = useState(false)
+    const [paymentMethod, setPaymentMethod] = useState("")
+    const [form] = Form.useForm()
+    const navigate = useNavigate()
+
+    const handleFinish = async (e) => {
+        try {
+            setLoading(true)
+            const res = await newOrder(e)
+            navigate(`/checkout/${res.data.orderId}`, { state: res.data._id })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+    }
+    const handlePaymentMethod = (e) => {
+        setPaymentMethod(e.target.value)
+    }
+    const handleClearForm = () => {
+        form.resetFields();
+    }
+
     return (
-        <div className="row vh-100 w-100">
-            <div className="col-6">
+        <div className="row gap-5  w-75 mx-auto">
+            <div className="col-6 p-3">
                 <h3 className="pb-4">Checkout</h3>
-                <Form layout="vertical">
+                <Form
+                    onFinish={handleFinish}
+                    form={form}
+                    disabled={loading}
+                >
                     <div className="d-flex gap-4">
                         <Form.Item
                             name="firstName"
@@ -69,10 +110,6 @@ const Checkout = () => {
                             <Select
                                 placeholder="State"
                                 size="large"
-                                // style={{
-                                //     width: 120,
-                                // }}
-                                // onChange={handleChange}
                                 options={[
                                     {
                                         value: 'Punjab',
@@ -130,17 +167,40 @@ const Checkout = () => {
                         </Form.Item>
                     </div>
                     <Form.Item
-                        label="Payment Method"
-                        name="paymentMethod">
-                        <Radio.Group size="large">
+                        label="Payment"
+                        name="payment"
+                    >
+                        <Radio.Group onChange={handlePaymentMethod} value={paymentMethod} defaultValue={"onlinePayment"} optionType="button" buttonStyle="solid" size="large">
                             <Radio value="onlinePayment">Online Payment</Radio>
                             <Radio value="cashOnDelivery">Cash on Delivery</Radio>
                         </Radio.Group>
                     </Form.Item>
+
+                    <div className="d-flex justify-content-end gap-3">
+                        <Form.Item>
+                            {
+                                paymentMethod === "onlinePayment"
+                                    ?
+                                    <Button type="primary" htmlType="submit" className="btn-filled" loading={loading}>
+                                        Continue to Payment
+                                    </Button>
+                                    :
+                                    <Button type="primary" htmlType="submit" className="btn-filled" loading={loading}>
+                                        Place Order
+                                    </Button>
+                            }
+
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" className="btn-outline text-black" onClick={handleClearForm}>
+                                Clear
+                            </Button>
+                        </Form.Item>
+                    </div>
                 </Form>
             </div>
 
-            <div className="col-3 p-3">
+            <div className="col-4 p-3">
                 <h3 className="pb-4">In Your Bag</h3>
                 <SummaryElements />
                 <p>Arrival {ArrivalDate}</p>
