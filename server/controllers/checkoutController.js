@@ -6,10 +6,11 @@ const Order = require('../models/orderModel')
 
 const checkoutController = asyncHandler(async (req, res) => {
     try {
-        const cartItems = req.body.items
+        const cartItems = req.body.order
         const itemsIds = cartItems.map(item => { return item.product._id })
         const storeItems = await Products.find({ _id: { $in: itemsIds } })
 
+        // ---------------PAYMENT SESSION------------------//
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: 'payment',
@@ -29,8 +30,20 @@ const checkoutController = asyncHandler(async (req, res) => {
             success_url: `${process.env.CLIENT_URL}/checkout/{CHECKOUT_SESSION_ID}`,
             cancel_url: `${process.env.CLIENT_URL}/cart`,
         })
-        console.log(session)
-        res.status(200).json({ url: session.url })
+
+        //---------------ORDER CREATION---------------------//
+        if (session) {
+            const orderNumber = randomId()
+            const data = {
+                ...req.body,
+                orderNumber,
+                paymentMethod: "Online payment",
+                paymentDetails: session
+            }
+            const order = await Order.create(data)
+
+            res.status(200).json({ orderNumber, orderId: order._id, sessionUrl: session.url })
+        }
     } catch (error) {
         console.log(error.message)
         res.status(500).json({ error: error.message })
@@ -52,10 +65,10 @@ const confirmOrder = asyncHandler(async (req, res) => {
 
 const newOrder = asyncHandler(async (req, res) => {
     try {
-        const orderId = randomId()
+        const orderNumber = randomId()
         const data = {
             ...req.body,
-            orderId,
+            orderNumber,
             paymentMethod: "Cash on delivery",
             paymentDetails: {}
         }

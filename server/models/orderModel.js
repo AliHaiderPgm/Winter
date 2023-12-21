@@ -17,7 +17,7 @@ const orderSchema = mongoose.Schema({
         type: String,
         required: [true, "Please add order status!"]
     },
-    orderId: {
+    orderNumber: {
         type: Number,
         required: [true, "Order id is missing!"]
     },

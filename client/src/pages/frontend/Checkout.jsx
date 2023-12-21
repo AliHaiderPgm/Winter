@@ -18,18 +18,22 @@ import { useNavigate } from "react-router-dom"
 // }
 
 const Checkout = () => {
-    const { products, newOrder } = useCart()
+    const { products, placeOrder, payment } = useCart()
     const ArrivalDate = formatDate(7)
     const [loading, setLoading] = useState(false)
-    const [paymentMethod, setPaymentMethod] = useState("")
+    const [paymentMethod, setPaymentMethod] = useState("onlinePayment")
     const [form] = Form.useForm()
     const navigate = useNavigate()
 
     const handleFinish = async (e) => {
         try {
             setLoading(true)
-            const res = await newOrder(e)
-            navigate(`/checkout/${res.data.orderId}`, { state: res.data._id })
+            if (paymentMethod === "onlinePayment") {
+                const res = await payment(e)
+            } else {
+                const res = await placeOrder(e)
+                navigate(`/checkout/${res.data.orderNumber}`, { state: res.data._id })
+            }
         } catch (error) {
             console.log(error)
         } finally {

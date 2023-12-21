@@ -114,16 +114,24 @@ const CartContextProvider = ({ children }) => {
     }
 
     //------------CHECKOUT------------// 
-    const checkout = async () => {
+    const payment = async (e) => {
         try {
-            const { data } = await axios.post(`${API_URL}/create-checkout-session`, { items: products })
-            window.location = data.url
+            const newData = {
+                user,
+                receiver: e,
+                order: products,
+                status: "pending"
+            }
+            const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
+            window.location = res.data.sessionUrl
+            console.log(res)
+            return res.data
         } catch (error) {
             console.error(error)
         }
     }
 
-    const newOrder = async (data) => {
+    const placeOrder = async (data) => {
         const newData = {
             user,
             receiver: data,
@@ -149,8 +157,8 @@ const CartContextProvider = ({ children }) => {
         totalQuantity,
         subTotal,
         tax,
-        checkout,
-        newOrder,
+        payment,
+        placeOrder,
         confirmOrder
     }
     return (
