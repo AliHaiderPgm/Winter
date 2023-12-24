@@ -123,8 +123,8 @@ const CartContextProvider = ({ children }) => {
                 status: "pending"
             }
             const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
+            localStorage.setItem('checkout-session', JSON.stringify(res.data))
             window.location = res.data.sessionUrl
-            console.log(res)
             return res.data
         } catch (error) {
             console.error(error)
@@ -145,12 +145,13 @@ const CartContextProvider = ({ children }) => {
 
     //-------------CONFIRM ORDER----------//
     const confirmOrder = async (id) => {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/confirm-order?session_id=${id}`)
-        return res.data
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/confirm-order?orderNumber=${id}&userId=${user._id}`)
+        return res
     }
 
     const contextValue = {
         products,
+        getCartProducts,
         updateCart,
         addToCart,
         removeFromCart,

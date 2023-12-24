@@ -9,6 +9,7 @@ const checkoutController = asyncHandler(async (req, res) => {
         const cartItems = req.body.order
         const itemsIds = cartItems.map(item => { return item.product._id })
         const storeItems = await Products.find({ _id: { $in: itemsIds } })
+        const orderNumber = randomId()
 
         // ---------------PAYMENT SESSION------------------//
         const session = await stripe.checkout.sessions.create({
@@ -27,13 +28,13 @@ const checkoutController = asyncHandler(async (req, res) => {
                     quantity: item.quantity,
                 }
             }),
-            success_url: `${process.env.CLIENT_URL}/checkout/{CHECKOUT_SESSION_ID}`,
+            // {CHECKOUT_SESSION_ID}
+            success_url: `${process.env.CLIENT_URL}/checkout/${orderNumber}`,
             cancel_url: `${process.env.CLIENT_URL}/cart`,
         })
 
         //---------------ORDER CREATION---------------------//
         if (session) {
-            const orderNumber = randomId()
             const data = {
                 ...req.body,
                 orderNumber,
@@ -42,7 +43,7 @@ const checkoutController = asyncHandler(async (req, res) => {
             }
             const order = await Order.create(data)
 
-            res.status(200).json({ orderNumber, orderId: order._id, sessionUrl: session.url })
+            res.status(200).json({ orderNumber, sessionUrl: session.url })
         }
     } catch (error) {
         console.log(error.message)
@@ -52,12 +53,14 @@ const checkoutController = asyncHandler(async (req, res) => {
 
 const confirmOrder = asyncHandler(async (req, res) => {
     try {
-        const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
-        // console.log(session)
-        // const customer = await stripe.customers.retrieve(session.id);
-        // console.log(customer)
+        // const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+        const order = await Order.findOne({ orderNumber: req.query.orderNumber, user: req.query.userId })
 
-        res.status(200).json(session.customer_details)
+        if (!order) {
+            return res.status(200).json("Failed to confirm order.")
+        }
+
+        res.status(200).json("Order confirmed.")
     } catch (error) {
         res.status(500).json({ error: error.message })
     }

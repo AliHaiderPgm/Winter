@@ -1,8 +1,8 @@
-import { Button, Divider, Form, Input, Radio, Segmented, Select } from "antd"
+import { Button, Form, Input, Radio, Select } from "antd"
 import SummaryElements from "../../components/frontend/cart/SummaryElements"
 import { useCart } from "../../context/CartContext"
 import { formatDate } from "../../global"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 // const initialState = {
@@ -25,14 +25,22 @@ const Checkout = () => {
     const [form] = Form.useForm()
     const navigate = useNavigate()
 
+    const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+    useEffect(() => {
+        window.addEventListener("resize", () => setInnerWidth(window.innerWidth))
+        return () => {
+            window.removeEventListener("resize", () => setInnerWidth(window.innerWidth))
+        }
+    }, [])
+
     const handleFinish = async (e) => {
         try {
             setLoading(true)
             if (paymentMethod === "onlinePayment") {
-                const res = await payment(e)
+                await payment(e)
             } else {
                 const res = await placeOrder(e)
-                navigate(`/checkout/${res.data.orderNumber}`, { state: res.data._id })
+                navigate(`/checkout/${res.data.orderNumber}`)
             }
         } catch (error) {
             console.log(error)
@@ -48,15 +56,15 @@ const Checkout = () => {
     }
 
     return (
-        <div className="row gap-5  w-75 mx-auto">
-            <div className="col-6 p-3">
-                <h3 className="pb-4">Checkout</h3>
+        <div className="row flex-column-reverse flex-md-row gap-2 gap-md-1 gap-xl-5 w-75 mx-auto">
+            <div className="col-12 col-md-6 col-xl-7 p-1">
+                <h3 className="pb-1 pb-lg-3">Checkout</h3>
                 <Form
                     onFinish={handleFinish}
                     form={form}
                     disabled={loading}
                 >
-                    <div className="d-flex gap-4">
+                    <div className="d-flex flex-column flex-lg-row gap-0 gap-lg-2">
                         <Form.Item
                             name="firstName"
                             className="w-100"
@@ -90,7 +98,7 @@ const Checkout = () => {
                         ]}>
                         <Input placeholder="Address" size="large" />
                     </Form.Item>
-                    <div className="d-flex gap-3">
+                    <div className="d-flex flex-column flex-lg-row gap-0 gap-lg-2">
                         <Form.Item
                             name="district"
                             className="w-100"
@@ -146,7 +154,7 @@ const Checkout = () => {
                             <Input placeholder="Postal Code" size="large" />
                         </Form.Item>
                     </div>
-                    <div className="d-flex gap-3">
+                    <div className="d-flex flex-column flex-lg-row gap-0 gap-lg-2">
                         <Form.Item
                             name="email"
                             className="w-100"
@@ -170,17 +178,19 @@ const Checkout = () => {
                             <Input placeholder="Phone Number" size="large" />
                         </Form.Item>
                     </div>
-                    <Form.Item
-                        label="Payment"
-                        name="payment"
-                    >
-                        <Radio.Group onChange={handlePaymentMethod} value={paymentMethod} defaultValue={"onlinePayment"} optionType="button" buttonStyle="solid" size="large">
-                            <Radio value="onlinePayment">Online Payment</Radio>
-                            <Radio value="cashOnDelivery">Cash on Delivery</Radio>
-                        </Radio.Group>
-                    </Form.Item>
+                    <>
+                        <Form.Item
+                            label={innerWidth >= 600 ? "" : "Payment"}
+                            name="payment"
+                        >
+                            <Radio.Group onChange={handlePaymentMethod} value={paymentMethod} defaultValue={"onlinePayment"} optionType="button" buttonStyle="solid" size="large">
+                                <Radio value="onlinePayment">{innerWidth >= 600 ? "Pay Online" : "Online"}</Radio>
+                                <Radio value="cashOnDelivery">Cash On Delivery</Radio>
+                            </Radio.Group>
+                        </Form.Item>
+                    </>
 
-                    <div className="d-flex justify-content-end gap-3">
+                    <div className="d-flex justify-content-end gap-1">
                         <Form.Item>
                             {
                                 paymentMethod === "onlinePayment"
@@ -204,8 +214,8 @@ const Checkout = () => {
                 </Form>
             </div>
 
-            <div className="col-4 p-3">
-                <h3 className="pb-4">In Your Bag</h3>
+            <div className="col-12 col-md-5 col-xl-4 p-1">
+                <h3 className="pb-0 pb-lg-3">In Your Bag</h3>
                 <SummaryElements />
                 <p>Arrival {ArrivalDate}</p>
                 <div className="d-flex flex-column gap-2">

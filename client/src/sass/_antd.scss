@@ -86,8 +86,18 @@
 	}
 }
 
+.ant-result {
+	.anticon-close-circle {
+		width: auto;
+	}
+}
+
 .ant-drawer-right {
 	.ant-drawer-header {
 		border-bottom: none !important;
 	}
+}
+
+.ant-form-item {
+	margin-bottom: 12px;
 }

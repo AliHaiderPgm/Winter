@@ -2,8 +2,9 @@ const mongoose = require('mongoose')
 
 const orderSchema = mongoose.Schema({
     user: {
-        type: Object,
-        required: [true, "Please add user data!"]
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
     },
     receiver: {
         type: Object,
