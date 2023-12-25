@@ -135,6 +135,7 @@ header {
 	font-weight: 400;
 	padding: 0px 20px;
 	background-color: transparent;
+	border-radius: 7px;
 	transition: background-color $transition;
 }
 .link.active {
@@ -181,8 +182,8 @@ header {
 	}
 }
 
-//////CART
-.cart-container {
+//////--------ICONS--------/////
+.icons-container {
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -195,7 +196,14 @@ header {
 	&:hover {
 		background-color: rgba(0, 0, 0, 0.1);
 	}
-	.cart {
+	.icon {
+		color: #111;
+		font-size: 1.6rem;
+	}
+}
+
+.mobileSubMenu {
+	.icon {
 		color: #111;
 		font-size: 1.6rem;
 	}

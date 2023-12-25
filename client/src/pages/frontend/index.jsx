@@ -11,6 +11,7 @@ import Details from "./product/Details"
 import Cart from "./Cart"
 import CheckoutSuccess from "./CheckoutSuccess"
 import Checkout from "./Checkout"
+import Favorite from "./Favorite"
 
 const index = () => {
 	return (
@@ -29,6 +30,7 @@ const index = () => {
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/checkout" element={<Checkout />} />
 						<Route path="/checkout/:id" element={<CheckoutSuccess />} />
+						<Route path="/favorite" element={<Favorite />} />
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
 				</div>

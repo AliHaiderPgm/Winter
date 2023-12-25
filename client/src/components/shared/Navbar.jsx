@@ -2,10 +2,12 @@ import React, { Suspense, useEffect, useState } from "react"
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom"
 import Logo from "../../assets/logo.png"
 import Icon, {
+	HeartOutlined,
 	MenuOutlined,
 	RightOutlined,
 	SearchOutlined,
 	ShoppingCartOutlined,
+	ShoppingOutlined,
 } from "@ant-design/icons"
 import { Badge, Button, Drawer, Input, Modal, message } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
@@ -246,9 +248,12 @@ const Navbar = () => {
 								</div>
 							</div>
 							<div className="notFrontend d-flex align-items-center gap-1">
-								<Button className="py-3 cart-container" onClick={() => navigate("/cart")}>
+								<Button className="py-3 icons-container" onClick={() => navigate("/favorite")}>
+									<HeartOutlined className="icon" />
+								</Button>
+								<Button className="py-3 icons-container" onClick={() => navigate("/cart")}>
 									<Badge count={products.length} color="#111">
-										<ShoppingCartOutlined className="cart" />
+										<ShoppingCartOutlined className="icon" />
 									</Badge>
 								</Button>
 								<DropMenu />
@@ -258,9 +263,9 @@ const Navbar = () => {
 					{/* ////////////////////MOBILE VIEW ////////////////////////// */}
 					{
 						innerWidth <= 768 && <div className="d-flex align-items-center gap-2">
-							<Button className="py-3 cart-container" onClick={() => navigate("/cart")}>
+							<Button className="py-3 icons-container" onClick={() => navigate("/cart")}>
 								<Badge count={products.length} color="#111">
-									<ShoppingCartOutlined className="cart" />
+									<ShoppingCartOutlined className="icon" />
 								</Badge>
 							</Button>
 
@@ -272,21 +277,45 @@ const Navbar = () => {
 
 							<MenuOutlined className="hamburger" onClick={handleDrawer} />
 							<Drawer placement="right" onClose={handleDrawer} open={isDrawerOpen} footer={<DrawerFooter />} footerStyle={{ boxShadow: '0px -2px 4px rgba(0, 0, 0, 0.05)' }}>
-								<div className="mobileMenu d-flex flex-column">
-									{navItems.map((item, index) => {
-										return <NavLink
+								<>
+									<div className="mobileMenu d-flex flex-column mb-5">
+										{navItems.map((item, index) => {
+											return <NavLink
+												onClick={() => setIsDrawerOpen(false)}
+												to={item.navigateTo}
+												className={({ isActive }) => isActive ? "active link" : "inactive link"}
+												key={index}
+											>
+												<div className="d-flex fw-semibold justify-content-between align-items-center">
+													<p className="m-0 fs-3">{item.title}</p>
+													<RightOutlined />
+												</div>
+											</NavLink>
+										})}
+									</div>
+									<div className="d-flex flex-column gap-2 mobileSubMenu">
+										<NavLink
 											onClick={() => setIsDrawerOpen(false)}
-											to={item.navigateTo}
+											to={"/favorite"}
 											className={({ isActive }) => isActive ? "active link" : "inactive link"}
-											key={index}
 										>
-											<div className="d-flex fw-semibold justify-content-between align-items-center">
-												<p className="m-0 fs-3">{item.title}</p>
-												<RightOutlined />
+											<div className="d-flex gap-3 fw-semibold align-items-center">
+												<HeartOutlined className="icon" />
+												<p className="m-0 fs-5">Favorite</p>
 											</div>
 										</NavLink>
-									})}
-								</div>
+										<NavLink
+											onClick={() => setIsDrawerOpen(false)}
+											to={"/order"}
+											className={({ isActive }) => isActive ? "active link" : "inactive link"}
+										>
+											<div className="d-flex gap-3 fw-semibold align-items-center">
+												<ShoppingOutlined className="icon" />
+												<p className="m-0 fs-5">Orders</p>
+											</div>
+										</NavLink>
+									</div>
+								</>
 							</Drawer>
 						</div>
 					}

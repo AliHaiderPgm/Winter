@@ -123,7 +123,7 @@ const CartContextProvider = ({ children }) => {
                 status: "pending"
             }
             const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
-            localStorage.setItem('checkout-session', JSON.stringify(res.data))
+            // localStorage.setItem('checkout-session', JSON.stringify(res.data))
             window.location = res.data.sessionUrl
             return res.data
         } catch (error) {

@@ -1,0 +1,13 @@
+.favorite {
+	.favCard {
+		position: relative;
+		button {
+			position: absolute;
+			right: 1.1rem;
+			z-index: 10;
+			.icon {
+				font-size: 1.6rem;
+			}
+		}
+	}
+}
