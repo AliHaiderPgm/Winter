@@ -12,6 +12,7 @@ import Cart from "./Cart"
 import CheckoutSuccess from "./CheckoutSuccess"
 import Checkout from "./Checkout"
 import Favorite from "./Favorite"
+import Orders from "./Orders"
 
 const index = () => {
 	return (
@@ -31,6 +32,7 @@ const index = () => {
 						<Route path="/checkout" element={<Checkout />} />
 						<Route path="/checkout/:id" element={<CheckoutSuccess />} />
 						<Route path="/favorite" element={<Favorite />} />
+						<Route path="/orders" element={<Orders />} />
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
 				</div>

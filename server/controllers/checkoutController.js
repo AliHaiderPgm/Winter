@@ -46,7 +46,7 @@ const checkoutController = asyncHandler(async (req, res) => {
             res.status(200).json({ orderNumber, sessionUrl: session.url })
         }
     } catch (error) {
-        console.log(error.message)
+        // console.log(error.message)
         res.status(500).json({ error: error.message })
     }
 })
@@ -89,8 +89,24 @@ const randomId = () => {
     return randomId;
 }
 
+const getOrders = asyncHandler(async (req, res) => {
+    try {
+        const orders = await Order.find()
+        const response = orders.map(user => {
+            const { paymentDetails, ...data } = user._doc
+            return data
+        })
+        // console.log(res)
+        res.status(200).json(response)
+    } catch (error) {
+        // console.log(error)
+        res.status(500).json(error)
+    }
+})
+
 module.exports = {
     checkoutController,
     confirmOrder,
     newOrder,
+    getOrders
 }

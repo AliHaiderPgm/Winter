@@ -17,11 +17,11 @@ const BnbCard = React.forwardRef((props, ref) => {
 
 	useEffect(() => {
 		const img = new Image()
+		img.src = data?.images[0]
 		img.onload = () => {
 			setImageLoaded(true)
 		}
-		img.src = data?.images[0]
-	}, [data?.images])
+	}, [data?.images[0]])
 
 	// optimizing
 	const MemoizedSkeletonImage = useMemo(() => React.memo(Skeleton.Image), [])

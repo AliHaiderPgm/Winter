@@ -59,39 +59,43 @@ const Navbar = () => {
 
 	const unauthorizedItems = [
 		{
-			key: "0",
+			key: "login",
 			label: <Link to="/auth/login" className="text-decoration-none">Login</Link>,
 		},
 		{
-			key: "1",
+			key: "register",
 			label: <Link to="/auth/register" className="text-decoration-none">Register</Link>,
 		},
 		{
 			type: "divider",
 		},
 		{
-			key: "3",
+			key: "helpCenter",
 			label: "Help Center",
 		},
 	]
 	const authorizedItems = [
 		{
-			key: "0",
+			key: "profile",
 			label: <Link to="/" className="text-decoration-none">Profile</Link>,
 		},
+		innerWidth <= 1024 && {
+			key: "orders",
+			label: <Link to="/orders" className="text-decoration-none">Orders</Link>,
+		},
 		user?.type === "admin" && {
-			key: "1",
+			key: "dashboard",
 			label: <Link to="/dashboard/products" className="text-decoration-none">Dashboard</Link>,
 		},
 		{
-			key: "2",
+			key: "helpCenter",
 			label: "Help Center",
 		},
 		{
 			type: "divider",
 		},
 		{
-			key: "3",
+			key: "logoutButton",
 			label: (
 				<Button
 					type="primary"
@@ -256,6 +260,11 @@ const Navbar = () => {
 										<ShoppingCartOutlined className="icon" />
 									</Badge>
 								</Button>
+								{
+									innerWidth > 1024 && <Button className="py-3 icons-container" onClick={() => navigate("/orders")}>
+										<ShoppingOutlined className="icon" />
+									</Button>
+								}
 								<DropMenu />
 							</div>
 						</>
@@ -306,7 +315,7 @@ const Navbar = () => {
 										</NavLink>
 										<NavLink
 											onClick={() => setIsDrawerOpen(false)}
-											to={"/order"}
+											to={"/orders"}
 											className={({ isActive }) => isActive ? "active link" : "inactive link"}
 										>
 											<div className="d-flex gap-3 fw-semibold align-items-center">

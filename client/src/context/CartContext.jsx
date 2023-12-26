@@ -143,6 +143,14 @@ const CartContextProvider = ({ children }) => {
         return res
     }
 
+    const getOrders = async () => {
+        const config = {
+            withCredentials: true,
+        }
+        const res = await axios.get(`${API_URL}/orders`, config)
+        return res.data
+    }
+
     //-------------CONFIRM ORDER----------//
     const confirmOrder = async (id) => {
         const res = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/confirm-order?orderNumber=${id}&userId=${user._id}`)
@@ -160,6 +168,7 @@ const CartContextProvider = ({ children }) => {
         tax,
         payment,
         placeOrder,
+        getOrders,
         confirmOrder
     }
     return (
