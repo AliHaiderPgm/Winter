@@ -6,10 +6,13 @@ import {
 } from "@mui/icons-material"
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import imagePlaceHolder from "../../assets/placeholder.png"
+
 const BnbCard = React.forwardRef((props, ref) => {
 	const { data, uniqueKey } = props
 	const [imageLoaded, setImageLoaded] = useState(false)
 	const carousel = useRef()
+	// const [imgSrc, setImgSrc] = useState(imagePlaceHolder)
 	const navigate = useNavigate()
 	const handleNavigate = useCallback(() => {
 		navigate(`/${data?.shoefor}/${data._id}`)
@@ -17,25 +20,27 @@ const BnbCard = React.forwardRef((props, ref) => {
 
 	useEffect(() => {
 		const img = new Image()
-		img.src = data?.images[0]
+		img.src = data.images[0]
 		img.onload = () => {
 			setImageLoaded(true)
+			// setImgSrc(null)
 		}
-	}, [data?.images[0]])
+	}, [data])
 
 	// optimizing
-	const MemoizedSkeletonImage = useMemo(() => React.memo(Skeleton.Image), [])
-	const MemoizedCarousel = useMemo(() => React.memo(Carousel), [])
+	// const MemoizedSkeletonImage = useMemo(() => React.memo(Skeleton.Image), [])
+	// const MemoizedCarousel = useMemo(() => React.memo(Carousel), [])
 
 	return (
 		<div className="card-content-wrapper" ref={ref} key={uniqueKey}>
-			{
+			{/* {
 				!imageLoaded ? <MemoizedSkeletonImage style={{ height: "330px", width: "100%" }} active /> : null
-			}
+			} */}
 			{
-				imageLoaded ? <div className="carousel d-flex flex-column justify-content-center">
+				// imageLoaded ? 
+				<div className="carousel d-flex flex-column justify-content-center">
 					{
-						data?.images.length === 1 ? null : <div className="card-controller">
+						data.images.length === 1 ? null : <div className="card-controller">
 							<KeyboardArrowLeftOutlined
 								className="icon"
 								onClick={() => {
@@ -50,17 +55,17 @@ const BnbCard = React.forwardRef((props, ref) => {
 							/>
 						</div>
 					}
-					<MemoizedCarousel ref={carousel} >
+					<Carousel ref={carousel} >
 						{
-							data?.images.map((imageUrl, index) => {
+							data.images.map((imageUrl, index) => {
 								return <div key={index} onClick={() => handleNavigate()}>
-									<img src={imageUrl} className="img-fluid" loading="lazy" />
+									<img src={imageLoaded ? imageUrl : imagePlaceHolder} className="img-fluid" loading="lazy" />
 								</div>
 							})
 						}
-					</MemoizedCarousel>
+					</Carousel>
 				</div>
-					: null
+				// : null
 			}
 			<div className="content" onClick={() => handleNavigate()}>
 				<div>

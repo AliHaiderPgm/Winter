@@ -22,6 +22,18 @@ const orderSchema = mongoose.Schema({
         type: Number,
         required: [true, "Order id is missing!"]
     },
+    subTotal: {
+        type: Number,
+    },
+    tax: {
+        type: Number,
+    },
+    total: {
+        type: Number,
+    },
+    deliveryCharges: {
+        type: Number,
+    },
     paymentMethod: {
         type: String,
         required: [true, "Please provide paymentMethod!"]

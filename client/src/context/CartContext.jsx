@@ -114,13 +114,25 @@ const CartContextProvider = ({ children }) => {
     }
 
     //------------CHECKOUT------------// 
+    //ONLINE
+    const orderDetails = {
+        user,
+        order: products,
+        status: "pending",
+        subTotal,
+        tax,
+        total: subTotal + tax,
+    }
     const payment = async (e) => {
         try {
             const newData = {
                 user,
                 receiver: e,
                 order: products,
-                status: "pending"
+                status: "pending",
+                total: subTotal + tax,
+                subTotal,
+                tax,
             }
             const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
             // localStorage.setItem('checkout-session', JSON.stringify(res.data))
@@ -130,16 +142,14 @@ const CartContextProvider = ({ children }) => {
             console.error(error)
         }
     }
-
-    const placeOrder = async (data) => {
-        const newData = {
-            user,
-            receiver: data,
-            order: products,
-            status: "pending"
+    //CASH ON DELIVERY
+    const placeOrder = async (e) => {
+        const data = {
+            ...orderDetails,
+            receiver: e
         }
 
-        const res = await axios.post(`${API_URL}/newOrder`, newData)
+        const res = await axios.post(`${API_URL}/newOrder`, data)
         return res
     }
 

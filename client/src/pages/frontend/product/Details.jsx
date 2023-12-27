@@ -49,14 +49,14 @@ const Details = () => {
     }
 
     const handleAddToCart = () => {
+        if (!selectedSized) {
+            message.error("Select a size!")
+            return
+        }
         const productData = {
             product: { ...product },
             size: selectedSized,
             quantity: 1
-        }
-        if (!selectedSized) {
-            message.error("Select a size!")
-            return
         }
         // const dataObj = JSON.parse(localStorage.getItem("cartItems"))
         // // const isSizeAdded = dataObj?.some(item => item.size === selectedSized)
