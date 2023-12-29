@@ -27,8 +27,15 @@ const logoutUser = async () => {
 
 //get user data
 const getMe = async () => {
+	await getToken()
 	const res = await axios.get(`${API_URL}/me`, config)
 	return res.data
+}
+
+//-------TOKEN---------//
+const getToken = async () => {
+	const res = await axios.get(`${API_URL}/token`, config)
+	return res
 }
 
 // get all users
