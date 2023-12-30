@@ -3,8 +3,7 @@ import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
 import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Result } from "antd"
 import Loader from "../../../components/shared/Loader"
-import { KeyboardArrowLeftOutlined, KeyboardArrowRightOutlined } from "@mui/icons-material"
-import { HeartOutlined } from "@ant-design/icons"
+import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons"
 import { useAuth } from "../../../context/AuthContext"
 import { handleAddToFavorites } from "../../../global"
 import { useCart } from "../../../context/CartContext"
@@ -204,13 +203,13 @@ const Details = () => {
                 <div className="carousel col-12 col-md-6">
                     <div className="card-controller">
                         {product?.images?.length === 1 ? null : <>
-                            <KeyboardArrowLeftOutlined
+                            <LeftOutlined
                                 className="icon"
                                 onClick={() => {
                                     carousel.current.prev()
                                 }}
                             />
-                            <KeyboardArrowRightOutlined
+                            <RightOutlined
                                 className="icon"
                                 onClick={() => {
                                     carousel.current.next()

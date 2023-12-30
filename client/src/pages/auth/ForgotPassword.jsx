@@ -1,98 +1,69 @@
-import {
-	createStyles,
-	Paper,
-	Title,
-	Text,
-	TextInput,
-	Button,
-	Container,
-	Group,
-	Center,
-	Box,
-} from "@mantine/core"
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { message } from "antd"
+import { useEffect, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { Button, Form, Input } from "antd"
+import LoginImage from "../../assets/login.jpg"
+import Logo from "../../assets/logo.png"
 
-const useStyles = createStyles((theme) => ({
-	title: {
-		fontSize: 26,
-		fontWeight: 900,
-		fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-	},
+export default function ForgotPassword() {
+	const [loading, setLoading] = useState(false)
+	const navigate = useNavigate()
+	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+	useEffect(() => {
+		window.addEventListener("resize", () => setInnerWidth(window.innerWidth))
+		return () => {
+			window.removeEventListener("resize", () => setInnerWidth(window.innerWidth))
+		}
+	}, [])
 
-	controls: {
-		[theme.fn.smallerThan("xs")]: {
-			flexDirection: "column-reverse",
-		},
-	},
-
-	control: {
-		[theme.fn.smallerThan("xs")]: {
-			width: "100%",
-			textAlign: "center",
-		},
-		backgroundColor: "#fd8f5e",
-	},
-}))
-
-export function ForgotPassword() {
-	const { classes } = useStyles()
-	const [email, setEmail] = useState("")
-	const [messageApi, contextHolder] = message.useMessage()
-
-	const handleChange = (e) => {
-		setEmail(e.target.value)
+	const handleSubmit = async (e) => {
+		console.log(e)
 	}
-	const notify = (type, msg) => {
-		messageApi.open({
-			type: type,
-			content: msg,
-		})
-	}
-	const handleSubmit = () => {
-		notify("error", "Something went wrong!")
-	}
+
 	return (
-		<>
-			{contextHolder}
-			<div
-				className="d-flex justify-content-center align-items-center bg-Image"
-				style={{ height: "100vh" }}
-			>
-				<Container
-					size={460}
-					my={30}
-					style={{ width: "460px", position: "relative" }}
-				>
-					<Title className={classes.title} align="center">
-						Forgot your password?
-					</Title>
-					<Text color="dimmed" size="sm" align="center">
-						Enter your email to get a reset link
-					</Text>
+		<div className="container-fluid">
+			<div className="row dvh-100">
+				<div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-center">
+					<div className=" col-md-9 d-flex flex-column gap-3 p-5 p-md-0">
+						<div>
+							<img src={Logo} alt="winter" className="img-fluid col-2 col-md-1 mb-3" />
+							<h1 className="fw-bold">Forgot password?</h1>
+							<p className="fw-semibold x">Create new account? <Link to="/auth/register">Register</Link></p>
+						</div>
+						<div>
+							<Form
+								name="basic"
+								layout="vertical"
+								onFinish={e => handleSubmit(e)}
+							>
+								<Form.Item
+									label="Email"
+									name="email"
+									rules={[
+										{
+											required: true,
+											message: 'Please input your email!',
+										},
+									]}
+								>
+									<Input size="large" />
+								</Form.Item>
 
-					<Paper withBorder shadow="md" p={30} radius="md" mt="xl">
-						<TextInput
-							label="Your email"
-							placeholder="me@mantine.dev"
-							onChange={handleChange}
-							value={email}
-							required
-						/>
-						<Group position="apart" mt="lg" className={classes.controls}>
-							<Link to="/auth/login" style={{ fontSize: "14px" }}>
-								<Center inline>
-									<Box ml={5}>Back to login page</Box>
-								</Center>
-							</Link>
-							<Button className={classes.control} onClick={handleSubmit}>
-								Reset password
-							</Button>
-						</Group>
-					</Paper>
-				</Container>
+								<Form.Item
+								>
+									<Button type="primary" htmlType="submit" className="btn-filled w-100 p-2" loading={loading}>
+										Send Reset Link
+									</Button>
+								</Form.Item>
+							</Form>
+						</div>
+					</div>
+				</div>
+				{
+					innerWidth >= 768 && <div className="col-6 p-0 dvh-100">
+						<img src={LoginImage} alt="Winter store" className="img-fluid object-fit-cover w-100 h-100" />
+					</div>
+				}
 			</div>
-		</>
+		</div>
 	)
 }

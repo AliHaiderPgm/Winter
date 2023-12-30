@@ -1,12 +1,13 @@
-const getTokenFromCookie = (cookie, tokenName) => {
-    return cookie?.split(" ").filter(token => {
-        if (token.startsWith(tokenName)) {
-            return token
-        }
-    })[0].split("=")[1].replace(/;$/, '')
-}
+// const getTokenFromCookie = (cookie, tokenName) => {
+//     console.log(cookie.split("="))
+//     return cookie?.split(" ").filter(token => {
+//         if (token.startsWith(tokenName)) {
+//             return token
+//         }
+//     })[0].split("=")[1].replace(/;$/, '')
+// }
 
 
-module.exports = {
-    getTokenFromCookie
-}
+// module.exports = {
+//     getTokenFromCookie
+// }

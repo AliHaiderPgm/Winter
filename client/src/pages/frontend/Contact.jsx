@@ -1,4 +1,4 @@
-import { Button } from "@mui/material"
+import { Button } from "antd"
 import { useEffect } from "react"
 
 export default function Index() {
@@ -60,7 +60,7 @@ export default function Index() {
 							rows="4"
 							className="form-control"
 						></textarea>
-						<Button variant="contained" className="my-2 w-100">
+						<Button className="my-2 w-100 btn-filled">
 							Send
 						</Button>
 					</form>

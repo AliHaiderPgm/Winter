@@ -13,26 +13,30 @@ import CheckoutSuccess from "./CheckoutSuccess"
 import Checkout from "./Checkout"
 import Favorite from "./Favorite"
 import Orders from "./Orders"
+import PrivateRoute from "../../router/privateRoute"
+import { useAuth } from "../../context/AuthContext"
 
 const index = () => {
+	const { isAuthenticated } = useAuth()
+
 	return (
 		<>
 			<Navbar />
 			<div className="d-flex justify-content-center">
 				<div style={{ maxWidth: 1920, width: "100%" }}>
 					<Routes>
-						<Route path="/" element={<Home />} />
+						<Route path="/" index element={<Home />} />
 						<Route path="/about" element={<About />} />
 						<Route path="/contact" element={<Contact />} />
-						<Route path="/find" element={<SearchPage />} />
-						<Route path="/find/:search_query?" element={<SearchResult />} />
 						<Route path="/:type" element={<Catalog />} />
 						<Route path="/:type/:id" element={<Details />} />
+						<Route path="/find" element={<SearchPage />} />
+						<Route path="/find/:search_query?" element={<SearchResult />} />
 						<Route path="/cart" element={<Cart />} />
-						<Route path="/checkout" element={<Checkout />} />
-						<Route path="/checkout/:id" element={<CheckoutSuccess />} />
 						<Route path="/favorite" element={<Favorite />} />
-						<Route path="/orders" element={<Orders />} />
+						<Route path="/checkout" element={<PrivateRoute Component={Checkout} valid={isAuthenticated} />} />
+						<Route path="/checkout/:id" element={<PrivateRoute Component={CheckoutSuccess} />} />
+						<Route path="/orders" element={<PrivateRoute Component={Orders} />} />
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
 				</div>

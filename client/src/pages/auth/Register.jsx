@@ -1,139 +1,125 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { message } from "antd"
-import {
-	TextInput,
-	PasswordInput,
-	Paper,
-	Title,
-	Text,
-	Container,
-	Button,
-} from "@mantine/core"
+import { Button, Checkbox, Form, Input, message } from "antd"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
+import LoginImage from "../../assets/signup.jpg"
+import Logo from "../../assets/logo.png"
 
-const initialState = {
-	name: "",
-	email: "",
-	password: "",
-	confirmPassword: "",
-}
-export default function Register() {
-	const [state, setState] = useState(initialState)
+export default function Login() {
 	const [loading, setLoading] = useState(false)
-	const [messageApi, contextHolder] = message.useMessage()
-	const { dispatch } = useAuth()
 	const navigate = useNavigate()
-	const notify = (type, msg) => {
-		messageApi.open({ type: type, content: msg })
-	}
+	const { dispatch } = useAuth()
+	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
+	useEffect(() => {
+		window.addEventListener("resize", () => setInnerWidth(window.innerWidth))
+		return () => {
+			window.removeEventListener("resize", () => setInnerWidth(window.innerWidth))
+		}
+	}, [])
 
-	const handleChange = (e) => {
-		setState((s) => ({ ...s, [e.target.name]: e.target.value }))
-	}
-
-	const handleSubmit = async () => {
+	const handleSubmit = async (e) => {
 		try {
-			const { name, email, password } = state
-			if (password !== state.confirmPassword) {
-				return notify("error", "Password does not match")
+			if (e.password !== e.confirmPassword) {
+				return message.error("Password does not match.")
 			}
 			setLoading(true)
-			const userData = {
-				name,
-				email,
-				password,
-				type: "user",
+			const data = {
+				...e,
+				type: "user"
 			}
-			const user = await AuthServices.registerUser(userData)
+			const user = await AuthServices.registerUser(data)
 			dispatch({ type: "LOGIN", payload: { user } })
 			navigate("/")
 		} catch (error) {
-			notify("error", "Oops! Something went wrong!")
+			console.log(error)
+			message.error("Oops! Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
 	}
-	return (
-		<>
-			{contextHolder}
-			<div
-				className="d-flex justify-content-center align-items-center bg-Image"
-				style={{ height: "100vh" }}
-			>
-				<Container
-					size={420}
-					my={40}
-					style={{ width: "420px", position: "relative" }}
-				>
-					<Title
-						align="center"
-						sx={(theme) => ({
-							fontFamily: `Greycliff CF, ${theme.fontFamily}`,
-							fontWeight: 900,
-						})}
-					>
-						Get started!
-					</Title>
-					<Text color="dimmed" size="sm" align="center" mt={5}>
-						Already have an?
-						<Link to="/auth/login">account</Link>
-					</Text>
 
-					<Paper withBorder shadow="md" p={30} mt={30} radius="md">
-						<TextInput
-							label="Name"
-							placeholder="Your name"
-							onChange={handleChange}
-							value={state.name}
-							name="name"
-							required
-						/>
-						<TextInput
-							label="Email"
-							placeholder="abc@example.xyz"
-							mt="md"
-							onChange={handleChange}
-							value={state.email}
-							name="email"
-							required
-						/>
-						<PasswordInput
-							label="Password"
-							placeholder="Your password"
-							required
-							mt="md"
-							onChange={handleChange}
-							value={state.password}
-							name="password"
-						/>
-						<PasswordInput
-							label="Password"
-							placeholder="Confirm password"
-							required
-							mt="md"
-							onChange={handleChange}
-							value={state.confirmPassword}
-							name="confirmPassword"
-						/>
-						{loading ? (
-							<Button fullWidth mt="xl" className="bg-primaryColor" loading>
-								Sign up
-							</Button>
-						) : (
-							<Button
-								fullWidth
-								mt="xl"
-								className="bg-primaryColor"
-								onClick={handleSubmit}
+	return (
+		<div className="container-fluid">
+			<div className="row dvh-100">
+				{
+					innerWidth >= 768 && <div className="col-6 p-0 dvh-100">
+						<img src={LoginImage} alt="Winter store" className="img-fluid object-fit-cover w-100 h-100" />
+					</div>
+				}
+				<div className="col-12 col-md-6 d-flex flex-column justify-content-center align-items-center">
+					<div className=" col-md-9 d-flex flex-column gap-3 p-5 p-md-0">
+						<div>
+							<img src={Logo} alt="winter" className="img-fluid col-2 col-md-1 mb-3" />
+							<h1 className="fw-bold">Register</h1>
+							<p className="fw-semibold x">Already have an account? <Link to="/auth/login">Login</Link></p>
+						</div>
+						<div>
+							<Form
+								name="basic"
+								layout="vertical"
+								onFinish={e => handleSubmit(e)}
 							>
-								Sign up
-							</Button>
-						)}
-					</Paper>
-				</Container>
+								<Form.Item
+									label="Name"
+									name="name"
+									rules={[
+										{
+											required: true,
+											message: 'Please input your name!',
+										},
+									]}
+								>
+									<Input size="large" />
+								</Form.Item>
+								<Form.Item
+									label="Email"
+									name="email"
+									rules={[
+										{
+											required: true,
+											message: 'Please input your email!',
+										},
+									]}
+								>
+									<Input size="large" />
+								</Form.Item>
+
+								<Form.Item
+									label="Password"
+									name="password"
+									rules={[
+										{
+											required: true,
+											message: 'Please input your password!',
+										},
+									]}
+								>
+									<Input.Password size="large" />
+								</Form.Item>
+								<Form.Item
+									label="Confirm Password"
+									name="confirmPassword"
+									rules={[
+										{
+											required: true,
+											message: 'This field is required!',
+										},
+									]}
+								>
+									<Input.Password size="large" />
+								</Form.Item>
+
+								<Form.Item>
+									<Button type="primary" htmlType="submit" className="btn-filled w-100 p-2" loading={loading}>
+										Register
+									</Button>
+								</Form.Item>
+							</Form>
+						</div>
+					</div>
+				</div>
 			</div>
-		</>
+		</div>
 	)
 }

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react"
 import { message } from "antd"
 import axios from "axios"
+import { useAuth } from "./AuthContext"
 
 const ProductContext = createContext()
 const API_URL = `${import.meta.env.VITE_API_URL}/products`
@@ -8,11 +9,11 @@ const config = {
 	withCredentials: true,
 }
 const ProductContextProvider = (props) => {
-	// const [messageApi, contextHolder] = message.useMessage()
 	const [loading, setLoading] = useState(false)
 	const [getProductLoading, setGetProductLoading] = useState(false)
 	const [products, setProducts] = useState()
-	// Add Product
+	const { isAuthenticated, user } = useAuth()
+
 	const AddProduct = async (productData) => {
 		try {
 			setLoading(true)
@@ -43,7 +44,7 @@ const ProductContextProvider = (props) => {
 			setLoading(false)
 		}
 	}
-	// Get Products
+
 	const GetProducts = async () => {
 		try {
 			setGetProductLoading(true)
@@ -60,27 +61,26 @@ const ProductContextProvider = (props) => {
 		const res = await axios.get(`${API_URL}/${id}`, config)
 		return res.data
 	}
-	// Update Product
+
 	const UpdateProduct = async (id, productData) => {
 		const res = await axios.put(`${API_URL}/${id}`, productData, config)
 		return res.data
 	}
-	// Upload Image
+
 	const uploadImage = async (image) => {
 		const res = await axios.post(`${API_URL}/uploadImage`, image, config)
 		return res.data
 	}
-	// Delete product
+
 	const DeleteProduct = async (id) => {
 		const res = await axios.delete(`${API_URL}/${id}`, config)
 		return res.data
 	}
-	// Get recent products
+
 	const RecentAndTopRated = async (query) => {
 		const res = await axios.post(`${API_URL}/recentAndTopRated`, query)
 		return res.data
 	}
-
 
 	// get products for scroll
 	const GetCustomizedProducts = async (field, value, page, filter, limit) => {
@@ -117,25 +117,30 @@ const ProductContextProvider = (props) => {
 		})
 		return res.data
 	}
+	const contextValues = isAuthenticated && user.type === "admin" ? {
+		loading,
+		GetDetails,
+		RecentAndTopRated,
+		GetCustomizedProducts,
+		SearchProduct,
+
+		products,
+		getProductLoading,
+		GetProducts,
+		AddProduct,
+		DeleteProduct,
+		uploadImage,
+		UpdateProduct,
+	} : {
+		loading,
+		GetDetails,
+		RecentAndTopRated,
+		GetCustomizedProducts,
+		SearchProduct,
+	}
 	return (
 		<>
-			{/* {contextHolder} */}
-			<ProductContext.Provider
-				value={{
-					loading,
-					getProductLoading,
-					AddProduct,
-					GetProducts,
-					GetDetails,
-					RecentAndTopRated,
-					GetCustomizedProducts,
-					SearchProduct,
-					UpdateProduct,
-					uploadImage,
-					DeleteProduct,
-					products,
-				}}
-			>
+			<ProductContext.Provider value={contextValues}>
 				{props.children}
 			</ProductContext.Provider>
 		</>

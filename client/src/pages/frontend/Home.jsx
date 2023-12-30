@@ -11,7 +11,7 @@ const Home = () => {
 	return (
 		<>
 			<Header />
-			<div className="wrapper">
+			<div className="w-100 d-flex flex-column gap-2 justify-content-center align-items-center ">
 				<CatalogSection />
 				<div className="container my-4">
 					<HorizontalScroll />

@@ -14,9 +14,20 @@ const initialState = new Array(5).fill([])
 
 const Catalog = () => {
     const [state, setState] = useState([])
+    const [prevType, setPrevType] = useState('')
     const { type } = useParams()
     const newType = type.charAt(0).toUpperCase() + type.slice(1)
-    const [prevType, setPrevType] = useState('')
+    const ShoesFor = newType == 'Male' ? 'Men' : newType == 'Female' ? 'Women' : newType == 'Children' ? 'Kid' : null;
+
+    if (ShoesFor === null) {
+        return <Result
+            status="404"
+            title="404"
+            subTitle="Sorry, the page you trying to visit does not exist."
+            extra={<Button type="primary" className="btn-filled" onClick={() => navigate('/')}>Back Home</Button>}
+        />
+    }
+
     const [firstLoading, setFirstLoading] = useState(false)
     const [loading, setLoading] = useState(false)
     const { GetCustomizedProducts } = useProduct()
@@ -160,7 +171,7 @@ const Catalog = () => {
             title: <Link to="/">Home</Link>,
         },
         {
-            title: `${newType}`,
+            title: `${ShoesFor}`,
         },
     ]
 
@@ -204,15 +215,6 @@ const Catalog = () => {
             <Button className="btn-filled w-100" onClick={() => { getProducts(); setIsDrawerOpen(false) }}>Apply</Button>
         </div>
     }
-    if (newType !== "Male" && newType !== "Female" && newType !== "Children") {
-        return <Result
-            status="404"
-            title="404"
-            subTitle="Sorry, the page you visited does not exist."
-            extra={<Button type="primary" className="btn-filled" onClick={() => navigate('/')}>Back Home</Button>}
-        />
-    }
-    const ShoesFor = newType == 'Male' ? 'Men' : type == 'Female' ? 'Women' : 'Kid';
 
     // optimizing
     const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])

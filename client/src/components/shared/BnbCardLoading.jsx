@@ -1,4 +1,8 @@
 import { Skeleton } from "antd"
+import React, { Suspense } from "react";
+import image from "../../assets/placeholder.png"
+// const Skeleton = React.lazy(() => import('antd').then(module => ({ default: module.Skeleton })));
+
 
 const styles = {
     image: {
@@ -10,13 +14,18 @@ const styles = {
 const BnbCardLoading = () => {
     return (
         <div className="d-flex flex-column gap-2">
-            <Skeleton.Image style={styles.image} active />
-            <Skeleton
-                active
-                paragraph={{
-                    rows: 2,
-                }}
-            />
+            <Suspense fallback={<p>Loafing</p>}>
+                <Skeleton.Image style={styles.image} active />
+            </Suspense>
+
+            <Suspense fallback={<p>Loading...</p>}>
+                <Skeleton
+                    active
+                    paragraph={{
+                        rows: 2,
+                    }}
+                />
+            </Suspense>
         </div>
     )
 }

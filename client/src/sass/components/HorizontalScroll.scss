@@ -1,8 +1,46 @@
 @import "../transitions";
 .horizontal-scroll {
+	.buttons-wrapper {
+		display: flex;
+		flex-direction: row;
+		gap: 30px;
+		position: relative;
+		width: 100%;
+		overflow-x: auto;
+		&::-webkit-scrollbar {
+			display: none;
+		}
+		.arrow {
+			rotate: 90deg;
+			font-size: 2.5rem;
+			position: absolute;
+			transition: left $transition-2;
+		}
+		.arrow.new {
+			left: 0;
+		}
+		.arrow.topRated {
+			left: 15%;
+		}
+		button {
+			border: 0px;
+			outline: 0px;
+			font-size: 1.7rem;
+			font-weight: 600;
+			color: #a6a6a6;
+			background: transparent;
+			transition: all $transition-2;
+			text-wrap: nowrap;
+		}
+		button.active {
+			color: #222;
+			margin-left: 40px;
+		}
+	}
 	.controller {
 		.icon {
-			font-size: 2.5rem;
+			padding: 0.5rem;
+			font-size: 1.5rem;
 			transition: all 0.5s $cubic-transition;
 			cursor: pointer;
 			&:hover {

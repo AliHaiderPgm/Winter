@@ -16,27 +16,26 @@ const registerUser = async (userData) => {
 // login user
 const loginUser = async (userData) => {
 	const res = await axios.post(`${API_URL}/login`, userData, config)
-	return res.data
+	return res
 }
 
 //logout user
 const logoutUser = async () => {
-	const res = await axios.post(`${API_URL}/logout`, config)
+	const res = await axios.get(`${API_URL}/logout`, config)
 	return res.status
 }
 
 //get user data
 const getMe = async () => {
-	await getToken()
 	const res = await axios.get(`${API_URL}/me`, config)
-	return res.data
+	return res
 }
 
 //-------TOKEN---------//
-const getToken = async () => {
-	const res = await axios.get(`${API_URL}/token`, config)
-	return res
-}
+// const getToken = async () => {
+// 	const res = await axios.get(`${API_URL}/token`, config)
+// 	return res
+// }
 
 // get all users
 const getAllUsers = async () => {

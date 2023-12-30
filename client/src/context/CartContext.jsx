@@ -153,11 +153,11 @@ const CartContextProvider = ({ children }) => {
         return res
     }
 
-    const getOrders = async () => {
+    const getMyOrders = async () => {
         const config = {
             withCredentials: true,
         }
-        const res = await axios.get(`${API_URL}/orders`, config)
+        const res = await axios.get(`${API_URL}/getMyOrders`, config)
         return res.data
     }
 
@@ -178,7 +178,7 @@ const CartContextProvider = ({ children }) => {
         tax,
         payment,
         placeOrder,
-        getOrders,
+        getMyOrders,
         confirmOrder
     }
     return (

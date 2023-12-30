@@ -1,0 +1,10 @@
+#preLoader {
+	height: 100dvh;
+	width: 100dvw;
+	display: grid;
+	place-items: center;
+	#text {
+		font-weight: 700;
+		stroke-width: 4;
+	}
+}

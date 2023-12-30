@@ -1,8 +1,8 @@
 import Men from "../../assets/men.jpg"
 import Women from "../../assets/women.jpg"
 import Kids from "../../assets/child.jpg"
-import { ArrowUpwardOutlined } from "@mui/icons-material"
 import { useNavigate } from "react-router-dom"
+import { ArrowUpOutlined } from "@ant-design/icons"
 const CatalogSection = () => {
 	const navigate = useNavigate()
 	const handleNavigate = (type) => {
@@ -23,7 +23,7 @@ const CatalogSection = () => {
 					className="img-fluid object-fit-cover rounded"
 				/>
 				<h1>{type}</h1>
-				<ArrowUpwardOutlined className="arrow" />
+				<ArrowUpOutlined className="arrow" />
 			</div>
 		</>
 	}

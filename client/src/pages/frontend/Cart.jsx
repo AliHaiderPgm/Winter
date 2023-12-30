@@ -10,6 +10,7 @@ const Cart = () => {
     const { products } = useCart()
     const [innerWidth, setInnerWidth] = useState(window.innerWidth)
     const navigate = useNavigate()
+    const [isDisable, setIsDisable] = useState(false)
     const Arrival = formatDate(7)
 
     useEffect(() => {
@@ -18,6 +19,9 @@ const Cart = () => {
             window.removeEventListener("resize", () => { setInnerWidth(window.innerWidth) })
         }
     }, [])
+    useEffect(() => {
+        products && products?.length === 0 ? setIsDisable(true) : setIsDisable(false)
+    }, [products])
 
     const handleCheckOut = () => {
         navigate('/checkout')
@@ -25,8 +29,8 @@ const Cart = () => {
 
     return (
         <div className="cart d-flex justify-content-center py-3">
-            <div className="wrapper">
-                <div className="row w-100 pt-4">
+            <div className="wrapper w-100">
+                <div className="row pt-4">
                     <div className="col-12 col-md-7">
                         <h3 className="text-center text-md-start">Bag</h3>
                         {
@@ -57,7 +61,7 @@ const Cart = () => {
                     <div className="col-12 col-md-4">
                         <h3>Summary</h3>
                         <SummaryElements />
-                        <Button className="btn-filled w-100" size="large" onClick={handleCheckOut}>Check out</Button>
+                        <Button className="btn-filled w-100" size="large" onClick={handleCheckOut} disabled={isDisable}>Check out</Button>
                     </div>
                 </div>
             </div>
