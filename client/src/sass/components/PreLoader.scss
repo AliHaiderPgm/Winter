@@ -3,8 +3,39 @@
 	width: 100dvw;
 	display: grid;
 	place-items: center;
-	#text {
-		font-weight: 700;
-		stroke-width: 4;
+	svg {
+		width: 20rem;
+		.text {
+			text-transform: uppercase;
+			animation: stroke 5s infinite alternate;
+			stroke-width: 2;
+			stroke: #222;
+			font-size: 140px;
+		}
+		@keyframes stroke {
+			0% {
+				fill: rgba(72, 138, 20, 0);
+				stroke: rgba(34, 34, 34, 1);
+				stroke-dashoffset: 25%;
+				stroke-dasharray: 0 50%;
+				stroke-width: 2;
+			}
+			70% {
+				fill: rgba(72, 138, 20, 0);
+				stroke: rgba(34, 34, 34, 1);
+			}
+			80% {
+				fill: rgba(72, 138, 20, 0);
+				stroke: rgba(34, 34, 34, 1);
+				stroke-width: 3;
+			}
+			100% {
+				fill: rgba(34, 34, 34, 1);
+				stroke: rgba(54, 95, 160, 0);
+				stroke-dashoffset: -25%;
+				stroke-dasharray: 50% 0;
+				stroke-width: 0;
+			}
+		}
 	}
 }

@@ -7,7 +7,7 @@ import PreLoader from "../components/PreLoader"
 
 const Router = () => {
 	const { loading, isAuthenticated, user } = useAuth()
-	if (!loading) {
+	if (loading) {
 		return <PreLoader />
 	}
 	return (
