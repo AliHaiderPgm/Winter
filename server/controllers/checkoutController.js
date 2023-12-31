@@ -107,12 +107,12 @@ const getAllOrders = asyncHandler(async (req, res) => {
 const getMyOrders = asyncHandler(async (req, res) => {
     try {
         const orders = await Order.find({ user: req.user._id })
-        console.log(orders)
+        // console.log(orders)
         const response = orders.map(user => {
             const { paymentDetails, ...data } = user._doc
             return data
         })
-        console.log("res===>>>>", response)
+        // console.log("res===>>>>", response)
         res.status(200).json(response)
     } catch (error) {
         console.log(error)

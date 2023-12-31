@@ -8,7 +8,7 @@ const SearchPage = () => {
     const [searchVal, setSearchVal] = useState("")
     const [history, setHistory] = useState([])
     const navigate = useNavigate()
-    const options = history.slice(0, 4)
+    const options = history && history.slice(0, 4)
 
     useEffect(() => {
         setHistory(getHistory())

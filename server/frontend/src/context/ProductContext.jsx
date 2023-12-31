@@ -4,7 +4,8 @@ import axios from "axios"
 import { useAuth } from "./AuthContext"
 
 const ProductContext = createContext()
-const API_URL = `${import.meta.env.VITE_API_URL}/products`
+// const API_URL = `${import.meta.env.VITE_API_URL}/products`
+const API_URL = `${window.location.origin}/api/products`
 const config = {
 	withCredentials: true,
 }

@@ -15,7 +15,8 @@ const CartContextProvider = ({ children }) => {
     const { user } = useAuth()
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
-    const API_URL = `${import.meta.env.VITE_API_URL}/checkout`
+    // const API_URL = `${import.meta.env.VITE_API_URL}/checkout`
+    const API_URL = `${window.location.origin}/api/checkout`
 
     const getCartProducts = () => {
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
@@ -163,7 +164,7 @@ const CartContextProvider = ({ children }) => {
 
     //-------------CONFIRM ORDER----------//
     const confirmOrder = async (id) => {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/checkout/confirm-order?orderNumber=${id}&userId=${user._id}`)
+        const res = await axios.post(`${API_URL}/checkout/confirm-order?orderNumber=${id}&userId=${user._id}`)
         return res
     }
 

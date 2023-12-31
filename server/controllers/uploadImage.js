@@ -15,7 +15,7 @@ const opts = {
 const uploadImage = async (image) => {
     try {
         const result = await cloudinary.uploader.upload(image, opts)
-        console.log(result)
+        // console.log(result)
         if (result && result.secure_url) {
             return result.secure_url
         }

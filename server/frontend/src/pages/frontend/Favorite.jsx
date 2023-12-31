@@ -34,16 +34,16 @@ const Favorite = () => {
             <div className='d-flex justify-content-between mb-3'>
                 <p className='fs-3'>Favorites</p>
                 {
-                    products.length > 0 && <Button className={isEdit ? 'btn-filled' : 'btn-outline'} size='large' onClick={handleEditButtonClick}>
+                    products && products.length > 0 && <Button className={isEdit ? 'btn-filled' : 'btn-outline'} size='large' onClick={handleEditButtonClick}>
                         {isEdit ? 'Done' : 'Edit'}
                     </Button>
                 }
             </div>
             {
-                products.length === 0 ? <p className='text-center'>Items added to your Favorites will be saved here.</p>
+                !products ? <p className='text-center'>Items added to your Favorites will be saved here.</p>
                     :
                     <div className='row justify-content-center'>
-                        {products.map((product, index) => (
+                        {products?.map((product, index) => (
                             <div className="col-12 col-md-6 col-lg-4 d-flex justify-content-center  favCard" key={index}>
                                 {isEdit && <>
                                     {
