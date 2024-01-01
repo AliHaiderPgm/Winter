@@ -3,7 +3,6 @@ import Home from "./Home"
 import Navbar from "../../components/shared/Navbar"
 import Footer from "../../components/shared/Footer"
 import About from "./About"
-import Contact from "./Contact"
 import SearchPage from "./SearchPage"
 import SearchResult from "./SearchResults"
 import Catalog from "./Catalog"
@@ -27,7 +26,6 @@ const index = () => {
 					<Routes>
 						<Route path="/" index element={<Home />} />
 						<Route path="/about" element={<About />} />
-						<Route path="/contact" element={<Contact />} />
 						<Route path="/:type" element={<Catalog />} />
 						<Route path="/:type/:id" element={<Details />} />
 						<Route path="/find" element={<SearchPage />} />

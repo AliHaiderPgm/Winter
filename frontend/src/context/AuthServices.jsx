@@ -1,6 +1,6 @@
 import axios from "axios"
-// const API_URL = "http://localhost:5000/api/users"
-const API_URL = `${window.location.origin}/api/users`
+import { ServerURL } from "."
+const API_URL = `${ServerURL()}/users`
 const config = {
 	headers: {
 		"Content-Type": "application/json",

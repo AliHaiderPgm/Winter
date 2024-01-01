@@ -2,10 +2,10 @@ import { createContext, useContext, useState } from "react"
 import { message } from "antd"
 import axios from "axios"
 import { useAuth } from "./AuthContext"
+import { ServerURL } from "."
 
 const ProductContext = createContext()
-// const API_URL = `${import.meta.env.VITE_API_URL}/products`
-const API_URL = `${window.location.origin}/api/products`
+const API_URL = `${ServerURL()}/products`
 const config = {
 	withCredentials: true,
 }

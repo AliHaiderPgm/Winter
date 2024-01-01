@@ -32,9 +32,12 @@
 			}
 		}
 		.ant-carousel {
-			width: 70%;
+			width: 75%;
 			border-radius: 10px;
 			overflow: hidden;
+			@media screen and (width < 768px) {
+				width: 95%;
+			}
 			div:not([class]) {
 				display: flex;
 				justify-content: center;
@@ -57,6 +60,14 @@
 	}
 
 	.content {
+		@media screen and (width < 768px) {
+			width: 100%;
+		}
+		.contentInner {
+			@media screen and (width < 768px) {
+				width: 90% !important;
+			}
+		}
 		.size {
 			border: 2px solid #11111141;
 			border-radius: 7px;

@@ -3,6 +3,7 @@ import { getRandomId } from "../global"
 import { message } from "antd"
 import axios from "axios"
 import { useAuth } from "./AuthContext"
+import { ServerURL } from "."
 
 const CartContext = createContext()
 
@@ -15,8 +16,7 @@ const CartContextProvider = ({ children }) => {
     const { user } = useAuth()
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
-    // const API_URL = `${import.meta.env.VITE_API_URL}/checkout`
-    const API_URL = `${window.location.origin}/api/checkout`
+    const API_URL = `${ServerURL()}/checkout`
 
     const getCartProducts = () => {
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
@@ -94,28 +94,14 @@ const CartContextProvider = ({ children }) => {
     }
 
     const updateCart = (newData) => {
-        // console.log(newData)
-        // const checkProduct = products.some(e => e.product._id === newData.product._id)
-        // const matchedProducts = products.filter(e => e.product._id === newData.product._id)
-        // const checkSize = matchedProducts.some(e => e.size === newData.size)
-
-        // const totalCount = totalQuantity(newData)
-        // if (totalCount > 10) {
-        //     message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
-        //     return
-        // }
-
         const productIndex = products.findIndex(e => e.cartId === newData.cartId)
         const array = [...products]
         array[productIndex] = newData
         localStorage.setItem("cartItems", JSON.stringify(array))
-        // if (checkSize && checkProduct) {
-        // }
         getCartProducts()
     }
 
     //------------CHECKOUT------------// 
-    //ONLINE
     const orderDetails = {
         user,
         order: products,
@@ -124,6 +110,7 @@ const CartContextProvider = ({ children }) => {
         tax,
         total: subTotal + tax,
     }
+    //ONLINE
     const payment = async (e) => {
         try {
             const newData = {
@@ -136,7 +123,6 @@ const CartContextProvider = ({ children }) => {
                 tax,
             }
             const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
-            // localStorage.setItem('checkout-session', JSON.stringify(res.data))
             window.location = res.data.sessionUrl
             return res.data
         } catch (error) {
@@ -164,7 +150,7 @@ const CartContextProvider = ({ children }) => {
 
     //-------------CONFIRM ORDER----------//
     const confirmOrder = async (id) => {
-        const res = await axios.post(`${API_URL}/checkout/confirm-order?orderNumber=${id}&userId=${user._id}`)
+        const res = await axios.post(`${API_URL}/confirm-order?orderNumber=${id}&userId=${user._id}`)
         return res
     }
 

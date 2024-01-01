@@ -26,16 +26,6 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: [true, "Please add product price!"]
     },
-    colors: {
-        type: Array,
-        required: [true, "Please add product color!"],
-        validate: {
-            validator: colors => {
-                return colors.length > 0
-            },
-            message: 'Please add at least one color!'
-        }
-    },
     sizes: {
         type: Array,
         required: [true, "Please add product size!"],

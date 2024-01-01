@@ -42,7 +42,7 @@ const Details = () => {
         }
     }, [])
     if (loading.product) {
-        return <div style={{ height: "100vh" }}>
+        return <div style={{ height: "100dvh" }}>
             <Loader />
         </div>
     }
@@ -57,31 +57,8 @@ const Details = () => {
             size: selectedSized,
             quantity: 1
         }
-        // const dataObj = JSON.parse(localStorage.getItem("cartItems"))
-        // // const isSizeAdded = dataObj?.some(item => item.size === selectedSized)
-        // // if (isSizeAdded) {
-        // //     message.error("Already added to cart!")
-        // //     return
-        // // }
         addToCart(productData)
-        // const dataArray = dataObj ? dataObj : []
-        // dataArray.push(productData)
-        // localStorage.setItem("cartItems", JSON.stringify(dataArray))
-        // message.success("Added to cart!")
     }
-
-    // const handleAddToFavorites = () => {
-    //     const dataObj = JSON.parse(localStorage.getItem("favProducts"))
-    //     const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
-    //     if (isAlreadyAdded) {
-    //         message.error("Already added to Favorites!")
-    //         return
-    //     }
-    //     const dataArray = dataObj ? dataObj : []
-    //     dataArray.push(product)
-    //     localStorage.setItem("favProducts", JSON.stringify(dataArray))
-    //     message.success("Added to Favorites!")
-    // }
 
     const handleAddReview = async (values) => {
         const rating = Math.ceil((values.rating + product.rating) / 2)
@@ -174,12 +151,13 @@ const Details = () => {
         </div>
     }
 
+    const ShoesFor = product?.shoefor === 'Male' ? 'Men' : product?.shoefor === 'Female' ? 'Women' : 'Kids';
     const breadCrumbItems = [
         {
             title: <Link to="/">Home</Link>,
         },
         {
-            title: <Link to={`/${product?.shoefor}`}>{product?.shoefor}</Link>,
+            title: <Link to={`/${product?.shoefor}`}>{ShoesFor}</Link>,
         },
         {
             title: `${product?.name}`,
@@ -190,45 +168,41 @@ const Details = () => {
         return <Result
             status="404"
             title="404"
-            subTitle="Sorry, no product found!"
+            subTitle="Seems like you are lost!"
             extra={<Button type="primary" className="btn-filled" onClick={() => navigate('/')}>Back Home</Button>}
         />
     }
     return (
         <>
-            <div className="px-5 py-3">
+            <div className="px-4 px-md-5 py-3">
                 <Breadcrumb items={breadCrumbItems} />
             </div>
-            <div className="product-details-container row me-0 my-5 ">
-                <div className="carousel col-12 col-md-6">
-                    <div className="card-controller">
-                        {product?.images?.length === 1 ? null : <>
-                            <LeftOutlined
-                                className="icon"
-                                onClick={() => {
-                                    carousel.current.prev()
-                                }}
-                            />
-                            <RightOutlined
-                                className="icon"
-                                onClick={() => {
-                                    carousel.current.next()
-                                }}
-                            />
-                        </>}
-                    </div>
+            <div className="product-details-container row mx-0 my-2 my-md-3 ">
+                <div className="carousel col-12 col-md-6 p-0">
+                    {product?.images?.length > 1 ? <div className="card-controller">
+                        <LeftOutlined
+                            className="icon"
+                            onClick={() => {
+                                carousel.current.prev()
+                            }}
+                        />
+                        <RightOutlined
+                            className="icon"
+                            onClick={() => {
+                                carousel.current.next()
+                            }}
+                        />
+                    </div> : null}
                     <Carousel ref={carousel} dots={false}>
-                        {
-                            product?.images?.map((imageUrl, index) => {
-                                return <div key={index} className="img-container">
-                                    <Image className="img-fluid image" src={imageUrl} />
-                                </div>
-                            })
-                        }
+                        {product?.images?.map((imageUrl, index) => {
+                            return <div key={index} className="img-container">
+                                <Image className="img-fluid image" src={imageUrl} />
+                            </div>
+                        })}
                     </Carousel>
                 </div>
-                <div className="content col-12 col-md-6 pt-5 d-flex justify-content-center">
-                    <div className="w-75">
+                <div className="content col-12 col-md-6 pt-4 pt-md-5 d-flex justify-content-center">
+                    <div className="w-75 contentInner">
                         <h1>{product?.name}</h1>
                         <p>{product?.shoefor}'s Shoes</p>
                         <p>Rs.{product?.price}</p>
@@ -246,10 +220,10 @@ const Details = () => {
 
                         <div className="row gap-2 pb-3 m-0">
                             <div className="col-12 p-0">
-                                <Button type="primary" className="btn-filled p-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
+                                <Button type="primary" className="btn-filled p-3 p-md-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
                             </div>
                             <div className="col-12 p-0">
-                                <Button type="text" className="btn-outline p-4 w-100" shape="round" onClick={() => handleAddToFavorites(product)}>Favorite <HeartOutlined /></Button>
+                                <Button type="text" className="btn-outline p-3 p-md-4 w-100" shape="round" onClick={() => handleAddToFavorites(product)}>Favorite <HeartOutlined /></Button>
                             </div>
                         </div>
                         <p className="w-100">{product?.description}</p>

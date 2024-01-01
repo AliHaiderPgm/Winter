@@ -1,6 +1,5 @@
 import Header from "../../components/shared/Header"
 import Trusted from "../../components/frontend/Trusted"
-import Services from "../../components/frontend/Services"
 import AboutSection from "../../components/frontend/AboutSection"
 import CatalogSection from "../../components/frontend/CatalogSection"
 import HorizontalScroll from "../../components/frontend/HorizontalScroll"
@@ -20,7 +19,6 @@ const Home = () => {
 				<Featured />
 				<Trusted />
 				<AboutSection />
-				{/* <Services /> */}
 			</div>
 		</>
 	)

@@ -28,7 +28,7 @@ const CatalogSection = () => {
 		</>
 	}
 	return (
-		<div className="catalog d-flex flex-column my-5 gap-2 mx-5">
+		<div className="catalog d-flex flex-column my-5 gap-2 mx-3 mx-md-5">
 			<h2 className="text-center fw-bold">Catalog</h2>
 			<div className="row gap-3 gap-md-1 justify-content-center">
 				{

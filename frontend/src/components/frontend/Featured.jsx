@@ -24,10 +24,13 @@ const Featured = () => {
 		<div className="container">
 			<div className="row justify-content-center">
 				{products.map((product, index) => {
-					return <div className="col-12 col-md-6 col-lg-3" key={index}>
+					return <div className="col-12 col-md-6 col-lg-3 d-flex justify-content-center" key={index}>
 						<BnbCard data={product} uniqueKey={product._id} />
 					</div>
 				})}
+				{
+					products.length === 0 ? <p className="text-center fw-bold py-3 fs-4">Coming Soon...</p> : null
+				}
 			</div>
 		</div>
 	)

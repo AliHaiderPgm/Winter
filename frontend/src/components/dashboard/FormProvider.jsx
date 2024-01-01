@@ -1,6 +1,5 @@
 import { Form, Input, InputNumber, Select } from "antd"
 import {
-	BgColorsOutlined,
 	DollarOutlined,
 	FontSizeOutlined,
 	StockOutlined,
@@ -107,30 +106,16 @@ const FormProvider = ({
 					title="Describe shoe features"
 				/>
 			</Form.Item>
-			<div className="d-flex flex-column gap-2">
-				<Form.Item name="colors" noStyle>
-					<Select
-						placeholder="Colors"
-						size="large"
-						mode="multiple"
-						options={data.colors}
-						suffixIcon={<BgColorsOutlined />}
-						onChange={(e) => handleSelect("colors", e)}
-						title="Available colors for shoe"
-					/>
-				</Form.Item>
-
-				<Form.Item name="sizes" noStyle>
-					<Select
-						placeholder="Sizes"
-						mode="multiple"
-						size="large"
-						onChange={(e) => handleSelect("sizes", e)}
-						options={data.sizes}
-						title="Available sizes for shoe"
-					/>
-				</Form.Item>
-			</div>
+			<Form.Item name="sizes" noStyle>
+				<Select
+					placeholder="Sizes"
+					mode="multiple"
+					size="large"
+					onChange={(e) => handleSelect("sizes", e)}
+					options={data.sizes}
+					title="Available sizes for shoe"
+				/>
+			</Form.Item>
 			<ImageUploader newImages={newImages} setNewImages={setNewImages} />
 		</Form>
 	)

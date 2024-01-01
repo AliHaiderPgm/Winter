@@ -5,7 +5,6 @@ import {
 	FontSizeOutlined,
 	DollarOutlined,
 	StockOutlined,
-	BgColorsOutlined,
 } from "@ant-design/icons"
 import { useProduct } from "../../../context/ProductContext"
 import data from "../../../global/data"
@@ -21,7 +20,6 @@ const initialState = {
 	price: null,
 	description: "",
 	stock: null,
-	colors: [],
 	sizes: [],
 }
 const AddProduct = () => {
@@ -52,7 +50,6 @@ const AddProduct = () => {
 			shoefor: state.shoefor,
 			description: state.description,
 			price: state.price,
-			colors: state.colors,
 			sizes: state.sizes,
 			stock: state.stock,
 			images: code,
@@ -161,39 +158,22 @@ const AddProduct = () => {
 							title="Describe shoe features"
 						/>
 					</Form.Item>
-					<div className="d-flex flex-column gap-2">
-						<Form.Item name="colors" noStyle>
-							<Select
-								placeholder="Colors"
-								size="large"
-								mode="multiple"
-								options={data.colors}
-								suffixIcon={<BgColorsOutlined />}
-								onChange={(e) => handleSelect("colors", e)}
-								title="Available colors for shoe"
-							/>
-						</Form.Item>
-
-						<Form.Item name="sizes" noStyle>
-							<Select
-								placeholder="Sizes"
-								mode="multiple"
-								size="large"
-								onChange={(e) => handleSelect("sizes", e)}
-								options={data.sizes}
-								title="Available sizes for shoe"
-							/>
-						</Form.Item>
-					</div>
-
+					<Form.Item name="sizes" noStyle>
+						<Select
+							placeholder="Sizes"
+							mode="multiple"
+							size="large"
+							onChange={(e) => handleSelect("sizes", e)}
+							options={data.sizes}
+							title="Available sizes for shoe"
+						/>
+					</Form.Item>
 					<Dragger images={images} imagesCode={setImages} />
 					{/* <ImageUploader images={images} imagesCode={setImages} /> */}
 
 					<Button
 						type="primary"
-						size="large"
-						className="w-100"
-						style={{ backgroundColor: "#001529" }}
+						className="w-100 p-3 h-auto fs-5 btn-filled"
 						onClick={handleSubmit}
 						loading={loading}
 					>

@@ -17,7 +17,7 @@ const Catalog = () => {
     const [prevType, setPrevType] = useState('')
     const { type } = useParams()
     const newType = type.charAt(0).toUpperCase() + type.slice(1)
-    const ShoesFor = newType == 'Male' ? 'Men' : newType == 'Female' ? 'Women' : newType == 'Children' ? 'Kid' : null;
+    const ShoesFor = newType == 'Male' ? 'Men' : newType == 'Female' ? 'Women' : newType == 'Children' ? 'Kids' : null;
 
     if (ShoesFor === null) {
         return <Result
@@ -28,7 +28,7 @@ const Catalog = () => {
         />
     }
 
-    const [firstLoading, setFirstLoading] = useState(false)
+    const [firstLoading, setFirstLoading] = useState(true)
     const [loading, setLoading] = useState(false)
     const { GetCustomizedProducts } = useProduct()
     const [page, setPage] = useState(1)
@@ -220,7 +220,7 @@ const Catalog = () => {
     const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])
 
     return <div className="product-catalog">
-        <div className="px-2 px-sm-4 px-md-5 py-4 d-flex justify-content-between align-items-center">
+        <div className="px-2 px-sm-4 px-md-5 py-2 py-md-3 d-flex justify-content-between align-items-center">
             <div>
                 <Suspense fallback={<div>Loading...</div>}>
                     <Breadcrumb items={breadCrumbItems} />
@@ -289,18 +289,20 @@ const Catalog = () => {
                                     </div>
                                 ))}
                                 {
-                                    state.length === 0 ? <div className="mx-auto"><Empty /></div>
-                                        : isError && <div className="d-flex justify-content-center align-items-center ">
-                                            <Result
-                                                status="warning"
-                                                title="Something went wrong!"
-                                                extra={
-                                                    <Button type="primary" className="btn-filled" onClick={() => getProducts()}>
-                                                        Refresh
-                                                    </Button>
-                                                }
-                                            />
-                                        </div>
+                                    !firstLoading && state.length === 0 ? <div className="mx-auto"><Empty /></div> : null
+                                }
+                                {
+                                    !firstLoading && state.length === 0 && isError ? <div className="d-flex justify-content-center align-items-center ">
+                                        <Result
+                                            status="warning"
+                                            title="Something went wrong!"
+                                            extra={
+                                                <Button type="primary" className="btn-filled" onClick={() => getProducts()}>
+                                                    Refresh
+                                                </Button>
+                                            }
+                                        />
+                                    </div> : null
                                 }
                             </div>
                     }

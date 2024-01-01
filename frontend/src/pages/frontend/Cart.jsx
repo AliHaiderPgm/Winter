@@ -28,9 +28,9 @@ const Cart = () => {
     }
 
     return (
-        <div className="cart d-flex justify-content-center py-3">
+        <div className="cart d-flex justify-content-center py-4">
             <div className="wrapper w-100">
-                <div className="row pt-4">
+                <div className="row mx-auto pt-4 container p-3 p-md-0">
                     <div className="col-12 col-md-7">
                         <h3 className="text-center text-md-start">Bag</h3>
                         {
@@ -43,7 +43,7 @@ const Cart = () => {
                             </>
                         }
                         {
-                            products.length === 0 ? <p className="mb-3">There are no items in your bag.</p>
+                            products?.length === 0 ? <p className="mb-3">There are no items in your bag.</p>
                                 : <div className="d-flex flex-column gap-3">
                                     {
                                         products.map((product, index) => {

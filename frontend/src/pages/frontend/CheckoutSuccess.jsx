@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useCart } from "../../context/CartContext"
 import { Button, Result } from "antd"
 import Loader from "../../components/shared/Loader"
@@ -8,13 +8,14 @@ const CheckoutSuccess = () => {
     const { id } = useParams()
     const { confirmOrder, getCartProducts } = useCart()
     const [orderConfirmation, setOrderConfirmation] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [isError, setIsError] = useState(false)
+    const navigate = useNavigate()
 
     const handleConfirmOrder = async () => {
-        setLoading(true)
-        setIsError(false)
         try {
+            setLoading(true)
+            setIsError(false)
             const res = await confirmOrder(id)
             if (res.data === "Order confirmed.") {
                 setOrderConfirmation(true)
@@ -33,44 +34,51 @@ const CheckoutSuccess = () => {
         handleConfirmOrder()
     }, [])
 
-    if (loading) {
-        return <div style={{ height: "45dvh" }}>
-            <Loader />
-        </div>
-    }
-
     if (isError) {
         return <div style={{ height: "45dvh" }}>
-            <p className="text-center fs-3">Something went wrong!</p>
+            <p className="text-center fs-3 my-4">Something went wrong!</p>
         </div>
     }
-
-    if (!orderConfirmation) {
-        return <Result
-            status="error"
-            title="Failed to retrieve order details!"
-            extra={[
-                <>
-                    <Button type="primary" className="btn-filled">
-                        Home
-                    </Button>,
-                </>
-            ]}
-        />
-    }
     return (
-        <Result
-            status="success"
-            title="Thank you for purchasing!"
-            subTitle={`Order number: ${id}. Order will be shipped in 7 working days.`}
-            extra={[
-                <>
-                    <Button type="primary" className="btn-filled">
-                        Continue Shopping
-                    </Button>,
-                </>
-            ]}
-        />
+        <>
+            {
+                loading ? <div style={{ height: "45dvh" }}>
+                    <Loader />
+                </div>
+                    : orderConfirmation ? <Result
+                        status="success"
+                        title="Thank you for purchasing!"
+                        subTitle={`Order number: ${id}. Order will be shipped in 7 working days.`}
+                        extra={[
+                            <>
+                                <Button
+                                    type="primary"
+                                    className="btn-filled"
+                                    onClick={() => navigate("/")}>
+                                    Continue Shopping
+                                </Button>,
+                            </>
+                        ]}
+                    />
+                        :
+                        <Result
+                            status="error"
+                            title="Failed to retrieve order details!"
+                            extra={[
+                                <>
+                                    <Button
+                                        type="primary"
+                                        className="btn-filled"
+                                        onClick={() => {
+                                            navigate("/")
+                                        }}>
+                                        Home
+                                    </Button>,
+                                </>
+                            ]}
+                        />
+            }
+        </>
     )
 }
 
