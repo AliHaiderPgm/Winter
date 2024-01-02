@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button, Form, Input } from "antd"
-import LoginImage from "../../assets/login.jpg"
+import RegisterImage from "../../assets/register.jpg"
 import Logo from "../../assets/logo.png"
 
 export default function ForgotPassword() {
@@ -50,8 +50,8 @@ export default function ForgotPassword() {
 
 								<Form.Item
 								>
-									<Button type="primary" htmlType="submit" className="btn-filled w-100 p-2" loading={loading}>
-										Send Reset Link
+									<Button type="primary" htmlType="submit" className="btn-filled w-100 p-2" loading={loading} disabled>
+										Coming soon
 									</Button>
 								</Form.Item>
 							</Form>
@@ -60,7 +60,7 @@ export default function ForgotPassword() {
 				</div>
 				{
 					innerWidth >= 768 && <div className="col-6 p-0 dvh-100">
-						<img src={LoginImage} alt="Winter store" className="img-fluid object-fit-cover w-100 h-100" />
+						<img src={RegisterImage} alt="Winter store" className="img-fluid object-fit-cover w-100 h-100" />
 					</div>
 				}
 			</div>

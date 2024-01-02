@@ -1,19 +1,28 @@
 import BnbCard from "../shared/BnbCard"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import BnbCardLoading from "../shared/BnbCardLoading"
 import { useProduct } from "../../context/ProductContext"
-import { ArrowUpOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons"
+import { ArrowRightOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons"
 const HorizontalScroll = () => {
-	const [recentProducts, setRecentProducts] = useState([])
-	const [topRatedProducts, setTopRatedProducts] = useState([])
-	const [isActive, setIsActive] = useState("new")
-	const [loading, setLoading] = useState(false)
+	const [products, setProducts] = useState([])
+	const [loading, setLoading] = useState(true)
 	const { RecentAndTopRated } = useProduct()
 	const log = useRef(true)
-	// const products = useMemo(() => {
-	// 	return isActive === "topRated" ? topRatedProducts : recentProducts;
-	// }, [isActive, recentProducts, topRatedProducts]);
 	const scroll = useRef()
+	const [isActive, setIsActive] = useState("new")
+	const [arrowPosition, setArrowPosition] = useState(0);
+	const newBtnRef = useRef(null);
+	const topRatedBtnRef = useRef(null);
+	const [newBtnWidth, setNewBtnWidth] = useState(0)
+	const [topRatedBtnWidth, setTopRatedBtnWidth] = useState(0)
+
+	useEffect(() => {
+		setNewBtnWidth(newBtnRef.current.offsetWidth)
+		setTopRatedBtnWidth(topRatedBtnRef.current.offsetWidth)
+	}, []);
+	const arrowStyle = {
+		transform: `translateX(${arrowPosition}px)`,
+	};
 
 	const scrollRight = () => {
 		if (scroll.current) {
@@ -45,19 +54,20 @@ const HorizontalScroll = () => {
 		setIsActive(val)
 		if (val === "new") {
 			getRecentProducts()
+			setArrowPosition(0)
 		}
 		if (val === "topRated") {
 			getTopRatedProducts()
+			setArrowPosition(newBtnWidth + 10)
 		}
 	}
 	// get products
 	const getRecentProducts = async () => {
 		try {
-			setRecentProducts([])
-			setTopRatedProducts([])
 			setLoading(true)
+			setProducts([])
 			const res = await RecentAndTopRated({ limit: 6, sort: -1 })
-			setRecentProducts(res)
+			setProducts(res)
 		} catch (error) {
 			console.log(error)
 		} finally {
@@ -66,11 +76,10 @@ const HorizontalScroll = () => {
 	}
 	const getTopRatedProducts = async () => {
 		try {
-			setRecentProducts([])
-			setTopRatedProducts([])
 			setLoading(true)
+			setProducts([])
 			const res = await RecentAndTopRated({ limit: 6, topRated: true })
-			setTopRatedProducts(res)
+			setProducts(res)
 		} catch (error) {
 			console.log(error)
 		} finally {
@@ -88,11 +97,12 @@ const HorizontalScroll = () => {
 			<div className="horizontal-scroll">
 				<div className="d-flex align-items-center ">
 					<div className="buttons-wrapper my-3">
-						<ArrowUpOutlined className={`arrow ${isActive}`} />
+						<ArrowRightOutlined className={`arrow ${isActive}`} style={arrowStyle} />
 						<button
 							className={isActive === "new" ? "active" : ""}
 							onClick={handleCarousel}
 							value="new"
+							ref={newBtnRef}
 						>
 							New Arrivals
 						</button>
@@ -100,6 +110,7 @@ const HorizontalScroll = () => {
 							className={isActive === "topRated" ? "active" : ""}
 							onClick={handleCarousel}
 							value="topRated"
+							ref={topRatedBtnRef}
 						>
 							Top Rated
 						</button>
@@ -111,23 +122,16 @@ const HorizontalScroll = () => {
 				</div>
 				<div className="cards-container" ref={scroll}>
 					{
-						loading ? Array.from({ length: 4 }, (_, index) => {
+						loading ? Array.from({ length: 5 }, (_, index) => {
 							return <BnbCardLoading key={index} />
-						}) : null
-					}
-					{
-						recentProducts.length > 0 ? recentProducts.map((product, index) => {
+						}) : products?.map((product, index) => {
 							return <div className="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3" key={index}>
 								<BnbCard data={product} uniqueKey={product._id} />
 							</div>
-						}) : null
+						})
 					}
 					{
-						topRatedProducts.length > 0 ? topRatedProducts.map((product, index) => {
-							return <div className="col-8 col-sm-6 col-md-5 col-lg-4 col-xl-3" key={index}>
-								<BnbCard data={product} uniqueKey={product._id} />
-							</div>
-						}) : null
+						!loading && products.length === 0 ? <p className="fw-bold text-center fs-4">Products coming soon...</p> : null
 					}
 				</div>
 			</div>

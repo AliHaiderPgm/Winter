@@ -57,7 +57,7 @@ const AllProducts = () => {
 				{products?.map((item, index) => {
 					return (
 						<div
-							className="col-3 flex-fill mb-3"
+							className="col-3 mb-3"
 							key={index}
 							onClick={() => handleNavigate(item._id)}
 						>

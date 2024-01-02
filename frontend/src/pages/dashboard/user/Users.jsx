@@ -8,7 +8,6 @@ import {
 import { useEffect, useRef, useState } from "react"
 import Highlighter from "react-highlight-words"
 import AuthServices from "../../../context/AuthServices"
-import Loader from "../../../components/shared/Loader"
 
 const Users = () => {
 	const [fetchedData, setFetchedData] = useState([])
@@ -16,7 +15,7 @@ const Users = () => {
 	const [searchText, setSearchText] = useState("")
 	const [searchedColumn, setSearchedColumn] = useState("")
 	const searchInput = useRef(null)
-	const [loading, setLoading] = useState(false)
+	const [loading, setLoading] = useState(true)
 	const log = useRef(true)
 	const [updating, setUpdating] = useState(false)
 	const [deleting, setDeleting] = useState(new Array(fetchedData.length).fill(false))
@@ -26,7 +25,7 @@ const Users = () => {
 			setLoading(true)
 			const me = await AuthServices.getMe()
 			const res = await AuthServices.getAllUsers()
-			const dataToStore = res.filter(item => item._id !== me._id)
+			const dataToStore = res.filter(item => item._id !== me.data._id)
 			setFetchedData(dataToStore)
 			setData(dataToStore)
 		} catch (error) {
@@ -43,19 +42,13 @@ const Users = () => {
 	}, [])
 
 	// update user
-	const updateUser = async () => {
+	const updateUser = async (e) => {
 		try {
 			setUpdating(true)
-			const userToUpdate = data.filter(item1 => {
-				return fetchedData.some(item2 => item1._id === item2._id)
-			})
-			const { _id, type, ...user } = userToUpdate[0]
-
-			await AuthServices.updateUser(_id, { type })
+			await AuthServices.updateUser(e._id, { type: e.type })
 			await getUsers()
 			message.success("Updated user!")
 		} catch (error) {
-			console.log(error)
 			message.error("Something went wrong!")
 		} finally {
 			setUpdating(false)
@@ -172,6 +165,8 @@ const Users = () => {
 				text
 			),
 	})
+
+	// const handleSelect = 
 	// how to display data
 	const columns = [
 		{
@@ -204,7 +199,8 @@ const Users = () => {
 			render: (text, record) => {
 				return (
 					<Select
-						defaultValue={record.type}
+						// defaultValue={record.type}
+						value={record.type}
 						style={{
 							width: 120,
 						}}
@@ -242,31 +238,26 @@ const Users = () => {
 						userFromState = user
 					}
 				})
-				return (
-					<>
-						<Popconfirm
-							title="Delete the user"
-							description={`Are you sure to delete "${record.name}"?`}
-							onConfirm={() => deleteUser(index, record)}
-						>
-							<Button danger type="text" loading={deleting[index]}>
-								<DeleteOutlined style={{ fontSize: 16 }} />
-							</Button>
-						</Popconfirm>
-						{record.type === userFromState.type ? null :
-							<Button type="text" loading={updating} onClick={updateUser}>
-								<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
-							</Button>
-						}
-					</>
-				)
+				return <div key={index}>
+					<Popconfirm
+						title="Delete the user"
+						description={`Are you sure to delete "${record.name}"?`}
+						onConfirm={() => deleteUser(index, record)}
+					>
+						<Button danger type="text" loading={deleting[index]}>
+							<DeleteOutlined style={{ fontSize: 16 }} />
+						</Button>
+					</Popconfirm>
+					{record.type === userFromState.type ? null :
+						<Button type="text" loading={updating} onClick={() => updateUser(userFromState)}>
+							<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
+						</Button>
+					}
+				</div>
 			},
 		},
 	]
-	if (loading) {
-		return <Loader />
-	}
-	return <Table columns={columns} dataSource={fetchedData} />
+	return <Table columns={columns} dataSource={fetchedData} loading={loading} key={fetchedData} />
 }
 
 export default Users

@@ -11,16 +11,9 @@
 			display: none;
 		}
 		.arrow {
-			rotate: 90deg;
 			font-size: 2.5rem;
 			position: absolute;
-			transition: left $transition-2;
-		}
-		.arrow.new {
-			left: 0;
-		}
-		.arrow.topRated {
-			left: 15%;
+			transition: transform $transition-2;
 		}
 		button {
 			border: 0px;
@@ -34,7 +27,7 @@
 		}
 		button.active {
 			color: #222;
-			margin-left: 40px;
+			margin-left: 2.5rem;
 		}
 	}
 	.controller {

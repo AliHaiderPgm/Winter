@@ -32,11 +32,6 @@ const getMe = async () => {
 	return res
 }
 
-//-------TOKEN---------//
-// const getToken = async () => {
-// 	const res = await axios.get(`${API_URL}/token`, config)
-// 	return res
-// }
 
 // get all users
 const getAllUsers = async () => {
@@ -46,7 +41,7 @@ const getAllUsers = async () => {
 
 // update user
 const updateUser = async (id, data) => {
-	const res = await axios.put(`${API_URL}/update/${id}`, data)
+	const res = await axios.put(`${API_URL}/update/${id}`, data, config)
 	return res.data
 }
 

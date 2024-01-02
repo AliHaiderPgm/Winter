@@ -97,33 +97,11 @@ const generateToken = (user) => {
     })
 }
 
-// const newAccessToken = asyncHandler(async (req, res) => {
-//     try {
-//         const refreshToken = getTokenFromCookie(req.headers.cookie, "refreshToken")
-//         if (!refreshToken) return res.status(401).json({ message: "No token" })
-//         const isValid = await Token.findOne({ token: refreshToken })
-//         if (!isValid) return res.status(403).json({ message: "Invalid token" })
-
-//         jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-//             if (err) return res.status(403).json({ message: "Something went wrong" })
-//             const accessToken = generateToken(user.id)
-//             const secureRequest = { httpOnly: true, secure: true, sameSite: 'None' }
-//             res.cookie('accessToken', accessToken, secureRequest)
-//             res.status(200).json({ message: "All set" })
-//         })
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
-
-
 // @desc     logout user
 // @route    GET /api/users/logout
 // @access   PRIVATE
 const logoutUser = asyncHandler(async (req, res) => {
     try {
-        // const refreshToken = getTokenFromCookie(req.headers.cookie, "refreshToken")
-        // await Token.deleteOne({ token: refreshToken })
         res.clearCookie("accessToken")
         res.status(200).json({ message: "Token removed" })
     } catch (error) {
@@ -162,7 +140,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
     try {
         const { ...user } = req.body
-        await User.findByIdAndUpdate(req.params.id, user)
+        const newUser = await User.findByIdAndUpdate(req.params.id, user)
+        console.log(newUser)
         res.status(200).json({ message: "User updated!" })
     } catch (error) {
         console.log(error)
@@ -174,17 +153,17 @@ const updateUser = asyncHandler(async (req, res) => {
 // @desc   delete user
 // @route  /api/users/delete/:id
 // @access PRIVATE
-// const deleteUser = asyncHandler(async (req, res) => {
-//     try {
-//         const { ...user } = req.body
-//         await User.findByIdAndDelete(req.params.id, user)
-//         res.status(200).json({ message: "User updated!" })
-//     } catch (error) {
-//         console.log(error)
-//         res.status(400)
-//         throw new Error("Failed to update user!")
-//     }
-// })
+const deleteUser = asyncHandler(async (req, res) => {
+    try {
+        const { ...user } = req.body
+        await User.findByIdAndDelete(req.params.id, user)
+        res.status(200).json({ message: "User updated!" })
+    } catch (error) {
+        console.log(error)
+        res.status(400)
+        throw new Error("Failed to update user!")
+    }
+})
 
 module.exports = {
     registerUser,
@@ -192,5 +171,6 @@ module.exports = {
     logoutUser,
     getMe,
     getAllUsers,
-    updateUser
+    updateUser,
+    deleteUser
 }

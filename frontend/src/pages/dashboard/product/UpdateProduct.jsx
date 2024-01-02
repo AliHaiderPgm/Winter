@@ -7,7 +7,7 @@ import { useProduct } from "../../../context/ProductContext"
 import FormProvider from "../../../components/dashboard/FormProvider"
 
 const UpdateProduct = () => {
-	const { id } = useParams()
+	const params = useParams()
 	const {
 		GetDetails,
 		UpdateProduct,
@@ -26,7 +26,7 @@ const UpdateProduct = () => {
 	const getData = async () => {
 		try {
 			setLoading(true)
-			const data = await GetDetails(id)
+			const data = await GetDetails(params.id)
 			setState({ ...data })
 		} catch (error) {
 			console.log(error)
