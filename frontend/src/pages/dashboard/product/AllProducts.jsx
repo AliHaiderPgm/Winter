@@ -36,20 +36,20 @@ const AllProducts = () => {
 	}
 	return (
 		<>
-			<div className="d-flex justify-content-between mt-2 mb-3">
-				<Search
-					placeholder="Search Product"
-					allowClear
-					enterButton="Find"
-					size="large"
-					onSearch={onSearch}
-					className="w-25"
-				/>
+			<div className="d-flex flex-column flex-md-row gap-2 justify-content-between mt-2 mb-3">
+				<div className="col-12 col-md-3">
+					<Search
+						placeholder="Search Product"
+						allowClear
+						enterButton="Find"
+						size="large"
+						onSearch={onSearch}
+					/>
+				</div>
 				<Select
 					placeholder="Sort Products"
 					size="large"
 					onChange={handleChange}
-					className="w-25"
 					options={options}
 				/>
 			</div>
@@ -57,7 +57,7 @@ const AllProducts = () => {
 				{products?.map((item, index) => {
 					return (
 						<div
-							className="col-3 mb-3"
+							className="col-12 col-md-6 col-lg-3 mb-3"
 							key={index}
 							onClick={() => handleNavigate(item._id)}
 						>

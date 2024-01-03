@@ -6,6 +6,9 @@ import { useAuth } from "./AuthContext"
 import { ServerURL } from "."
 
 const CartContext = createContext()
+const config = {
+    withCredentials: true,
+}
 
 const CartContextProvider = ({ children }) => {
 
@@ -13,7 +16,7 @@ const CartContextProvider = ({ children }) => {
     const [subTotal, setSubTotal] = useState(0)
     const [tax, setTax] = useState(0)
     const log = useRef(true)
-    const { user } = useAuth()
+    const { user, isAuthenticated } = useAuth()
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
     const API_URL = `${ServerURL()}/checkout`
@@ -140,21 +143,29 @@ const CartContextProvider = ({ children }) => {
         return res
     }
 
+    //-------------------ORDERS----------------//
+
     const getMyOrders = async () => {
-        const config = {
-            withCredentials: true,
-        }
         const res = await axios.get(`${API_URL}/getMyOrders`, config)
         return res.data
     }
 
-    //-------------CONFIRM ORDER----------//
+    const getAllOrders = async () => {
+        const res = await axios.get(`${API_URL}/orders`, config)
+        return res.data
+    }
+
+    const updateOrder = async (id, query) => {
+        const res = await axios.get(`${API_URL}/updateOrder/${id}`, query, config)
+        return res.data
+    }
+    // CONFIRM ORDER
     const confirmOrder = async (id) => {
-        const res = await axios.post(`${API_URL}/confirm-order?orderNumber=${id}&userId=${user._id}`)
+        const res = await axios.post(`${API_URL}/confirmOrder?orderNumber=${id}&userId=${user._id}`)
         return res
     }
 
-    const contextValue = {
+    const userContext = {
         products,
         getCartProducts,
         updateCart,
@@ -168,6 +179,8 @@ const CartContextProvider = ({ children }) => {
         getMyOrders,
         confirmOrder
     }
+
+    const contextValue = isAuthenticated && user.type === 'user' ? userContext : { ...userContext, getAllOrders, updateOrder }
     return (
         <>
             <CartContext.Provider value={contextValue}>

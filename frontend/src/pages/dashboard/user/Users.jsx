@@ -8,6 +8,7 @@ import {
 import { useEffect, useRef, useState } from "react"
 import Highlighter from "react-highlight-words"
 import AuthServices from "../../../context/AuthServices"
+import { useAuth } from "../../../context/AuthContext"
 
 const Users = () => {
 	const [fetchedData, setFetchedData] = useState([])
@@ -19,13 +20,15 @@ const Users = () => {
 	const log = useRef(true)
 	const [updating, setUpdating] = useState(false)
 	const [deleting, setDeleting] = useState(new Array(fetchedData.length).fill(false))
+	const { user } = useAuth()
 	// get users
 	const getUsers = async () => {
 		try {
 			setLoading(true)
-			const me = await AuthServices.getMe()
+			setFetchedData([])
+			setData([])
 			const res = await AuthServices.getAllUsers()
-			const dataToStore = res.filter(item => item._id !== me.data._id)
+			const dataToStore = res.filter(item => item._id !== user._id)
 			setFetchedData(dataToStore)
 			setData(dataToStore)
 		} catch (error) {
@@ -165,8 +168,6 @@ const Users = () => {
 				text
 			),
 	})
-
-	// const handleSelect = 
 	// how to display data
 	const columns = [
 		{
@@ -199,8 +200,7 @@ const Users = () => {
 			render: (text, record) => {
 				return (
 					<Select
-						// defaultValue={record.type}
-						value={record.type}
+						defaultValue={record.type}
 						style={{
 							width: 120,
 						}}
@@ -244,12 +244,14 @@ const Users = () => {
 						description={`Are you sure to delete "${record.name}"?`}
 						onConfirm={() => deleteUser(index, record)}
 					>
-						<Button danger type="text" loading={deleting[index]}>
+						<Button danger type="text" loading={deleting[index]} >
 							<DeleteOutlined style={{ fontSize: 16 }} />
 						</Button>
 					</Popconfirm>
 					{record.type === userFromState.type ? null :
-						<Button type="text" loading={updating} onClick={() => updateUser(userFromState)}>
+						<Button type="text" loading={updating} onClick={() => {
+							updateUser(userFromState)
+						}}>
 							<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
 						</Button>
 					}
@@ -257,7 +259,7 @@ const Users = () => {
 			},
 		},
 	]
-	return <Table columns={columns} dataSource={fetchedData} loading={loading} key={fetchedData} />
+	return <Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} />
 }
 
 export default Users

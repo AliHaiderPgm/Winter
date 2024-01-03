@@ -141,14 +141,12 @@ const updateUser = asyncHandler(async (req, res) => {
     try {
         const { ...user } = req.body
         const newUser = await User.findByIdAndUpdate(req.params.id, user)
-        console.log(newUser)
         res.status(200).json({ message: "User updated!" })
     } catch (error) {
         console.log(error)
         res.status(400)
         throw new Error("Failed to update user!")
     }
-
 })
 // @desc   delete user
 // @route  /api/users/delete/:id

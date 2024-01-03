@@ -78,7 +78,6 @@ const Orders = () => {
     const handleDetails = (e) => {
         setIsModalOpen(true)
         setOrderDetails(e)
-
     }
 
     return <>

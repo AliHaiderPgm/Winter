@@ -118,13 +118,16 @@ const ProductContextProvider = (props) => {
 		})
 		return res.data
 	}
-	const contextValues = isAuthenticated && user.type === "admin" ? {
+
+	const userContext = {
 		loading,
 		GetDetails,
 		RecentAndTopRated,
 		GetCustomizedProducts,
 		SearchProduct,
-
+	}
+	const contextValues = isAuthenticated && user.type === "user" ? userContext : {
+		...userContext,
 		products,
 		getProductLoading,
 		GetProducts,
@@ -132,12 +135,6 @@ const ProductContextProvider = (props) => {
 		DeleteProduct,
 		uploadImage,
 		UpdateProduct,
-	} : {
-		loading,
-		GetDetails,
-		RecentAndTopRated,
-		GetCustomizedProducts,
-		SearchProduct,
 	}
 	return (
 		<>

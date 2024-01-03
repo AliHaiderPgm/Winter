@@ -104,6 +104,21 @@ const getAllOrders = asyncHandler(async (req, res) => {
     }
 })
 
+const updateOrder = asyncHandler(async (req, res) => {
+    try {
+        if (req.user.type === 'user') return res.status(403)
+
+        const { ...order } = req.body
+        const newOrderDetails = await Order.findByIdAndUpdate(req.params.id, order)
+        console.log("newOrder===>>", newOrderDetails)
+        res.status(200).json({ message: "Order updated!" })
+    } catch (error) {
+        console.log(error)
+        res.status(400)
+        throw new Error("Failed to update order!")
+    }
+})
+
 const getMyOrders = asyncHandler(async (req, res) => {
     try {
         const orders = await Order.find({ user: req.user._id })
@@ -125,5 +140,6 @@ module.exports = {
     confirmOrder,
     newOrder,
     getAllOrders,
-    getMyOrders
+    getMyOrders,
+    updateOrder
 }
