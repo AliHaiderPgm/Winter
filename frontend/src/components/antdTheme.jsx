@@ -2,7 +2,13 @@ import { theme } from "antd"
 
 const antdTheme = {
     components: {
-        // algorithm: theme.darkAlgorithm,
+        Button: {
+            colorPrimary: "#111",
+            colorPrimaryHover: "#222222b5",
+            colorPrimaryActive: "#222",
+            colorPrimaryBorder: "#222222b5",
+            algorithm: true,
+        },
         Form: {
             itemMarginBottom: 0,
         },

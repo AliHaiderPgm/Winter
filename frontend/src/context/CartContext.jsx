@@ -156,7 +156,7 @@ const CartContextProvider = ({ children }) => {
     }
 
     const updateOrder = async (id, query) => {
-        const res = await axios.get(`${API_URL}/updateOrder/${id}`, query, config)
+        const res = await axios.post(`${API_URL}/updateOrder/${id}`, query, config)
         return res.data
     }
     // CONFIRM ORDER

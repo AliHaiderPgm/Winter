@@ -14,12 +14,15 @@ import Favorite from "./Favorite"
 import Orders from "./Orders"
 import PrivateRoute from "../../router/privateRoute"
 import { useAuth } from "../../context/AuthContext"
+import { message } from "antd"
 
 const index = () => {
 	const { isAuthenticated } = useAuth()
+	const [messageApi, contextHolder] = message.useMessage()
 
 	return (
 		<>
+			{contextHolder}
 			<Navbar />
 			<div className="d-flex justify-content-center">
 				<div style={{ maxWidth: 1920, width: "100%" }}>

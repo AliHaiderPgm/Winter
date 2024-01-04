@@ -3,6 +3,7 @@ import { useCart } from "../../context/CartContext";
 import { useEffect, useState } from "react";
 import { RightOutlined } from "@ant-design/icons";
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard";
+import { OrderStatus } from "../../global/data";
 
 const Orders = () => {
     const { getMyOrders } = useCart()
@@ -10,6 +11,7 @@ const Orders = () => {
     const [orderDetails, setOrderDetails] = useState()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [status, setStatus] = useState("")
 
     const getAllOrders = async () => {
         try {
@@ -26,6 +28,13 @@ const Orders = () => {
         getAllOrders()
     }, [])
 
+    const getStatus = (status) => {
+        const res = OrderStatus.filter(e => {
+            return e.value === status
+        })[0]
+        return res.text
+    }
+
     const dataSource = orders?.map(order => {
         return {
             key: order._id,
@@ -33,7 +42,7 @@ const Orders = () => {
             orderDate: new Date(order.createdAt).toLocaleString(),
             name: order.receiver.firstName + " " + order.receiver.secondName,
             total: `Rs.${order.total}`,
-            orderStatus: order.status,
+            orderStatus: getStatus(order.status),
             orderDetails: order
         }
     })
@@ -79,6 +88,7 @@ const Orders = () => {
         setIsModalOpen(true)
         setOrderDetails(e)
     }
+
 
     return <>
         <div className="container d-flex flex-column gap-2 my-3">

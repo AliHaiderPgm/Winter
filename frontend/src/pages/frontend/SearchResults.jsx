@@ -228,7 +228,7 @@ const Search = () => {
 				}
 				{
 					isResEmpty && products.length === 0 && !loading.firstLoader
-						? <div className="col-12" style={{ minHeight: "65dvh" }}><Empty description={<p>No Product</p>} /></div> : null
+						? <div className="col-12 d-flex justify-content-center align-items-center" style={{ minHeight: "65dvh" }}><Empty description={<p>No Product</p>} /></div> : null
 				}
 			</div>
 			{

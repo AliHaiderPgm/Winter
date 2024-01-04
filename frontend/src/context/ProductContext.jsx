@@ -16,46 +16,13 @@ const ProductContextProvider = (props) => {
 	const { isAuthenticated, user } = useAuth()
 
 	const AddProduct = async (productData) => {
-		try {
-			setLoading(true)
-			const res = await axios.post(API_URL, productData, config)
-			if (res.status === 200) {
-				message.success("Product added successfully!")
-				return res.status
-			}
-		} catch (error) {
-			// console.log(error)
-			if (error.response) {
-				// Request was made and the server responded with an error status
-				const { data, status } = error.response
-				if (data && data.errors) {
-					data.errors.map((err) => {
-						message.error(err)
-					})
-				} else {
-					message.error(`Server responded with status ${status}!`)
-				}
-			} else if (error.request) {
-				// The request was made but no response from server
-				message.error("No response from server!")
-			} else {
-				message.error("An error occurred while sending the request!")
-			}
-		} finally {
-			setLoading(false)
-		}
+		const res = await axios.post(API_URL, productData, config)
+		return res
 	}
 
 	const GetProducts = async () => {
-		try {
-			setGetProductLoading(true)
-			const res = await axios.get(API_URL, config)
-			setProducts(res.data)
-		} catch (error) {
-			message.error("Oops! Something went wrong.")
-		} finally {
-			setGetProductLoading(false)
-		}
+		const res = await axios.get(API_URL, config)
+		return res.data
 	}
 	// Get single product details
 	const GetDetails = async (id) => {

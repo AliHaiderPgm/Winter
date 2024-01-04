@@ -1,14 +1,23 @@
-import { LaptopOutlined, UserOutlined } from "@ant-design/icons"
+import { AppstoreOutlined, ShoppingOutlined, TagOutlined, UserOutlined } from "@ant-design/icons"
 import { NavLink } from "react-router-dom"
 const getRandomId = () => Math.random().toString(36).slice(2)
 
 export const items = [
 	{
 		key: getRandomId(),
-		icon: <LaptopOutlined />,
+		icon: <AppstoreOutlined />,
 		label: (
 			<NavLink to={"/dashboard/products"} className="text-decoration-none">
-				All Products
+				Products
+			</NavLink>
+		),
+	},
+	{
+		key: getRandomId(),
+		icon: <ShoppingOutlined />,
+		label: (
+			<NavLink to={"/dashboard/orders"} className="text-decoration-none">
+				Orders
 			</NavLink>
 		),
 	},
@@ -16,8 +25,8 @@ export const items = [
 		key: getRandomId(),
 		icon: <UserOutlined />,
 		label: (
-			<NavLink to={"/dashboard/orders"} className="text-decoration-none">
-				Orders
+			<NavLink to={"/dashboard/users"} className="text-decoration-none">
+				Users
 			</NavLink>
 		),
 	},
@@ -27,20 +36,13 @@ export const items = [
 		children: [
 			{
 				key: getRandomId(),
+				icon: <TagOutlined />,
 				label: (
 					<NavLink
 						to={"/dashboard/addProduct"}
 						className="text-decoration-none"
 					>
-						Add products
-					</NavLink>
-				),
-			},
-			{
-				key: getRandomId(),
-				label: (
-					<NavLink to={"/dashboard/users"} className="text-decoration-none">
-						Users
+						Products
 					</NavLink>
 				),
 			},

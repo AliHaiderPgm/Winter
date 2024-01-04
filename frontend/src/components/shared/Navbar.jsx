@@ -174,7 +174,6 @@ const Navbar = () => {
 			dispatch({ type: "LOGOUT" })
 			message.success("Logged out!")
 		} catch (error) {
-			console.log(error)
 			message.error("Failed to log out!")
 		}
 	}
@@ -220,7 +219,7 @@ const Navbar = () => {
 		<>
 			<header className="px-3 px-md-5">
 				<div className="nav">
-					<div className="logo">
+					<div className="logo col-1">
 						<NavLink to="/">
 							<img src={Logo} alt="Winter Store" className="img-fluid" />
 						</NavLink>

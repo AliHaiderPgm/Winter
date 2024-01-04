@@ -1,8 +1,7 @@
-import { Button, Drawer, Input, Popconfirm, Select, Space, Table } from "antd"
+import { Button, Drawer, Input, Select, Space, Table } from "antd"
 import { message } from "antd"
 import {
 	CheckOutlined,
-	DeleteOutlined,
 	RightOutlined,
 	SearchOutlined,
 } from "@ant-design/icons"
@@ -11,29 +10,8 @@ import Highlighter from "react-highlight-words"
 import { useAuth } from "../../context/AuthContext"
 import { useCart } from "../../context/CartContext"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
+import { OrderStatus } from "../../global/data"
 
-const OrderStatus = [
-	{
-		text: "Pending",
-		label: "Pending",
-		value: "pending",
-	},
-	{
-		text: "In Progress",
-		label: "In Progress",
-		value: "inProgress",
-	},
-	{
-		text: "Delivered",
-		label: "Delivered",
-		value: "delivered",
-	},
-	{
-		text: "Cancelled",
-		label: "Cancelled",
-		value: "cancelled",
-	},
-]
 const paymentMethods = [
 	{
 		text: "Cash on delivery",
@@ -54,21 +32,17 @@ const Orders = () => {
 	const [searchedColumn, setSearchedColumn] = useState("")
 	const searchInput = useRef(null)
 	const [loading, setLoading] = useState(true)
+	const [updating, setUpdating] = useState(new Array(fetchedData.length).fill(false))
 	const log = useRef(true)
-	const [updating, setUpdating] = useState(false)
-	const [deleting, setDeleting] = useState(new Array(fetchedData.length).fill(false))
 	const { user } = useAuth()
 	const { getAllOrders, updateOrder } = useCart()
 	const [isModelOpen, setIsModelOpen] = useState(false)
 	const [orderDetails, setOrderDetails] = useState()
 	// get users
 	const getOrders = async () => {
+		setLoading(true)
 		try {
-			setLoading(true)
-			setFetchedData([])
-			setData([])
 			const res = await getAllOrders()
-			console.log(res)
 			setFetchedData(res)
 			setData(res)
 		} catch (error) {
@@ -85,16 +59,22 @@ const Orders = () => {
 	}, [])
 
 	// update user
-	const updateOrderFn = async (e) => {
+	const updateOrderFn = async (e, index) => {
 		try {
-			setUpdating(true)
+			const newUpdating = [...updating]
+			newUpdating[index] = true
+			setUpdating(newUpdating)
 			await updateOrder(e._id, { status: e.status })
-			await getOrders()
+			const res = await getAllOrders()
+			setFetchedData(res)
+			setData(res)
 			message.success("Order updated!")
 		} catch (error) {
-			message.error("Something went wrong!")
+			message.error("Failed to update order!")
 		} finally {
-			setUpdating(false)
+			const newUpdating = [...updating]
+			newUpdating[index] = false
+			setUpdating(newUpdating)
 		}
 	}
 	// search functions
@@ -194,6 +174,12 @@ const Orders = () => {
 	// how to display data
 	const columns = [
 		{
+			title: "#",
+			key: "count",
+			render: (current, record, index) => <p className="fw-bold">{index + 1}</p>,
+			responsive: ['md']
+		},
+		{
 			title: "Order Id",
 			dataIndex: "orderNumber",
 			key: "orderNumber",
@@ -213,12 +199,14 @@ const Orders = () => {
 			dataIndex: "paymentMethod",
 			key: "paymentMethod",
 			filters: paymentMethods,
+			responsive: ['md'],
 			onFilter: (value, record) => record.paymentMethod.startsWith(value),
 		},
 		{
 			title: "Total Amount",
 			dataIndex: "total",
 			key: "total",
+			responsive: ['md'],
 			sorter: (a, b) => a.total - b.total,
 			render: (text, record) => {
 				return <p>Rs.{text}</p>
@@ -228,10 +216,7 @@ const Orders = () => {
 			title: "Order Date",
 			dataIndex: "createdAt",
 			key: "createdAt",
-			render: (text, record) => {
-				return new Date(text).toDateString()
-
-			},
+			render: (text, record) => new Date(text).toDateString(),
 		},
 		{
 			title: "Options",
@@ -252,12 +237,13 @@ const Orders = () => {
 			dataIndex: "status",
 			key: "status",
 			filters: OrderStatus,
+			width: 150,
 			onFilter: (value, record) => record.status.indexOf(value) === 0,
 			render: (current, record) => {
 				return (
 					<Select
 						defaultValue={record.status}
-						style={{ width: 130 }}
+						// style={{ width: 130 }}
 						onChange={e => {
 							const updatedData = data.map(order => {
 								if (order._id === record._id) {
@@ -276,6 +262,7 @@ const Orders = () => {
 			title: "Action",
 			dataIndex: "status",
 			key: "status",
+			width: 150,
 			render: (current, record, index) => {
 				let orderFromState = {}
 				data.map(order => {
@@ -287,9 +274,9 @@ const Orders = () => {
 				return <div key={index}>
 					<Button
 						type="text"
-						loading={updating}
+						loading={updating[index]}
 						disabled={isSame}
-						onClick={() => updateOrderFn(orderFromState)}
+						onClick={() => updateOrderFn(orderFromState, index)}
 						className="d-flex align-items-center"
 					>
 						Update <CheckOutlined style={{ fontSize: 16, color: isSame ? "#00000040" : "#00FF00" }} />
@@ -299,9 +286,9 @@ const Orders = () => {
 		},
 	]
 	return <>
-		<Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} />
+		<Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} />
 		<Drawer title="Order Details" placement="right" onClose={() => setIsModelOpen(false)} open={isModelOpen}>
-			<h5>Orders</h5>
+			<h5>Products</h5>
 			{
 				orderDetails && orderDetails.order.map((e, i) => {
 					return <BasicDetailsCard data={e} key={i} />
@@ -321,6 +308,8 @@ const Orders = () => {
 						<p className="m-0 fw-semibold">SubTotal: <span className="fw-normal ">Rs.{orderDetails.subTotal}</span></p>
 						<p className="m-0 fw-semibold">Tax: <span className="fw-normal ">Rs.{orderDetails.tax}</span></p>
 						<p className="m-0 fw-semibold">Total: <span className="fw-normal ">Rs.{orderDetails.total}</span></p>
+						<p className="m-0 fw-semibold">Payment Method: <span className="fw-normal ">{orderDetails.paymentMethod}</span></p>
+						<p className="m-0 fw-semibold">Order Placed: <span className="fw-normal ">{new Date(orderDetails.createdAt).toLocaleString()}</span></p>
 					</div>
 				</div> : null
 			}

@@ -178,7 +178,7 @@ const Catalog = () => {
     const Size = () => {
         return <div className="d-flex flex-wrap gap-2">
             {data.sizes?.map((size, index) => {
-                return <div className={`custom-checkBox flex-fill ${selectedSize.includes(size.value) && "active"}`} onClick={() => handleSizeSelection(size.value)} key={index}>
+                return <div className={`custom-checkBox cursor-pointer flex-fill ${selectedSize.includes(size.value) && "active"}`} onClick={() => handleSizeSelection(size.value)} key={index}>
                     <p>{size.label}</p>
                 </div>
             })}

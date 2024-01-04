@@ -20,7 +20,7 @@ export default function Index() {
 							src={logo}
 							alt="universe"
 							className="img-fluid"
-							style={{ height: 50, filter: "brightness(100)" }}
+							style={{ height: 40, filter: "brightness(100)" }}
 						/>
 					</Link>
 				</div>

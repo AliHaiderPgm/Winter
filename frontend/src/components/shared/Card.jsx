@@ -1,26 +1,33 @@
 import { Card } from "antd"
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PlaceHolder from "../../assets/placeholder.png"
+
 const { Meta } = Card
 const CustomCard = ({ data }) => {
 	const [isLoading, setIsLoading] = useState(true);
-	const [isError, setIsError] = useState(false);
+	const [imageLoaded, setImageLoaded] = useState(false)
 
-	const handleLoad = () => {
-		setIsLoading(false);
-		setIsError(false);
-	};
+	useEffect(() => {
+		const img = new Image()
+		img.src = data.images[0]
+		img.onload = () => {
+			setImageLoaded(true)
+			setIsLoading(false)
+		}
+	}, [data])
 
-	const handleError = () => {
-		setIsLoading(false);
-		setIsError(true);
-	};
 	return (
 		<Card
 			hoverable
 			loading={isLoading}
-			cover={<img alt="Product Image" src={data.images[0]} style={{ height: "200px", objectFit: "cover" }} onLoad={handleLoad} onError={handleError} />}
+			cover={
+				imageLoaded ?
+					<img alt="Product Image" src={data.images[0]} style={{ height: "200px", objectFit: "cover" }} />
+					:
+					<img alt="Product Image" src={PlaceHolder} style={{ height: "200px", objectFit: "cover" }} />
+			}
 		>
-			<Meta title={data.name} description={`$${data.price}`} />
+			<Meta title={data.name} description={`Rs.${data.price}`} />
 		</Card>
 	)
 }

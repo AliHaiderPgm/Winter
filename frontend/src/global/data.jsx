@@ -230,3 +230,26 @@ export const shopByPrice = [
 		value: "10000-999999999"
 	},
 ]
+
+export const OrderStatus = [
+	{
+		text: "Pending",
+		label: "Pending",
+		value: "pending",
+	},
+	{
+		text: "In Progress",
+		label: "In Progress",
+		value: "inProgress",
+	},
+	{
+		text: "Delivered",
+		label: "Delivered",
+		value: "delivered",
+	},
+	{
+		text: "Cancelled",
+		label: "Cancelled",
+		value: "cancelled",
+	},
+]

@@ -6,17 +6,6 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
 
-// const initialState = {
-//     address: "",
-//     district: "",
-//     email: "",
-//     firstName: "",
-//     paymentMethod: "",
-//     phoneNumber: "",
-//     postalCode: "",
-//     secondName: "",
-//     state: "",
-// }
 
 const Checkout = () => {
     const { products, placeOrder, payment } = useCart()

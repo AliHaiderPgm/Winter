@@ -1,10 +1,12 @@
-import { Breadcrumb, Button, Popconfirm } from "antd"
+import { Breadcrumb, Button, Form, Input, InputNumber, Popconfirm, Select, notification } from "antd"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
-import { message } from "antd"
 import { getBase64, getRandomId } from "../../../global"
 import { useProduct } from "../../../context/ProductContext"
-import FormProvider from "../../../components/dashboard/FormProvider"
+import data from "../../../global/data"
+import TextArea from "antd/es/input/TextArea"
+import { DollarOutlined, FontSizeOutlined, StockOutlined } from "@ant-design/icons"
+import ImageUploader from "../../../components/dashboard/ImageUploader"
 
 const UpdateProduct = () => {
 	const params = useParams()
@@ -22,6 +24,10 @@ const UpdateProduct = () => {
 	const [state, setState] = useState({})
 	const [newImages, setNewImages] = useState([])
 	const navigate = useNavigate()
+	const [api, contextHolder] = notification.useNotification({
+		placement: "top"
+	});
+	const [form] = Form.useForm()
 	// call get current product data function
 	const getData = async () => {
 		try {
@@ -29,7 +35,7 @@ const UpdateProduct = () => {
 			const data = await GetDetails(params.id)
 			setState({ ...data })
 		} catch (error) {
-			console.log(error)
+			api.error({ message: "Something went wrong!" })
 		} finally {
 			setLoading(false)
 		}
@@ -56,22 +62,15 @@ const UpdateProduct = () => {
 				setNewImages((prevImage) => [...prevImage, file])
 			})
 		} catch (error) {
-			message.error("Failed to set images!")
+			api.error({ message: "Failed to set images!" })
 		}
 	}
 	useEffect(() => {
 		setOldImages()
 	}, [state.images])
 
-	const handleSelect = (name, value) => {
-		setState((prevState) => ({ ...prevState, [name]: value }))
-	}
-	const handleChange = (e) => {
-		const { name, value } = e.target
-		setState((prevState) => ({ ...prevState, [name]: value }))
-	}
 	// handle product update
-	const handleUpdate = async () => {
+	const handleUpdate = async (e) => {
 		setUpdateLoading(true)
 		try {
 			const imagesBase64 = await Promise.all(
@@ -83,7 +82,6 @@ const UpdateProduct = () => {
 					return img
 				})
 			)
-			// console.log(imagesBase64)
 			const newImagesUrl = []
 			for (const image of imagesBase64) {
 				if (image.code) {
@@ -94,14 +92,14 @@ const UpdateProduct = () => {
 				}
 			}
 			const productData = {
-				...state,
+				...e,
 				images: newImagesUrl,
 			}
-			await UpdateProduct(id, productData)
-			message.success("Product Updated!")
+			await UpdateProduct(params.id, productData)
+			api.success({ message: "Product Updated!" })
 		} catch (error) {
 			console.log(error)
-			message.error("Something went wrong!")
+			api.error({ message: "Something went wrong!" })
 		} finally {
 			setUpdateLoading(false)
 		}
@@ -111,11 +109,11 @@ const UpdateProduct = () => {
 	const handleDelete = async () => {
 		try {
 			setDeleteLoading(true)
-			await DeleteProduct(id)
-			message.success("Product Deleted!")
+			await DeleteProduct(params.id)
+			api.success({ message: "Product Deleted!" })
 			navigate("/dashboard/products")
 		} catch (error) {
-			message.error("Something went wrong!")
+			api.error({ message: "Something went wrong!" })
 		} finally {
 			setDeleteLoading(false)
 		}
@@ -138,45 +136,199 @@ const UpdateProduct = () => {
 	]
 	return (
 		<>
+			{contextHolder}
 			<div className="container">
 				<div className="container-fluid">
 					<Breadcrumb items={breadCrumbItems} />
-					<div className="container-fluid">
+					<div>
 						<h1 className="text-center mb-3">Update Product</h1>
-						<FormProvider
-							newImages={newImages}
-							setNewImages={setNewImages}
-							initialState={state}
-							handleChange={handleChange}
-							handleSelect={handleSelect}
-							formRef={formRef}
-						/>
-						<div className="d-flex gap-3 justify-content-center">
-							<Button
-								type="primary"
-								size="large"
-								className="w-25"
-								style={{ backgroundColor: "#001529" }}
-								onClick={handleUpdate}
-								loading={updateLoading}
+						<Form
+							form={form}
+							className="d-flex flex-column gap-2"
+							ref={formRef}
+							onFinish={handleUpdate}
+							initialValues={state}
+						>
+							<Form.Item
+								name="name"
+								rules={[
+									{
+										required: true,
+										message: 'Product Name is required.',
+									},
+								]}
 							>
-								Update
-							</Button>
-							<Popconfirm
-								title="Are you sure?"
-								description="Delete this product."
-								onConfirm={handleDelete}
-							>
-								<Button
-									type="default"
+								<Input
+									placeholder="Name"
 									size="large"
-									className="w-25"
-									loading={deleteLoading}
+									name="name"
+									className="gap-1 w-100"
+									prefix={<FontSizeOutlined />}
+									title="Name of product"
+								/>
+							</Form.Item>
+							<div className="d-flex gap-2 flex-column flex-md-row">
+								<Form.Item
+									name="type"
+									className="w-100"
+									rules={[
+										{
+											required: true,
+											message: 'Please select product type.',
+										},
+									]}
 								>
-									Delete
-								</Button>
-							</Popconfirm>
-						</div>
+									<Select
+										className="w-100"
+										placeholder="Type"
+										size="large"
+										options={data.types}
+										title="Shoe type"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									name="price"
+									className="w-100"
+									rules={[
+										{
+											required: true,
+											message: 'Please enter product price.',
+										},
+									]}
+								>
+									<InputNumber
+										placeholder="Price"
+										className="w-100"
+										size="large"
+										min={1}
+										max={10000}
+										type="number"
+										prefix={<DollarOutlined />}
+										title="Price of shoe"
+									/>
+								</Form.Item>
+							</div>
+							<div className="d-flex gap-2 flex-column flex-md-row">
+								<Form.Item
+									name="stock"
+									className="w-100"
+									rules={[
+										{
+											required: true,
+											message: 'Please enter product stock.',
+										},
+									]}
+								>
+									<InputNumber
+										placeholder="Stock"
+										size="large"
+										min={1}
+										max={100000}
+										type="number"
+										className="w-100"
+										prefix={<StockOutlined />}
+										title="Stock of shoes"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									name="brand"
+									className="w-100"
+									rules={[
+										{
+											required: true,
+											message: 'Please select product brand.',
+										},
+									]}
+								>
+									<Select
+										placeholder="Brand"
+										size="large"
+										options={data.brands}
+										title="Brand of shoe"
+									/>
+								</Form.Item>
+
+								<Form.Item
+									name="shoefor"
+									className="w-100"
+									rules={[
+										{
+											required: true,
+											message: 'Please select product type.',
+										},
+									]}
+								>
+									<Select
+										placeholder="Shoe for"
+										size="large"
+										options={data.shoefor}
+										title="Shoe is for"
+									/>
+								</Form.Item>
+							</div>
+							<Form.Item
+								name="description"
+								rules={[
+									{
+										required: true,
+										message: 'Some description is required.',
+									},
+								]}
+							>
+								<TextArea
+									placeholder="Description"
+									name="description"
+									autoSize={{ minRows: 3, maxRows: 6 }}
+									title="Describe shoe features"
+								/>
+							</Form.Item>
+							<Form.Item
+								name="sizes"
+								rules={[
+									{
+										required: true,
+										message: 'Shoe size are required.',
+									},
+								]}>
+								<Select
+									placeholder="Sizes"
+									mode="multiple"
+									size="large"
+									options={data.sizes}
+									title="Available sizes for shoe"
+								/>
+							</Form.Item>
+							<ImageUploader newImages={newImages} setNewImages={setNewImages} />
+							<Form.Item>
+								<div className="d-flex flex-column flex-md-row gap-3 justify-content-center">
+									<Button
+										type="primary"
+										size="large"
+										htmlType="submit"
+										className="col-12 col-md-6 col-lg-3 btn-filled"
+										loading={updateLoading}
+									>
+										Update
+									</Button>
+									<Popconfirm
+										title="Are you sure?"
+										description="Delete this product."
+										onConfirm={handleDelete}
+									>
+										<Button
+											type="default"
+											size="large"
+											className="col-12 col-md-6 col-lg-3"
+											loading={deleteLoading}
+										>
+											Delete
+										</Button>
+									</Popconfirm>
+								</div>
+							</Form.Item>
+						</Form>
 					</div>
 				</div>
 			</div>

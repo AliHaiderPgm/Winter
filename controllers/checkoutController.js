@@ -109,8 +109,7 @@ const updateOrder = asyncHandler(async (req, res) => {
         if (req.user.type === 'user') return res.status(403)
 
         const { ...order } = req.body
-        const newOrderDetails = await Order.findByIdAndUpdate(req.params.id, order)
-        console.log("newOrder===>>", newOrderDetails)
+        await Order.findByIdAndUpdate(req.params.id, order)
         res.status(200).json({ message: "Order updated!" })
     } catch (error) {
         console.log(error)

@@ -211,7 +211,7 @@ const Details = () => {
                         <div className="row gap-2 pb-3 m-0">
                             {
                                 product?.sizes?.map((size, index) => {
-                                    return <div className={`size p-3 col-5 flex-fill ${selectedSized === size ? "active" : ""}`} key={index} onClick={() => setSelectedSized(size)}>
+                                    return <div className={`size cursor-pointer p-3 col-5 flex-fill ${selectedSized === size ? "active" : ""}`} key={index} onClick={() => setSelectedSized(size)}>
                                         <p>{size}</p>
                                     </div>
                                 })

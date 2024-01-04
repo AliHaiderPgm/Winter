@@ -25,8 +25,6 @@ const Users = () => {
 	const getUsers = async () => {
 		try {
 			setLoading(true)
-			setFetchedData([])
-			setData([])
 			const res = await AuthServices.getAllUsers()
 			const dataToStore = res.filter(item => item._id !== user._id)
 			setFetchedData(dataToStore)
@@ -259,7 +257,7 @@ const Users = () => {
 			},
 		},
 	]
-	return <Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} />
+	return <Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} />
 }
 
 export default Users

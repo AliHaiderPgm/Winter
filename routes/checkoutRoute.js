@@ -8,6 +8,6 @@ router.post('/confirmOrder', confirmOrder)
 router.post('/newOrder', newOrder)
 router.get('/orders', getAllOrders)
 router.get('/getMyOrders', protect, getMyOrders)
-router.get('/updateOrder', protect, updateOrder)
+router.post('/updateOrder/:id', protect, updateOrder)
 
 module.exports = router
