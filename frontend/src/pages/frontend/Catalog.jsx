@@ -289,7 +289,7 @@ const Catalog = () => {
                                     </div>
                                 ))}
                                 {
-                                    !firstLoading && state.length === 0 ? <div className="mx-auto"><Empty /></div> : null
+                                    !firstLoading && state.length && !isError === 0 ? <div className="mx-auto"><Empty /></div> : null
                                 }
                                 {
                                     !firstLoading && state.length === 0 && isError ? <div className="d-flex justify-content-center align-items-center ">
