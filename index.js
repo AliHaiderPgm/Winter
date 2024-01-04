@@ -7,7 +7,7 @@ const cors = require('cors')
 const colors = require('colors')
 const multer = require('multer')
 const upload = multer();
-const port = process.env.PORT || 6000
+const port = process.env.PORT || 9000
 
 
 connectDB()

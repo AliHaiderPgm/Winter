@@ -1,4 +1,4 @@
-const env = "production";
+const env = "development";
 
 export const ServerURL = () => {
     let url;
