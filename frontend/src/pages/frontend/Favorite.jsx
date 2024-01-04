@@ -40,7 +40,7 @@ const Favorite = () => {
                 }
             </div>
             {
-                !products || products?.length === 0 ? <p className='text-center'>Items added to your Favorites will be saved here.</p>
+                products === null || products?.length === 0 ? <p className='text-center'>Items added to your Favorites will be saved here.</p>
                     :
                     <div className='row justify-content-center'>
                         {products?.map((product, index) => (
