@@ -1,14 +1,14 @@
 
-# WINTER
+# ❄️WINTER
 
-Welcome to the Winter project repository! This is a full-stack e-commerce store built using the MERN (MongoDB, Express.js, React, Node.js) stack. The application allows users to browse a catalog of products, add items to their cart, and complete the purchase with a secure checkout process and much more.
+Welcome to the Winter Project Repository! This is a full-stack e-commerce store built using the MERN (MongoDB, Express.js, React, Node.js) stack. The application allows users to browse a catalog of products, add items to their cart, and complete the purchase with a secure checkout process, and much more.
 
 
 ## Tech Stack
 
 **Client:** React, SCSS, Ant Design, Bootstrap
 
-**Server:** Node, Express, Mongodb
+**Server:** Node, Express, MongoDB
 
 
 ## Website
@@ -53,7 +53,7 @@ Start frontend
   npm run dev
 ```
 
-To start the server navigate to Winter directory
+To start the server navigate to the Winter directory
 
 ```bash
   npm run server
