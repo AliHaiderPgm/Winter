@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from "react"
-import { message } from "antd"
 import axios from "axios"
 import { useAuth } from "./AuthContext"
 import { ServerURL } from "."
@@ -10,9 +9,6 @@ const config = {
 	withCredentials: true,
 }
 const ProductContextProvider = (props) => {
-	const [loading, setLoading] = useState(false)
-	const [getProductLoading, setGetProductLoading] = useState(false)
-	const [products, setProducts] = useState()
 	const { isAuthenticated, user } = useAuth()
 
 	const AddProduct = async (productData) => {
@@ -87,7 +83,6 @@ const ProductContextProvider = (props) => {
 	}
 
 	const userContext = {
-		loading,
 		GetDetails,
 		RecentAndTopRated,
 		GetCustomizedProducts,
@@ -95,8 +90,6 @@ const ProductContextProvider = (props) => {
 	}
 	const contextValues = isAuthenticated && user.type === "user" ? userContext : {
 		...userContext,
-		products,
-		getProductLoading,
 		GetProducts,
 		AddProduct,
 		DeleteProduct,

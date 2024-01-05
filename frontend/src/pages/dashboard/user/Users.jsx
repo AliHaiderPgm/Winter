@@ -257,7 +257,7 @@ const Users = () => {
 			},
 		},
 	]
-	return <Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} />
+	return <Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} rowKey={i => i._id} />
 }
 
 export default Users

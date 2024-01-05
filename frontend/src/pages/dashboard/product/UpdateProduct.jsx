@@ -1,5 +1,5 @@
 import { Breadcrumb, Button, Form, Input, InputNumber, Popconfirm, Select, notification } from "antd"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { getBase64, getRandomId } from "../../../global"
 import { useProduct } from "../../../context/ProductContext"
@@ -9,13 +9,8 @@ import { DollarOutlined, FontSizeOutlined, StockOutlined } from "@ant-design/ico
 import ImageUploader from "../../../components/dashboard/ImageUploader"
 
 const UpdateProduct = () => {
-	const params = useParams()
-	const {
-		GetDetails,
-		UpdateProduct,
-		uploadImage,
-		DeleteProduct,
-	} = useProduct()
+	const { id } = useLocation().state
+	const { GetDetails, UpdateProduct, uploadImage, DeleteProduct, } = useProduct()
 	const [loading, setLoading] = useState(false)
 	const [updateLoading, setUpdateLoading] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
@@ -32,7 +27,7 @@ const UpdateProduct = () => {
 	const getData = async () => {
 		try {
 			setLoading(true)
-			const data = await GetDetails(params.id)
+			const data = await GetDetails(id)
 			setState({ ...data })
 		} catch (error) {
 			api.error({ message: "Something went wrong!" })
@@ -95,7 +90,7 @@ const UpdateProduct = () => {
 				...e,
 				images: newImagesUrl,
 			}
-			await UpdateProduct(params.id, productData)
+			await UpdateProduct(id, productData)
 			api.success({ message: "Product Updated!" })
 		} catch (error) {
 			console.log(error)
@@ -109,7 +104,7 @@ const UpdateProduct = () => {
 	const handleDelete = async () => {
 		try {
 			setDeleteLoading(true)
-			await DeleteProduct(params.id)
+			await DeleteProduct(id)
 			api.success({ message: "Product Deleted!" })
 			navigate("/dashboard/products")
 		} catch (error) {

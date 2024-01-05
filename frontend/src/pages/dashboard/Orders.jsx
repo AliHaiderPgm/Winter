@@ -7,7 +7,6 @@ import {
 } from "@ant-design/icons"
 import { useEffect, useRef, useState } from "react"
 import Highlighter from "react-highlight-words"
-import { useAuth } from "../../context/AuthContext"
 import { useCart } from "../../context/CartContext"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
 import { OrderStatus } from "../../global/data"
@@ -34,7 +33,6 @@ const Orders = () => {
 	const [loading, setLoading] = useState(true)
 	const [updating, setUpdating] = useState(new Array(fetchedData.length).fill(false))
 	const log = useRef(true)
-	const { user } = useAuth()
 	const { getAllOrders, updateOrder } = useCart()
 	const [isModelOpen, setIsModelOpen] = useState(false)
 	const [orderDetails, setOrderDetails] = useState()
@@ -286,7 +284,7 @@ const Orders = () => {
 		},
 	]
 	return <>
-		<Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} />
+		<Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} rowKey={i => i._id} />
 		<Drawer title="Order Details" placement="right" onClose={() => setIsModelOpen(false)} open={isModelOpen}>
 			<h5>Products</h5>
 			{

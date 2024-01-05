@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
-import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space } from "antd"
+import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space, message } from "antd"
 const Breadcrumb = React.lazy(() => import('antd').then(module => ({ default: module.Breadcrumb })));
 const Select = React.lazy(() => import('antd').then(module => ({ default: module.Select })));
 import Loader from "../../components/shared/Loader"
@@ -42,9 +42,10 @@ const Catalog = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isError, setIsError] = useState(false)
     const navigate = useNavigate()
+    const [api, context] = message.useMessage()
     // //////////Scroll & resize /////////
     const handleScroll = () => {
-        if (document.documentElement.scrollTop + window.innerHeight + 200 >= document.documentElement.scrollHeight) {
+        if (document.documentElement.scrollTop + window.innerHeight + 180 >= document.documentElement.scrollHeight) {
             setPage(prev => prev + 1)
         }
     }
@@ -219,100 +220,103 @@ const Catalog = () => {
     // optimizing
     const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])
 
-    return <div className="product-catalog">
-        <div className="px-2 px-sm-4 px-md-5 py-2 py-md-3 d-flex justify-content-between align-items-center">
-            <div>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Breadcrumb items={breadCrumbItems} />
-                </Suspense>
-                <h1 className="m-0">{ShoesFor}'s Shoes</h1>
+    return <>
+        {context}
+        <div className="product-catalog">
+            <div className="px-2 px-sm-4 px-md-5 py-2 py-md-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Breadcrumb items={breadCrumbItems} />
+                    </Suspense>
+                    <h1 className="m-0">{ShoesFor}'s Shoes</h1>
+                </div>
+                {width > 768 &&
+                    <Suspense fallback={<p>Loading...</p>}>
+                        <Select className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
+                    </Suspense>}
+                {
+                    width <= 768 && <>
+                        <Button className="align-self-end" onClick={() => setIsDrawerOpen(true)}>Filter <FilterOutlined style={{ verticalAlign: "0" }} /></Button>
+                        <Drawer open={isDrawerOpen} placement="bottom" key="bottom" title="Filter" onClose={() => setIsDrawerOpen(false)} height="80dvh" footer={<DrawerFooter />}>
+                            {<DrawerBody />}
+                        </Drawer>
+                    </>
+                }
             </div>
-            {width > 768 &&
-                <Suspense fallback={<p>Loading...</p>}>
-                    <Select className="align-self-end" placeholder="Sort by" options={sortBy} style={{ width: 200 }} size="large" allowClear onChange={handleSort} value={checkedVals[4][0]} disabled={isDisabled} />
-                </Suspense>}
-            {
-                width <= 768 && <>
-                    <Button className="align-self-end" onClick={() => setIsDrawerOpen(true)}>Filter <FilterOutlined style={{ verticalAlign: "0" }} /></Button>
-                    <Drawer open={isDrawerOpen} placement="bottom" key="bottom" title="Filter" onClose={() => setIsDrawerOpen(false)} height="80dvh" footer={<DrawerFooter />}>
-                        {<DrawerBody />}
-                    </Drawer>
-                </>
-            }
-        </div>
-        <div className="row justify-content-center align-items-start px-3 main-div me-0">
-            {
-                width > 768 && <div className="col-3 col-xxl-2 filter mb-3">
-                    <div className="d-flex align-items-center mb-2">
-                        <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
-                        {clearFilterBtn && <Button type="text" className="btn-outline d-flex align-items-center ms-auto" size="small" disabled={isDisabled} onClick={handleClearFilters}>Clear <CloseOutlined /></Button>}
-                    </div>
-                    <div className="dropDowns d-flex flex-column gap-2">
-                        {
-                            sortingOptions.map((option, index) => {
-                                return <Collapse
-                                    key={index}
-                                    items={[
-                                        {
-                                            key: index,
-                                            label: option.label,
-                                            children: <Checkbox.Group disabled={isDisabled} options={option.options} value={checkedVals[option.index]} onChange={val => handleCheckBox(val, option.index)} />,
-                                        },
-                                    ]}
-                                />
-                            })
-                        }
-                        <Collapse
-                            items={[
-                                {
-                                    key: "3",
-                                    label: `Size ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
-                                    children: <Size />,
-                                },
-                            ]}
-                        />
-                        <div>
-                            <Button className="btn-filled w-100 py-2" type="primary" onClick={() => getProducts()} disabled={isDisabled}>Filter</Button>
+            <div className="row justify-content-center align-items-start px-3 main-div me-0">
+                {
+                    width > 768 && <div className="col-3 col-xxl-2 filter mb-3">
+                        <div className="d-flex align-items-center mb-2">
+                            <p className="fw-bold fs-5 m-0">Filter <FilterOutlined style={{ verticalAlign: "0" }} /></p>
+                            {clearFilterBtn && <Button type="text" className="btn-outline d-flex align-items-center ms-auto" size="small" disabled={isDisabled} onClick={handleClearFilters}>Clear <CloseOutlined /></Button>}
+                        </div>
+                        <div className="dropDowns d-flex flex-column gap-2">
+                            {
+                                sortingOptions.map((option, index) => {
+                                    return <Collapse
+                                        key={index}
+                                        items={[
+                                            {
+                                                key: index,
+                                                label: option.label,
+                                                children: <Checkbox.Group disabled={isDisabled} options={option.options} value={checkedVals[option.index]} onChange={val => handleCheckBox(val, option.index)} />,
+                                            },
+                                        ]}
+                                    />
+                                })
+                            }
+                            <Collapse
+                                items={[
+                                    {
+                                        key: "3",
+                                        label: `Size ${checkedVals[3].length === 0 ? "" : `(${checkedVals[3].length})`}`,
+                                        children: <Size />,
+                                    },
+                                ]}
+                            />
+                            <div>
+                                <Button className="btn-filled w-100 py-2" type="primary" onClick={() => getProducts()} disabled={isDisabled}>Filter</Button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            }
-            <div className="col-12 col-md-9">
-                <div style={{ minHeight: "65dvh" }}>
-                    {
-                        firstLoading ? <Loader />
-                            :
-                            <div className="row">
-                                {state?.map((product, index) => (
-                                    <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 d-flex justify-content-center d-md-block" key={index}>
-                                        <MemoizedBnbCard data={product} />
-                                    </div>
-                                ))}
-                                {
-                                    !firstLoading && state.length && !isError === 0 ? <div className="mx-auto"><Empty /></div> : null
-                                }
-                                {
-                                    !firstLoading && state.length === 0 && isError ? <div className="d-flex justify-content-center align-items-center ">
-                                        <Result
-                                            status="warning"
-                                            title="Something went wrong!"
-                                            extra={
-                                                <Button type="primary" className="btn-filled" onClick={() => getProducts()}>
-                                                    Refresh
-                                                </Button>
-                                            }
-                                        />
-                                    </div> : null
-                                }
-                            </div>
-                    }
-                </div>
-                <div style={{ height: 42 }} className="mb-5">
-                    {loading && <Loader />}
+                }
+                <div className="col-12 col-md-9">
+                    <div style={{ minHeight: "65dvh" }}>
+                        {
+                            firstLoading ? <Loader />
+                                :
+                                <div className="row">
+                                    {state?.map((product, index) => (
+                                        <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 d-flex justify-content-center d-md-block" key={index}>
+                                            <MemoizedBnbCard data={product} />
+                                        </div>
+                                    ))}
+                                    {
+                                        !firstLoading && state.length === 0 && !isError ? <div className="mx-auto"><Empty /></div> : null
+                                    }
+                                    {
+                                        !firstLoading && state.length === 0 && isError ? <div className="d-flex justify-content-center align-items-center ">
+                                            <Result
+                                                status="warning"
+                                                title="Something went wrong!"
+                                                extra={
+                                                    <Button type="primary" className="btn-filled" onClick={() => getProducts()}>
+                                                        Refresh
+                                                    </Button>
+                                                }
+                                            />
+                                        </div> : null
+                                    }
+                                </div>
+                        }
+                    </div>
+                    <div style={{ height: 42 }} className="mb-5">
+                        {loading && <Loader />}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </>
 }
 
 export default Catalog

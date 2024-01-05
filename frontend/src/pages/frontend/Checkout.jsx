@@ -1,4 +1,4 @@
-import { Button, Form, Input, Radio, Select } from "antd"
+import { Button, Form, Input, Radio, Select, message } from "antd"
 import SummaryElements from "../../components/frontend/cart/SummaryElements"
 import { useCart } from "../../context/CartContext"
 import { formatDate } from "../../global"
@@ -14,6 +14,7 @@ const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState("onlinePayment")
     const [form] = Form.useForm()
     const navigate = useNavigate()
+    const [api, context] = message.useMessage()
 
     const [innerWidth, setInnerWidth] = useState(window.innerWidth)
     useEffect(() => {
@@ -33,7 +34,8 @@ const Checkout = () => {
                 navigate(`/checkout/${res.data.orderNumber}`)
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
+            api.error({ message: "Something went wrong!" })
         } finally {
             setLoading(false)
         }
@@ -47,6 +49,7 @@ const Checkout = () => {
 
     return (
         <div className="row flex-column-reverse flex-md-row gap-2 gap-md-1 gap-xl-5 w-75 mx-auto">
+            {context}
             <div className="col-12 col-md-6 col-xl-7 p-1">
                 <h3 className="pb-1 pb-lg-3">Checkout</h3>
                 <Form
@@ -172,8 +175,9 @@ const Checkout = () => {
                         <Form.Item
                             label={innerWidth >= 600 ? "" : "Payment"}
                             name="payment"
+                            initialValue={paymentMethod}
                         >
-                            <Radio.Group onChange={handlePaymentMethod} value={paymentMethod} defaultValue={"onlinePayment"} optionType="button" buttonStyle="solid" size="large">
+                            <Radio.Group onChange={handlePaymentMethod} value={paymentMethod} in optionType="button" buttonStyle="solid" size="large">
                                 <Radio value="onlinePayment">{innerWidth >= 600 ? "Pay Online" : "Online"}</Radio>
                                 <Radio value="cashOnDelivery">Cash On Delivery</Radio>
                             </Radio.Group>

@@ -65,7 +65,7 @@ const AllProducts = () => {
 
 
 	const handleNavigate = (id) => {
-		navigate(`/dashboard/update/${id}`)
+		navigate(`/dashboard/update/${id}`, { state: { id } })
 	}
 	return (
 		<>

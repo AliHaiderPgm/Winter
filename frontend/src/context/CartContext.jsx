@@ -20,6 +20,7 @@ const CartContextProvider = ({ children }) => {
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
     const API_URL = `${ServerURL()}/checkout`
+    const [messageApi, contextHolder] = message.useMessage();
 
     const getCartProducts = () => {
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
@@ -63,7 +64,7 @@ const CartContextProvider = ({ children }) => {
 
         const totalCount = totalQuantity(newData) + newData.quantity
         if (totalCount > 10) {
-            message.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
+            messageApi.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
             return
         }
 
@@ -74,7 +75,7 @@ const CartContextProvider = ({ children }) => {
                     : item
             )
             localStorage.setItem("cartItems", JSON.stringify(data))
-            message.success(successMessage)
+            messageApi.success(successMessage)
             getCartProducts()
             return
         }
@@ -115,22 +116,18 @@ const CartContextProvider = ({ children }) => {
     }
     //ONLINE
     const payment = async (e) => {
-        try {
-            const newData = {
-                user,
-                receiver: e,
-                order: products,
-                status: "pending",
-                total: subTotal + tax,
-                subTotal,
-                tax,
-            }
-            const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
-            window.location = res.data.sessionUrl
-            return res.data
-        } catch (error) {
-            console.error(error)
+        const newData = {
+            user,
+            receiver: e,
+            order: products,
+            status: "pending",
+            total: subTotal + tax,
+            subTotal,
+            tax,
         }
+        const res = await axios.post(`${API_URL}/create-checkout-session`, newData)
+        window.location = res.data.sessionUrl
+        return res.data
     }
     //CASH ON DELIVERY
     const placeOrder = async (e) => {
@@ -183,6 +180,7 @@ const CartContextProvider = ({ children }) => {
     const contextValue = isAuthenticated && user.type === 'user' ? userContext : { ...userContext, getAllOrders, updateOrder }
     return (
         <>
+            {contextHolder}
             <CartContext.Provider value={contextValue}>
                 {children}
             </CartContext.Provider>

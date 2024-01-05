@@ -45,36 +45,35 @@ const CheckoutSuccess = () => {
                 loading ? <div style={{ height: "45dvh" }}>
                     <Loader />
                 </div>
-                    : orderConfirmation ? <Result
-                        status="success"
-                        title="Thank you for purchasing!"
-                        subTitle={`Order number: ${id}. Order will be shipped in 7 working days.`}
-                        extra={[
-                            <>
+                    : orderConfirmation ?
+                        <Result
+                            status="success"
+                            title="Thank you for purchasing!"
+                            subTitle={`Order number: ${id}. Order will be shipped in 7 working days.`}
+                            extra={[
                                 <Button
                                     type="primary"
                                     className="btn-filled"
+                                    key={"success"}
                                     onClick={() => navigate("/")}>
                                     Continue Shopping
                                 </Button>,
-                            </>
-                        ]}
-                    />
+                            ]}
+                        />
                         :
                         <Result
                             status="error"
                             title="Failed to retrieve order details!"
+                            key={"error"}
                             extra={[
-                                <>
-                                    <Button
-                                        type="primary"
-                                        className="btn-filled"
-                                        onClick={() => {
-                                            navigate("/")
-                                        }}>
-                                        Home
-                                    </Button>,
-                                </>
+                                <Button
+                                    type="primary"
+                                    className="btn-filled"
+                                    onClick={() => {
+                                        navigate("/")
+                                    }}>
+                                    Home
+                                </Button>,
                             ]}
                         />
             }

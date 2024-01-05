@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import React, { Suspense, useCallback, useEffect, useRef, useState } from "react"
 const Carousel = React.lazy(() => import('antd').then(module => ({ default: module.Carousel })));
 import { useNavigate } from "react-router-dom"
 import imagePlaceHolder from "../../assets/placeholder.png"
@@ -22,7 +22,7 @@ const BnbCard = React.forwardRef((props, ref) => {
 	}, [data])
 
 	return (
-		<div className="card-content-wrapper" ref={ref} key={uniqueKey}>
+		<div className="card-content-wrapper" ref={ref} key={uniqueKey} onClick={() => handleNavigate()}>
 			<div className="carousel d-flex flex-column justify-content-center">
 				{
 					data.images.length === 1 ? null : <div className="card-controller">
@@ -39,17 +39,20 @@ const BnbCard = React.forwardRef((props, ref) => {
 						/>
 					</div>
 				}
-				<Suspense fallback={<><img src={imagePlaceHolder} className="img-fluid" /></>}>
-					<Carousel ref={carousel} >
-						{
-							data.images.map((imageUrl, index) => {
-								return <div key={index} onClick={() => handleNavigate()}>
-									<img src={imageLoaded ? imageUrl : imagePlaceHolder} className="img-fluid" loading="lazy" />
-								</div>
-							})
-						}
-					</Carousel>
-				</Suspense>
+				{
+					data?.images.length === 1 ? <img src={imageLoaded ? data?.images[0] : imagePlaceHolder} className="img-fluid rounded" loading="lazy" />
+						: <Suspense fallback={<><img src={imagePlaceHolder} className="img-fluid" /></>}>
+							<Carousel ref={carousel} >
+								{
+									data.images.map((imageUrl, index) => {
+										return <div key={index}>
+											<img src={imageLoaded ? imageUrl : imagePlaceHolder} className="img-fluid" loading="lazy" />
+										</div>
+									})
+								}
+							</Carousel>
+						</Suspense>
+				}
 			</div>
 
 			<div className="content" onClick={() => handleNavigate()}>

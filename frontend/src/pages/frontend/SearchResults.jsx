@@ -1,4 +1,4 @@
-import { Button, Checkbox, Empty, Form, Input, Modal, Select } from "antd"
+import { Button, Checkbox, Empty, Form, Modal, Select, message } from "antd"
 import { FilterOutlined } from "@ant-design/icons"
 import { useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
@@ -26,7 +26,7 @@ const Search = () => {
 	const [loading, setLoading] = useState(initialLoadingState)
 	const [page, setPage] = useState(1)
 	const [innerWidth, setInnerWidth] = useState(0)
-	// infinite scroll
+	const [api, context] = message.useMessage() 	// infinite scroll
 	const handleScroll = () => {
 		/////How much is scrolled from top
 		const scrollTop = document.documentElement.scrollTop
@@ -69,7 +69,8 @@ const Search = () => {
 			res.length === 0 && setPage(1)
 			res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
 		} catch (error) {
-			console.log(error)
+			// console.log(error)
+			api.error({ message: "Something went wrong!" })
 		} finally {
 			setLoading(initialLoadingState)
 		}
@@ -192,6 +193,7 @@ const Search = () => {
 	}
 
 	return <>
+		{context}
 		<div className="search-page mb-3">
 			<div className="d-flex gap-2 justify-content-between p-2 search-controller mb-2 px-4">
 				<div>
@@ -205,9 +207,7 @@ const Search = () => {
 							allowClear
 							options={sortBy}
 							size="large"
-							style={{
-								width: 150
-							}}
+							style={{ width: 150 }}
 							onChange={handleSort}
 						/>
 					}
