@@ -13,7 +13,7 @@ Welcome to the Winter Project Repository! This is a full-stack e-commerce store 
 
 ## Website
 
-Check out👉[[Winter]](https://winterstore.vercel.app/)
+Check out👉[[WinterStore]](https://winterstore.vercel.app/)
 
 
 ## Run Locally
@@ -24,43 +24,24 @@ Clone the project
   git clone https://github.com/AliHaiderPgm/Winter.git
 ```
 
-Go to the project directory
-
-```bash
-  cd Winter
-```
-Install dependencies
-
+## Frontend Dependencies
+In the frontend directory:
 ```bash
   npm install
 ```
-
-Go to the frontend directory
-
-```bash
-  cd frontend
-```
-
-Install dependencies
-
-```bash
-  npm install
-```
-
-Start frontend
-
-```bash
-  npm run dev
-```
-
-To start the server navigate to the Winter directory
-
+## Running the project
+In the project directory, you can run the server:
 ```bash
   npm run server
 ```
+To start the frontend, in the frontend directory:
+```bash
+  npm run dev
+```
+Runs the app in the development mode.
+Open http://localhost:5173/ to view it in the browser.
 
 And you are good to GO!🥳
-
 
 ## Feedback
 
