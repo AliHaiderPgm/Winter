@@ -1,21 +1,31 @@
 import { useEffect, useState } from "react"
 import placeHolder from "../../assets/placeholder.png"
+import { preloadImage, isImageCached } from "../../utils/imageCache"
 
 const BasicDetailsCard = ({ data }) => {
     const [imageLoaded, setImageLoaded] = useState(false)
 
     useEffect(() => {
-        const img = new Image()
-        img.src = data.product.images[0]
-        img.onload = () => {
-            setImageLoaded(true)
-        }
-    }, [data.product.images[0]])
+        let isMounted = true
+        if (!data?.product?.images?.[0]) return
+
+        preloadImage(data.product.images[0])
+            .then(() => {
+                if (!isMounted) return
+                setImageLoaded(isImageCached(data.product.images[0]))
+            })
+            .catch(() => {
+                if (!isMounted) return
+                setImageLoaded(false)
+            })
+
+        return () => { isMounted = false }
+    }, [data?.product?.images?.[0]])
     return (
         <div className="row" key={data.product._id}>
             <div className="col-4">
                 {
-                    imageLoaded ? <img src={data.product.images[0]} alt={data.product.name} className="img-fluid rounded" />
+                    imageLoaded ? <img src={data.product.images[0]} alt={data.product.name} className="img-fluid rounded" loading="lazy" decoding="async" />
                         : <img src={placeHolder} alt="Loading..." className="img-fluid rounded" />
                 }
             </div>
