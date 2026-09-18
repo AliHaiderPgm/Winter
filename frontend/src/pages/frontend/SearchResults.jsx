@@ -27,17 +27,21 @@ const Search = () => {
 	const [page, setPage] = useState(1)
 	const [innerWidth, setInnerWidth] = useState(0)
 	const [api, context] = message.useMessage() 	// infinite scroll
+	 const loadingRef = useRef(false)
+	 const scrollFrame = useRef(null)
 	const handleScroll = () => {
-		/////How much is scrolled from top
-		const scrollTop = document.documentElement.scrollTop
-		//// Max scroll value from top
-		const innerHeight = window.innerHeight
-		////Height of content even it is not visible
-		const contentHeight = document.documentElement.scrollHeight
+	 	if (scrollFrame.current !== null) return
+	 	scrollFrame.current = requestAnimationFrame(() => {
+	 	 	scrollFrame.current = null
+	 	 	if (loadingRef.current || isResEmpty) return
+	 	 	const scrollTop = document.documentElement.scrollTop
+	 	 	const innerHeight = window.innerHeight
+	 	 	const contentHeight = document.documentElement.scrollHeight
 
-		if (scrollTop + innerHeight + 300 >= contentHeight) {
-			setPage(prev => prev + 1)
-		}
+	 	 	if (scrollTop + innerHeight + 300 >= contentHeight) {
+	 	 		setPage(prev => prev + 1)
+	 	 	}
+	 	})
 	}
 	const handleResize = () => {
 		setInnerWidth(window.innerWidth)
@@ -49,11 +53,13 @@ const Search = () => {
 		return () => {
 			window.removeEventListener("scroll", handleScroll)
 			window.removeEventListener("resize", handleResize)
+ 			if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current)
 		}
 	}, [])
 
 	const getProducts = async ({ scrolling }) => {
 		try {
+			loadingRef.current = true
 			setLoading((prev) => ({
 				...prev,
 				firstLoader: !scrolling,
@@ -72,6 +78,7 @@ const Search = () => {
 			// console.log(error)
 			api.error({ message: "Something went wrong!" })
 		} finally {
+			loadingRef.current = false
 			setLoading(initialLoadingState)
 		}
 	}

@@ -43,11 +43,18 @@ const Catalog = () => {
     const [isError, setIsError] = useState(false)
     const navigate = useNavigate()
     const [api, context] = message.useMessage()
+    const loadingRef = useRef(false)
+    const scrollFrame = useRef(null)
     // //////////Scroll & resize /////////
     const handleScroll = () => {
-        if (document.documentElement.scrollTop + window.innerHeight + 180 >= document.documentElement.scrollHeight) {
-            setPage(prev => prev + 1)
-        }
+        if (scrollFrame.current !== null) return
+        scrollFrame.current = requestAnimationFrame(() => {
+            scrollFrame.current = null
+            if (loadingRef.current || isResEmpty) return
+            if (document.documentElement.scrollTop + window.innerHeight + 180 >= document.documentElement.scrollHeight) {
+                setPage(prev => prev + 1)
+            }
+        })
     }
     const handleResize = () => {
         setWidth(window.innerWidth)
@@ -59,6 +66,7 @@ const Catalog = () => {
         return () => {
             window.removeEventListener("scroll", handleScroll)
             window.removeEventListener("resize", handleResize)
+            if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current)
         }
     }, [])
 
@@ -66,6 +74,7 @@ const Catalog = () => {
     /////////Get products ////////
     const getProducts = async (scrolling) => {
         try {
+            loadingRef.current = true
             setIsError(false)
             setIsDisabled(true)
             const val = scrolling === true ? true : false
@@ -86,6 +95,7 @@ const Catalog = () => {
         } catch (error) {
             setIsError(true)
         } finally {
+            loadingRef.current = false
             setFirstLoading(false)
             setLoading(false)
             setIsDisabled(false)
