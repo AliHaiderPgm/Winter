@@ -5,7 +5,9 @@ import Footer from "../../components/shared/Footer"
 import About from "./About"
 import SearchPage from "./SearchPage"
 import SearchResult from "./SearchResults"
-import Catalog from "./Catalog"
+import Men from "./Men"
+import Women from "./Women"
+import Kids from "./Kids"
 import Details from "./product/Details"
 import Cart from "./Cart"
 import CheckoutSuccess from "./CheckoutSuccess"
@@ -29,7 +31,9 @@ const index = () => {
 					<Routes>
 						<Route path="/" index element={<Home />} />
 						<Route path="/about" element={<About />} />
-						<Route path="/:type" element={<Catalog />} />
+						<Route path="/men" element={<Men />} />
+						<Route path="/women" element={<Women />} />
+						<Route path="/kids" element={<Kids />} />
 						<Route path="/:type/:id" element={<Details />} />
 						<Route path="/find" element={<SearchPage />} />
 						<Route path="/find/:search_query?" element={<SearchResult />} />

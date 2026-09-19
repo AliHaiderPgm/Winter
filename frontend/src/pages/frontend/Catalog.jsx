@@ -12,12 +12,12 @@ import data, { shopByPrice, sortBy } from "../../global/data"
 
 const initialState = new Array(5).fill([])
 
-const Catalog = () => {
+const Catalog = ({ category }) => {
     const [state, setState] = useState([])
     const [prevType, setPrevType] = useState('')
     const { type } = useParams()
     const genderBySlug = { men: 'Male', women: 'Female', kids: 'Children' }
-    const newType = genderBySlug[type?.toLowerCase()]
+    const newType = category || genderBySlug[type?.toLowerCase()]
     const ShoesFor = newType == 'Male' ? 'Men' : newType == 'Female' ? 'Women' : newType == 'Children' ? 'Kids' : null;
 
     if (ShoesFor === null) {
