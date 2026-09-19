@@ -1,7 +1,38 @@
 .footer-wrapper {
 	background: #111;
+
 	img {
 		width: 20%;
 		filter: invert(1) brightness(10);
+	}
+
+	.navbar-nav {
+		gap: 0.5rem;
+	}
+
+	.footer-link {
+		color: inherit;
+		display: inline-block;
+		text-decoration: none;
+		opacity: 0.75;
+		transition: opacity 0.2s ease, transform 0.2s ease;
+
+		&:hover,
+		&:focus-visible {
+			color: inherit;
+			opacity: 1;
+			transform: translateX(3px);
+		}
+
+		&:focus-visible {
+			outline: 2px solid currentColor;
+			outline-offset: 3px;
+			border-radius: 2px;
+		}
+
+		&.active {
+			opacity: 1;
+			font-weight: 600;
+		}
 	}
 }

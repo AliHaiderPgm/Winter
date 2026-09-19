@@ -1,0 +1,27 @@
+// Quiet accents for the cards that carry an icon. Each card picks one with
+// `tone-<name>`: the icon keeps the base black, and takes on its tone only
+// while the card is hovered or focused, so colour stays a hint rather than a
+// second palette.
+$tone-colors: (
+	"blue": #3b6fa0,
+	"green": #3f7d5a,
+	"teal": #2f7d80,
+	"amber": #a9761f,
+	"violet": #6b5b95,
+	"rose": #a34a4a,
+);
+
+// Exposes the card's tone as a custom property on the icon itself, so one
+// hover rule can colour any tone without a class per state.
+@mixin tone-vars {
+	@each $name, $color in $tone-colors {
+		&.tone-#{$name} {
+			--tone: #{$color};
+		}
+	}
+}
+
+// The coloured state, applied from a card's hover, focus or selected block.
+@mixin tone-visible {
+	color: var(--tone, $primaryColor);
+}

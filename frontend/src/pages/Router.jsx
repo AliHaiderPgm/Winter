@@ -4,6 +4,7 @@ import Auth from "./auth"
 import Dashboard from "./dashboard"
 import { useAuth } from "../context/AuthContext"
 import PreLoader from "../components/PreLoader"
+import ScrollToTop from "../components/shared/ScrollToTop"
 
 const Router = () => {
 	const { loading, isAuthenticated, user } = useAuth()
@@ -14,6 +15,7 @@ const Router = () => {
 	}
 	return (
 		<BrowserRouter>
+			<ScrollToTop />
 			<Routes>
 				<Route path="/auth/*" element={isAuthenticated ? <Navigate to={isAdmin ? "/dashboard/products" : "/" } replace={true} /> : <Auth />} />
 				<Route path="/dashboard/*" element={isAuthenticated && isAdmin ? <Dashboard /> : <Navigate to="/" replace={true} />} />

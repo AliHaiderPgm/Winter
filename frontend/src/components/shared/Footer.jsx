@@ -1,6 +1,18 @@
 import { Button } from "antd"
+import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
 import { BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs"
+
+const footerLinks = [
+	{
+		title: "About Us",
+		navigateTo: "/about"
+	},
+	{
+		title: "Help Center",
+		navigateTo: "/help"
+	},
+]
 
 export default function Footer() {
 	const year = new Date().getFullYear()
@@ -39,8 +51,10 @@ export default function Footer() {
 								</p>
 							</div>
 							<div className="col-12">
-								<p>
-									<u>admin@winter.com</u>
+								<p className="m-0">
+									<a href="mailto:admin@winter.com" className="footer-link">
+										<u>admin@winter.com</u>
+									</a>
 								</p>
 							</div>
 						</div>
@@ -52,10 +66,20 @@ export default function Footer() {
 							</div>
 							<div className="col-12">
 								<ul className="navbar-nav">
-									<li>Home</li>
-									<li>Men</li>
-									<li>Women</li>
-									<li>Kids</li>
+									{
+										footerLinks.map((link, index) => {
+											return <li key={index}>
+											<NavLink
+												to={link.navigateTo}
+												className={({ isActive }) =>
+													isActive ? "footer-link active" : "footer-link"
+												}
+											>
+													{link.title}
+												</NavLink>
+											</li>
+										})
+									}
 								</ul>
 							</div>
 						</div>

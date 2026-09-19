@@ -23,36 +23,42 @@ const topics = [
 		key: "orders",
 		title: "Orders & Tracking",
 		description: "Order status, changes and cancellations",
+		tone: "blue",
 		icon: <ShoppingOutlined />,
 	},
 	{
 		key: "shipping",
 		title: "Shipping & Delivery",
 		description: "Delivery times, charges and coverage",
+		tone: "teal",
 		icon: <CarOutlined />,
 	},
 	{
 		key: "returns",
 		title: "Returns & Refunds",
 		description: "30-day returns and size exchanges",
+		tone: "amber",
 		icon: <RollbackOutlined />,
 	},
 	{
 		key: "payments",
 		title: "Payments & Pricing",
 		description: "Cards, cash on delivery and taxes",
+		tone: "green",
 		icon: <CreditCardOutlined />,
 	},
 	{
 		key: "sizing",
 		title: "Sizing & Fit",
 		description: "Size charts and finding your fit",
+		tone: "violet",
 		icon: <ExpandOutlined />,
 	},
 	{
 		key: "account",
 		title: "Account & Security",
 		description: "Password, profile and privacy",
+		tone: "rose",
 		icon: <SafetyCertificateOutlined />,
 	},
 ]
@@ -245,6 +251,7 @@ export default function Help() {
 			title: "Email us",
 			value: SUPPORT_EMAIL,
 			description: "We reply to every message within 24 hours.",
+			tone: "blue",
 			icon: <MailOutlined />,
 			href: mailtoLink,
 		},
@@ -253,6 +260,7 @@ export default function Help() {
 			title: "Call us",
 			value: SUPPORT_PHONE,
 			description: "Monday to Saturday, 9:00 am to 8:00 pm.",
+			tone: "teal",
 			icon: <PhoneOutlined />,
 			href: `tel:${SUPPORT_PHONE.replace(/\s/g, "")}`,
 		},
@@ -261,6 +269,7 @@ export default function Help() {
 			title: "Manage an order",
 			value: "Open your orders",
 			description: "Check status, cancel a pending order or start a return.",
+			tone: "amber",
 			icon: <ShoppingOutlined />,
 			to: "/orders",
 		},
@@ -311,7 +320,7 @@ export default function Help() {
 									onClick={() => handleTopic(topic.key)}
 									aria-pressed={activeTopic === topic.key}
 								>
-									<span className="icon">{topic.icon}</span>
+									<span className={`icon tone-${topic.tone}`}>{topic.icon}</span>
 									<p className="title">{topic.title}</p>
 									<p className="description">{topic.description}</p>
 								</button>
@@ -353,7 +362,7 @@ export default function Help() {
 					</div>
 
 					<div className="col-12 col-lg-4">
-						<div className="help-cta h-100">
+						<div className="help-cta">
 							<h4 className="fw-bold mb-2">Still stuck?</h4>
 							<p className="mb-4">
 								Send us your order ID and what went wrong. A real person will get back to you
@@ -373,7 +382,7 @@ export default function Help() {
 					{
 						contactOptions.map((option) => {
 							const content = <>
-								<span className="icon">{option.icon}</span>
+								<span className={`icon tone-${option.tone}`}>{option.icon}</span>
 								<p className="title">{option.title}</p>
 								<p className="value">{option.value}</p>
 								<p className="description">{option.description}</p>

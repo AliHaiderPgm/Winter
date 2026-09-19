@@ -1,9 +1,12 @@
 import { Carousel } from "antd"
+import { useNavigate } from "react-router-dom"
 import Nike1 from "../../assets/nike-1.jpg"
 import Nike2 from "../../assets/nike-2.jpg"
 import Puma from "../../assets/puma-1.jpg"
 import Martin from "../../assets/martin.jpg"
 const AboutSection = () => {
+	const navigate = useNavigate()
+
 	return (
 		<div className="about-section my-1 my-md-3">
 			<div className="content">
@@ -16,7 +19,7 @@ const AboutSection = () => {
 					us to curate a diverse range of sneakers that effortlessly blend style
 					and performance.{" "}
 				</p>
-				<button>About us</button>
+				<button onClick={() => navigate("/about")}>About us</button>
 			</div>
 			<div className="carousal-container">
 				<Carousel
