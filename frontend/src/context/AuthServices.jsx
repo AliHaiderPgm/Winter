@@ -32,6 +32,27 @@ const getMe = async () => {
 	return res
 }
 
+// update the authenticated user's profile
+const updateMe = async (userData) => {
+	const res = await axios.put(`${API_URL}/me`, userData, config)
+	return res.data
+}
+
+// update the authenticated user's password
+const updatePassword = async (passwordData) => {
+	const res = await axios.put(`${API_URL}/me/password`, passwordData, config)
+	return res.data
+}
+
+// upload the authenticated user's profile image
+const uploadProfileImage = async (base64, onUploadProgress) => {
+	const res = await axios.post(`${API_URL}/profile-image`, { base64 }, {
+		...config,
+		onUploadProgress,
+	})
+	return res.data
+}
+
 
 // get all users
 const getAllUsers = async () => {
@@ -55,6 +76,9 @@ const AuthServices = {
 	loginUser,
 	logoutUser,
 	getMe,
+	updateMe,
+	updatePassword,
+	uploadProfileImage,
 	getAllUsers,
 	updateUser,
 	deleteUser

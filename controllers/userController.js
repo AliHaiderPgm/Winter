@@ -113,7 +113,89 @@ const logoutUser = asyncHandler(async (req, res) => {
 // @route    GET /api/users/me
 // @access   PRIVATE
 const getMe = asyncHandler(async (req, res) => {
-    res.status(200).json(req.user)
+    const user = await User.findById(req.user._id).select('-password')
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found!')
+    }
+    res.status(200).json(user)
+})
+
+// @desc   Update the authenticated user's profile
+// @route  PUT /api/users/me
+// @access PRIVATE
+const updateMe = asyncHandler(async (req, res) => {
+    const { name, email, profileImage, secondName, phoneNumber, address, district, state, postalCode } = req.body
+
+    if (!name?.trim() || !email?.trim()) {
+        res.status(400)
+        throw new Error('Name and email are required!')
+    }
+
+    const existingUser = await User.findOne({ email: email.trim(), _id: { $ne: req.user._id } })
+    if (existingUser) {
+        res.status(409)
+        throw new Error('Email is already in use!')
+    }
+
+    const updates = { name: name.trim(), email: email.trim() }
+    if (profileImage !== undefined) {
+        updates.profileImage = profileImage || null
+    }
+    if (secondName !== undefined) updates.secondName = secondName.trim()
+    if (phoneNumber !== undefined) updates.phoneNumber = phoneNumber.trim()
+    if (address !== undefined) updates.address = address.trim()
+    if (district !== undefined) updates.district = district.trim()
+    if (state !== undefined) updates.state = state.trim()
+    if (postalCode !== undefined) updates.postalCode = postalCode.trim()
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        updates,
+        { new: true, runValidators: true }
+    ).select('-password')
+
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found!')
+    }
+
+    res.status(200).json(user)
+})
+
+// @desc   Update the authenticated user's password
+// @route  PUT /api/users/me/password
+// @access PRIVATE
+const updatePassword = asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body
+    const user = await User.findById(req.user._id)
+
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found!')
+    }
+
+    if (!currentPassword || !newPassword) {
+        res.status(400)
+        throw new Error('Current and new passwords are required!')
+    }
+
+    const isCurrentPasswordValid = await bycrpt.compare(currentPassword, user.password)
+    if (!isCurrentPasswordValid) {
+        res.status(401)
+        throw new Error('Current password is incorrect!')
+    }
+
+    if (newPassword.length < 6) {
+        res.status(400)
+        throw new Error('New password must be at least 6 characters!')
+    }
+
+    const salt = await bycrpt.genSalt(10)
+    user.password = await bycrpt.hash(newPassword, salt)
+    await user.save()
+
+    res.status(200).json({ message: 'Password updated successfully!' })
 })
 
 
@@ -168,6 +250,8 @@ module.exports = {
     loginUser,
     logoutUser,
     getMe,
+    updateMe,
+    updatePassword,
     getAllUsers,
     updateUser,
     deleteUser

@@ -5,16 +5,44 @@ import { formatDate } from "../../global"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
+import { useAuth } from "../../context/AuthContext"
+
+const phoneNumberRule = {
+    validator(_, value) {
+        if (!value) return Promise.resolve()
+
+        const normalized = value.replace(/[\s()-]/g, "")
+        if (/^(?:\+?[1-9]\d{7,14}|0\d{9,14})$/.test(normalized)) return Promise.resolve()
+
+        return Promise.reject(new Error("Please enter a valid phone number"))
+    },
+}
 
 
 const Checkout = () => {
     const { products, placeOrder, payment } = useCart()
+    const { user } = useAuth()
     const ArrivalDate = formatDate(7)
     const [loading, setLoading] = useState(false)
     const [paymentMethod, setPaymentMethod] = useState("onlinePayment")
     const [form] = Form.useForm()
     const navigate = useNavigate()
     const [api, context] = message.useMessage()
+
+    useEffect(() => {
+        if (!user) return
+
+        form.setFieldsValue({
+            firstName: user.name,
+            secondName: user.secondName,
+            address: user.address,
+            district: user.district,
+            state: user.state,
+            postalCode: user.postalCode,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+        })
+    }, [form, user])
 
     const [innerWidth, setInnerWidth] = useState(window.innerWidth)
     useEffect(() => {
@@ -167,8 +195,9 @@ const Checkout = () => {
                                     required: true,
                                     message: 'This field is required.',
                                 },
+                                phoneNumberRule,
                             ]}>
-                            <Input placeholder="Phone Number" size="large" />
+                            <Input type="tel" inputMode="tel" placeholder="Phone Number" size="large" />
                         </Form.Item>
                     </div>
                     <>

@@ -56,6 +56,18 @@ const Navbar = () => {
 	]
 
 	const UserIcon = (props) => <Icon component={Svg.userSvg} {...props} />
+	const UserAvatar = () => {
+		if (!user?.profileImage) return <UserIcon className="icon" />
+
+		return (
+			<img
+				src={user.profileImage}
+				alt={`${user.name} profile`}
+				className="rounded-circle object-fit-cover"
+				style={{ width: 30, height: 30, padding: 2, backgroundColor: "#f1f3f5" }}
+			/>
+		)
+	}
 
 	const unauthorizedItems = [
 		{
@@ -77,7 +89,7 @@ const Navbar = () => {
 	const authorizedItems = [
 		{
 			key: "profile",
-			label: <Link to="/" className="text-decoration-none">Profile</Link>,
+			label: <Link to="/profile" className="text-decoration-none">Profile</Link>,
 		},
 		innerWidth <= 1024 && {
 			key: "orders",
@@ -121,7 +133,7 @@ const Navbar = () => {
 			>
 				<div className="auth">
 					<MenuOutlined className="icon" />
-					<UserIcon className="icon" />
+					<UserAvatar />
 				</div>
 			</Dropdown>
 		</Suspense>
@@ -141,7 +153,7 @@ const Navbar = () => {
 						>
 							<div className="d-flex align-items-center justify-content-between">
 								<p className="m-0">{greeting}! <span className="fw-bold">{user?.name}</span></p>
-								<UserIcon className="icon" />
+								<UserAvatar />
 							</div>
 						</Dropdown>
 					</Suspense>

@@ -17,6 +17,34 @@ const userSchema = mongoose.Schema({
     type: {
         type: String,
         required: [true, 'Please specify user type!']
+    },
+    profileImage: {
+        type: String,
+        default: null
+    },
+    secondName: {
+        type: String,
+        default: ''
+    },
+    phoneNumber: {
+        type: String,
+        default: ''
+    },
+    address: {
+        type: String,
+        default: ''
+    },
+    district: {
+        type: String,
+        default: ''
+    },
+    state: {
+        type: String,
+        default: ''
+    },
+    postalCode: {
+        type: String,
+        default: ''
     }
 }, {
     timestamps: true

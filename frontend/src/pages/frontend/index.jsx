@@ -14,6 +14,7 @@ import CheckoutSuccess from "./CheckoutSuccess"
 import Checkout from "./Checkout"
 import Favorite from "./Favorite"
 import Orders from "./Orders"
+import Profile from "./Profile"
 import PrivateRoute from "../../router/privateRoute"
 import { useAuth } from "../../context/AuthContext"
 import { message } from "antd"
@@ -39,6 +40,7 @@ const index = () => {
 						<Route path="/find/:search_query?" element={<SearchResult />} />
 						<Route path="/cart" element={<Cart />} />
 						<Route path="/favorite" element={<Favorite />} />
+						<Route path="/profile" element={<PrivateRoute Component={Profile} valid={isAuthenticated} />} />
 						<Route path="/checkout" element={<PrivateRoute Component={Checkout} valid={isAuthenticated} />} />
 						<Route path="/checkout/:id" element={<PrivateRoute Component={CheckoutSuccess} />} />
 						<Route path="/orders" element={<PrivateRoute Component={Orders} />} />
