@@ -79,6 +79,12 @@
 			opacity: 1 !important;
 		}
 	}
+	// Touch devices have no hover state, so the carousel controls must stay visible.
+	@media (hover: none) {
+		.card-controller .icon {
+			opacity: 1;
+		}
+	}
 	.content {
 		color: #222;
 		padding: 5px;

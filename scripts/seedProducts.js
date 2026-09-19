@@ -128,37 +128,32 @@ const GENDERS = {
 const shuffle = (array) => [...array].sort(() => Math.random() - 0.5);
 const randomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-const decorateImageUrl = (url, index) => {
-  const separator = url.includes('?') ? '&' : '?';
-  return `${url}${separator}auto=format&fit=crop&w=900&q=80&sig=${Date.now()}-${index}-${Math.random().toString(36).slice(2, 8)}`;
+// No cache-buster: the same photo must always resolve to the same URL so the
+// browser and Unsplash's CDN can reuse a single download across products.
+const buildImageUrl = (url) => {
+  const base = url.split('?')[0];
+  return `${base}?auto=format&fit=crop&w=900&q=75`;
 };
 
-const buildUniqueImageSet = (gender, usedUrls) => {
+const photoId = (url) => url.split('?')[0];
+
+const buildUniqueImageSet = (gender) => {
+  const pool = [...new Set(shuffle(GENDERS[gender].imagePool).map(photoId))];
   const images = [];
-  const pool = shuffle(GENDERS[gender].imagePool);
 
   for (let i = 0; i < pool.length && images.length < 3; i += 1) {
-    const url = decorateImageUrl(pool[i], i + 1);
-    if (!usedUrls.has(url)) {
-      usedUrls.add(url);
-      images.push(url);
-    }
+    images.push(buildImageUrl(pool[i]));
   }
 
-  if (images.length < 3) {
-    for (let i = 0; i < 30 && images.length < 3; i += 1) {
-      const fallback = decorateImageUrl('https://images.unsplash.com/photo-1542291026-7eec264c27ff', i + 1000);
-      if (!usedUrls.has(fallback)) {
-        usedUrls.add(fallback);
-        images.push(fallback);
-      }
-    }
+  // Top up if a pool exposes fewer than three distinct photos.
+  for (let i = 0; pool.length > 0 && images.length < 3; i += 1) {
+    images.push(buildImageUrl(pool[i % pool.length]));
   }
 
   return images;
 };
 
-const buildProduct = (gender, index, usedUrls, usedNames) => {
+const buildProduct = (gender, index, usedNames) => {
   const group = GENDERS[gender];
   const type = group.types[index % group.types.length];
   const brand = group.brands[index % group.brands.length];
@@ -171,7 +166,7 @@ const buildProduct = (gender, index, usedUrls, usedNames) => {
   usedNames.add(productName);
 
   const sizes = shuffle(group.sizes).slice(0, randomNumber(4, 7));
-  const images = buildUniqueImageSet(gender, usedUrls);
+  const images = buildUniqueImageSet(gender);
 
   return {
     name: productName,
@@ -193,10 +188,10 @@ const buildProduct = (gender, index, usedUrls, usedNames) => {
   };
 };
 
-const createProductsForGender = (gender, count, usedUrls, usedNames) => {
+const createProductsForGender = (gender, count, usedNames) => {
   const products = [];
   for (let index = 0; index < count; index += 1) {
-    products.push(buildProduct(gender, index, usedUrls, usedNames));
+    products.push(buildProduct(gender, index, usedNames));
   }
   return products;
 };
@@ -213,12 +208,11 @@ const seedProducts = async () => {
     await Product.deleteMany({});
     console.log('Cleared existing products from database');
 
-    const usedUrls = new Set();
     const usedNames = new Set();
     const allProducts = [];
 
     for (const gender of ['Male', 'Female', 'Children']) {
-      const generated = createProductsForGender(gender, 50, usedUrls, usedNames);
+      const generated = createProductsForGender(gender, 50, usedNames);
       allProducts.push(...generated);
       console.log(`Generated ${generated.length} ${gender} products`);
     }
