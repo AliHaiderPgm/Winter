@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { getRandomId } from "../global"
-import { message } from "antd"
+import { App as AntApp } from "antd"
 import axios from "axios"
 import { useAuth } from "./AuthContext"
 import { ServerURL } from "."
@@ -17,10 +17,10 @@ const CartContextProvider = ({ children }) => {
     const [tax, setTax] = useState(0)
     const log = useRef(true)
     const { user, isAuthenticated } = useAuth()
+    const { message: messageApi } = AntApp.useApp()
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
     const API_URL = `${ServerURL()}/checkout`
-    const [messageApi, contextHolder] = message.useMessage();
 
     const getCartProducts = () => {
         const dataObj = JSON.parse(localStorage.getItem("cartItems"))
@@ -86,7 +86,7 @@ const CartContextProvider = ({ children }) => {
         }
         products.push(data)
         localStorage.setItem("cartItems", JSON.stringify(products))
-        message.success(successMessage)
+        messageApi.success(successMessage)
         getCartProducts()
     }
 
@@ -180,7 +180,6 @@ const CartContextProvider = ({ children }) => {
     const contextValue = isAuthenticated && user.type === 'user' ? userContext : { ...userContext, getAllOrders, updateOrder }
     return (
         <>
-            {contextHolder}
             <CartContext.Provider value={contextValue}>
                 {children}
             </CartContext.Provider>

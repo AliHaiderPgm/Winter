@@ -9,7 +9,7 @@ import Icon, {
 	ShoppingCartOutlined,
 	ShoppingOutlined,
 } from "@ant-design/icons"
-import { Badge, Button, Drawer, Input, Modal, message } from "antd"
+import { App as AntApp, Badge, Button, Drawer, Input, Modal } from "antd"
 const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
@@ -21,6 +21,7 @@ import { useCart } from "../../context/CartContext"
 const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { isAuthenticated, dispatch, user } = useAuth()
+	const { message } = AntApp.useApp()
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [searchActive, setSearchActive] = useState(false)

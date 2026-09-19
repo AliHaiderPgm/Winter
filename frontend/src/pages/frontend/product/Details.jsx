@@ -1,11 +1,11 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { Button, Carousel, message, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Result } from "antd"
+import { App as AntApp, Button, Carousel, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Result } from "antd"
 import Loader from "../../../components/shared/Loader"
-import { HeartOutlined, LeftOutlined, RightOutlined } from "@ant-design/icons"
+import { LeftOutlined, RightOutlined } from "@ant-design/icons"
+import FavoriteButton from "../../../components/shared/FavoriteButton"
 import { useAuth } from "../../../context/AuthContext"
-import { handleAddToFavorites } from "../../../global"
 import { useCart } from "../../../context/CartContext"
 
 const Details = () => {
@@ -16,6 +16,7 @@ const Details = () => {
     const carousel = useRef()
     const log = useRef(true)
     const { user, isAuthenticated } = useAuth()
+    const { message } = AntApp.useApp()
     const [open, setOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSized, setSelectedSized] = useState(null)
@@ -85,7 +86,7 @@ const Details = () => {
             return;
         }
 
-        if (product.reviews.some(review => user._id === review.user._id)) {
+        if (product.reviews.some(review => user?._id === review?.user?._id)) {
             message.error("You have already submitted a review!");
             return;
         }
@@ -96,16 +97,20 @@ const Details = () => {
     const Review = ({ data }) => {
         const date = new Date(data?.time)
         const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        const reviewData = typeof data?.review === "string" ? { review: data.review } : data?.review
+        const reviewTitle = reviewData?.title || data?.title || "Customer review"
+        const reviewText = reviewData?.review || data?.description || "Great product and comfortable fit."
+        const reviewerName = data?.user?.name || data?.name || "Customer"
         return <div className="review">
             <div>
-                <p className="title">{data?.review.title}</p>
+                <p className="title">{reviewTitle}</p>
             </div>
             <div className="d-flex flex-column flex-md-row gap-3">
-                <Rate disabled defaultValue={data?.review.rating} style={{ color: "#111", fontSize: "16px" }} />
-                <p className="user">{data?.user.name} -<span className="date"> {date.toLocaleDateString('en-US', options)}</span> </p>
+                <Rate disabled defaultValue={reviewData?.rating || data?.rating || 0} style={{ color: "#111", fontSize: "16px" }} />
+                <p className="user">{reviewerName} -<span className="date"> {date.toString() === "Invalid Date" ? "" : date.toLocaleDateString('en-US', options)}</span> </p>
             </div>
             <div>
-                <p className="description">{data?.review.review}</p>
+                <p className="description">{reviewText}</p>
             </div>
         </div>
     }
@@ -224,7 +229,7 @@ const Details = () => {
                                 <Button type="primary" className="btn-filled p-3 p-md-4 w-100" shape="round" onClick={handleAddToCart}>Add to Bag</Button>
                             </div>
                             <div className="col-12 p-0">
-                                <Button type="text" className="btn-outline p-3 p-md-4 w-100" shape="round" onClick={() => handleAddToFavorites(product)}>Favorite <HeartOutlined /></Button>
+                                <FavoriteButton product={product} className="btn-outline p-3 p-md-4 w-100" shape="round">Favorite</FavoriteButton>
                             </div>
                         </div>
                         <p className="w-100">{product?.description}</p>

@@ -1,5 +1,4 @@
-import { Button, Input, Popconfirm, Select, Space, Table } from "antd"
-import { message } from "antd"
+import { App as AntApp, Button, Input, Popconfirm, Select, Space, Table } from "antd"
 import {
 	CheckOutlined,
 	DeleteOutlined,
@@ -11,6 +10,7 @@ import AuthServices from "../../../context/AuthServices"
 import { useAuth } from "../../../context/AuthContext"
 
 const Users = () => {
+	const { message } = AntApp.useApp()
 	const [fetchedData, setFetchedData] = useState([])
 	const [data, setData] = useState([])
 	const [searchText, setSearchText] = useState("")

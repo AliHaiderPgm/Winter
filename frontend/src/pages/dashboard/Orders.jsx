@@ -1,5 +1,4 @@
-import { Button, Drawer, Input, Select, Space, Table } from "antd"
-import { message } from "antd"
+import { App as AntApp, Button, Drawer, Input, Select, Space, Table } from "antd"
 import {
 	CheckOutlined,
 	RightOutlined,
@@ -25,6 +24,7 @@ const paymentMethods = [
 ]
 
 const Orders = () => {
+	const { message } = AntApp.useApp()
 	const [fetchedData, setFetchedData] = useState([])
 	const [data, setData] = useState([])
 	const [searchText, setSearchText] = useState("")

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Alert, Button, Card, Form, Input, Modal, Progress, Tag, message } from "antd"
+import { App as AntApp, Alert, Button, Card, Form, Input, Modal, Progress, Tag } from "antd"
 import { CameraOutlined, CheckCircleFilled, DeleteOutlined, EditOutlined, IdcardOutlined, KeyOutlined, MailOutlined, PhoneOutlined, ReloadOutlined, SafetyCertificateOutlined, UserOutlined } from "@ant-design/icons"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
@@ -17,6 +17,7 @@ const phoneNumberRule = {
 
 const Profile = () => {
     const { user, dispatch } = useAuth()
+    const { message } = AntApp.useApp()
     const [form] = Form.useForm()
     const [passwordForm] = Form.useForm()
     const [editing, setEditing] = useState(false)

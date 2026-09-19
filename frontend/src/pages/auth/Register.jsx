@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Checkbox, Form, Input, message } from "antd"
+import { App as AntApp, Button, Checkbox, Form, Input } from "antd"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
 import LoginImage from "../../assets/signup.jpg"
@@ -10,6 +10,7 @@ export default function Login() {
 	const [loading, setLoading] = useState(false)
 	const navigate = useNavigate()
 	const { dispatch } = useAuth()
+	const { message } = AntApp.useApp()
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	useEffect(() => {
 		window.addEventListener("resize", () => setInnerWidth(window.innerWidth))

@@ -1,5 +1,3 @@
-import { message } from "antd"
-
 export const getBase64 = (file) =>
 	new Promise((resolve, reject) => {
 		const reader = new FileReader()
@@ -66,14 +64,20 @@ export const getHistory = () => {
 export const handleAddToFavorites = (product) => {
 	const dataObj = JSON.parse(localStorage.getItem("favProducts"))
 	if (checkInFavorites(product)) {
-		message.error("Already added to Favorites!")
-		return
+		return false
 	}
 	const dataArray = dataObj ? dataObj : []
 	dataArray.push(product)
 	localStorage.setItem("favProducts", JSON.stringify(dataArray))
-	message.success("Added to Favorites!")
+	return true
 }
+
+export const removeFromFavorites = (product) => {
+	const dataObj = JSON.parse(localStorage.getItem("favProducts")) || []
+	const remainingProducts = dataObj.filter(item => item._id !== product._id)
+	localStorage.setItem("favProducts", JSON.stringify(remainingProducts))
+}
+
 export const checkInFavorites = (product) => {
 	const dataObj = JSON.parse(localStorage.getItem("favProducts"))
 	const isAlreadyAdded = dataObj?.some(item => item._id === product._id)
