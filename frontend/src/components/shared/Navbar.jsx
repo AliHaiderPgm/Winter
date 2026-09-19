@@ -84,7 +84,7 @@ const Navbar = () => {
 		},
 		{
 			key: "helpCenter",
-			label: "Help Center",
+			label: <Link to="/help" className="text-decoration-none">Help Center</Link>,
 		},
 	]
 	const authorizedItems = [
@@ -102,7 +102,7 @@ const Navbar = () => {
 		},
 		{
 			key: "helpCenter",
-			label: "Help Center",
+			label: <Link to="/help" className="text-decoration-none">Help Center</Link>,
 		},
 		{
 			type: "divider",
