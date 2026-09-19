@@ -1,16 +1,14 @@
 const asyncHandler = require('express-async-handler')
 const { Resend } = require('resend')
+const { createThrottle } = require('../utils/throttle')
 
 const MIN_MESSAGE = 10
 const MAX_MESSAGE = 2000
 const MAX_ORDER_ID = 40
 
-// The contact form is public and every accepted submission sends a real email,
-// so a single caller gets only a handful per window. In memory is enough here:
-// the worst case after a restart is one extra message.
-const WINDOW_MS = 10 * 60 * 1000
-const MAX_PER_WINDOW = 5
-const submissions = new Map()
+// Every accepted message sends a real email, so a single caller gets only a
+// handful per window.
+const isOverLimit = createThrottle({ max: 5 })
 
 const TOPICS = {
     orders: 'Orders & Tracking',
@@ -34,27 +32,6 @@ const escapeHtml = (value) =>
                 "'": '&#39;',
             })[character]
     )
-
-const isOverRateLimit = (ip) => {
-    const now = Date.now()
-    const recent = (submissions.get(ip) || []).filter((time) => now - time < WINDOW_MS)
-
-    if (recent.length >= MAX_PER_WINDOW) {
-        submissions.set(ip, recent)
-        return true
-    }
-
-    recent.push(now)
-    submissions.set(ip, recent)
-
-    if (submissions.size > 500) {
-        submissions.forEach((times, key) => {
-            if (!times.some((time) => now - time < WINDOW_MS)) submissions.delete(key)
-        })
-    }
-
-    return false
-}
 
 // @desc     Email a contact form submission to the store inbox
 // @route    POST /api/contact
@@ -99,7 +76,7 @@ const sendContactMessage = asyncHandler(async (req, res) => {
         throw new Error('The contact form is not connected to an inbox yet. Please email us directly.')
     }
 
-    if (isOverRateLimit(req.ip || req.headers['x-forwarded-for'] || 'unknown')) {
+    if (isOverLimit(req)) {
         res.status(429)
         throw new Error('Too many messages from here. Please try again in a few minutes.')
     }

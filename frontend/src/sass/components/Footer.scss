@@ -35,4 +35,24 @@
 			font-weight: 600;
 		}
 	}
+
+	.newsletter-error {
+		margin-top: 0.5rem;
+		font-size: 0.85rem;
+		color: #ffb3a7;
+	}
+
+	.newsletter-done {
+		font-size: 0.95rem;
+		color: #b8e6c8;
+		.anticon {
+			margin-top: 4px;
+		}
+	}
+
+	.newsletter-note {
+		margin-top: 0.75rem;
+		font-size: 0.85rem;
+		opacity: 0.6;
+	}
 }

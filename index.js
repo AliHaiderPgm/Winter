@@ -29,6 +29,7 @@ app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/products', require('./routes/productRoutes'))
 app.use('/api/checkout', require('./routes/checkoutRoute'))
 app.use('/api/contact', require('./routes/contactRoute'))
+app.use('/api/subscribe', require('./routes/subscriberRoute'))
 
 // server frontend
 if (process.env.NODE_ENV === 'production') {

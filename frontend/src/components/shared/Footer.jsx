@@ -1,7 +1,14 @@
+import { useState } from "react"
+import axios from "axios"
 import { Button } from "antd"
+import { CheckCircleFilled } from "@ant-design/icons"
 import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
 import { BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs"
+import { ServerURL } from "../../context"
+
+const SUBSCRIBE_URL = `${ServerURL()}/subscribe`
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 
 const footerLinks = [
 	{
@@ -20,6 +27,40 @@ const footerLinks = [
 
 export default function Footer() {
 	const year = new Date().getFullYear()
+	const [email, setEmail] = useState("")
+	const [subscribing, setSubscribing] = useState(false)
+	const [notice, setNotice] = useState(null)
+
+	const handleSubscribe = async (event) => {
+		event.preventDefault()
+		const value = email.trim()
+
+		if (!EMAIL_PATTERN.test(value)) {
+			setNotice({ tone: "error", message: "Please enter a valid email address." })
+			return
+		}
+
+		try {
+			setSubscribing(true)
+			setNotice(null)
+			const { data } = await axios.post(SUBSCRIBE_URL, { email: value })
+			setNotice({ tone: "done", message: data?.message || "You are on the list." })
+			setEmail("")
+		} catch (requestError) {
+			setNotice({
+				tone: "error",
+				message: requestError.response?.data?.message || "We could not add you right now. Please try again.",
+			})
+		} finally {
+			setSubscribing(false)
+		}
+	}
+
+	const handleEmailChange = (event) => {
+		setEmail(event.target.value)
+		if (notice) setNotice(null)
+	}
+
 	return (
 		<div className="container-fluid text-light footer-wrapper">
 			<div className="container p-5">
@@ -90,8 +131,46 @@ export default function Footer() {
 					</div>
 					<div className="col-12 col-md-6 col-lg-3">
 						<h3 className="fw-bold p-0">Newsletter</h3>
-						<input type="text" className="form-control" />
-						<Button className="mt-2">Subscribe</Button>
+						{
+							notice?.tone === "done" ? (
+								<p className="newsletter-done d-flex align-items-start gap-2 mb-0">
+									<CheckCircleFilled />
+									<span>{notice.message}</span>
+								</p>
+							) : (
+								<form className="newsletter-form" onSubmit={handleSubscribe} noValidate>
+									<label className="visually-hidden" htmlFor="newsletter-email">
+										Email address
+									</label>
+									<input
+										id="newsletter-email"
+										type="email"
+										name="email"
+										className="form-control"
+										placeholder="you@example.com"
+										value={email}
+										onChange={handleEmailChange}
+										autoComplete="email"
+										disabled={subscribing}
+										aria-invalid={notice?.tone === "error"}
+										aria-describedby={notice?.tone === "error" ? "newsletter-error" : undefined}
+									/>
+									<Button className="mt-2" htmlType="submit" loading={subscribing}>
+										Subscribe
+									</Button>
+									{
+										notice?.tone === "error" ? (
+											<p className="newsletter-error mb-0" id="newsletter-error" role="alert">
+												{notice.message}
+											</p>
+										) : null
+									}
+								</form>
+							)
+						}
+						<p className="newsletter-note mb-0">
+							New arrivals and sales, about once a month. Unsubscribe any time.
+						</p>
 					</div>
 					<hr className="my-3" />
 					<div className="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-center mt-1">
