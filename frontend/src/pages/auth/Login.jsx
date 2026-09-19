@@ -25,7 +25,8 @@ export default function Login() {
 			const res = await AuthServices.loginUser(e)
 			if (res.status === 200) {
 				dispatch({ type: "LOGIN", payload: { user: res.data } })
-				navigate(pathname)
+				const isAdmin = res.data?.type?.toLowerCase?.() === "admin"
+				navigate(isAdmin ? "/dashboard/products" : "/")
 			}
 		} catch (error) {
 			message.error("Failed to login!")

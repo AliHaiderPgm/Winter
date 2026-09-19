@@ -7,18 +7,17 @@ import PreLoader from "../components/PreLoader"
 
 const Router = () => {
 	const { loading, isAuthenticated, user } = useAuth()
+	const isAdmin = user?.type?.toLowerCase?.() === "admin"
+
 	if (loading) {
 		return <PreLoader />
 	}
 	return (
 		<BrowserRouter>
 			<Routes>
+				<Route path="/auth/*" element={isAuthenticated ? <Navigate to={isAdmin ? "/dashboard/products" : "/" } replace={true} /> : <Auth />} />
+				<Route path="/dashboard/*" element={isAuthenticated && isAdmin ? <Dashboard /> : <Navigate to="/" replace={true} />} />
 				<Route path="/*" element={<Home />} />
-				<Route path="/auth/*" element={isAuthenticated ? <Navigate to="/" replace={true} /> : <Auth />} />
-				{
-					isAuthenticated && user.type === "admin" ?
-						<Route path="/dashboard/*" element={<Dashboard />} /> : null
-				}
 				<Route path="*" element={<>Page Not Found</>} />
 			</Routes>
 		</BrowserRouter>
