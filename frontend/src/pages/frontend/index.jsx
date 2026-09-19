@@ -24,10 +24,10 @@ const index = () => {
 	const [messageApi, contextHolder] = message.useMessage()
 
 	return (
-		<>
+		<div className="frontend-layout">
 			{contextHolder}
 			<Navbar />
-			<div className="d-flex justify-content-center">
+			<main className="frontend-content d-flex justify-content-center">
 				<div style={{ maxWidth: 1920, width: "100%" }}>
 					<Routes>
 						<Route path="/" index element={<Home />} />
@@ -47,9 +47,9 @@ const index = () => {
 						<Route path="*" element={<>Page Not Found</>} />
 					</Routes>
 				</div>
-			</div>
+			</main>
 			<Footer />
-		</>
+		</div>
 	)
 }
 
