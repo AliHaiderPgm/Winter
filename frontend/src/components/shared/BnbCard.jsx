@@ -9,9 +9,12 @@ const LazyProductImage = ({ src, alt, className, style, isSingleImage = false })
 	const [isLoaded, setIsLoaded] = useState(false)
 	const [hasError, setHasError] = useState(false)
 	const imgRef = useRef(null)
+	const responsiveSrc = src?.includes("images.unsplash.com")
+		? `${src}${src.includes("?") ? "&" : "?"}w=640`
+		: src
 
 	useEffect(() => {
-		if (!src) return
+		if (!responsiveSrc) return
 		let isMounted = true
 		const node = imgRef.current
 
@@ -20,10 +23,10 @@ const LazyProductImage = ({ src, alt, className, style, isSingleImage = false })
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				if (!entry.isIntersecting) return
-				Promise.resolve(preloadImage(src))
+				Promise.resolve(preloadImage(responsiveSrc))
 					.then(() => {
 						if (!isMounted) return
-						setIsLoaded(isImageCached(src))
+						setIsLoaded(isImageCached(responsiveSrc))
 					})
 					.catch(() => {
 						if (!isMounted) return
@@ -38,20 +41,19 @@ const LazyProductImage = ({ src, alt, className, style, isSingleImage = false })
 			isMounted = false
 			observer.disconnect()
 		}
-	}, [src])
+	}, [responsiveSrc])
 
 	const shouldShowPlaceholder = !isLoaded && !hasError
 	
 	return (
 		<img
 			ref={imgRef}
-			src={shouldShowPlaceholder ? imagePlaceHolder : src}
+			src={shouldShowPlaceholder ? imagePlaceHolder : responsiveSrc}
 			alt={alt}
-			className={className}
+			className={`${className} product-image ${isLoaded ? "product-image--loaded" : ""}`}
 			loading="lazy"
 			decoding="async"
-			style={{ ...style, background: `url(${imagePlaceHolder}) center / cover` }}
-			onLoad={() => setIsLoaded(true)}
+			style={{ ...style, background: `url(${imagePlaceHolder}) center / cover`, contentVisibility: "auto" }}
 			onError={() => setHasError(true)}
 		/>
 	)
@@ -68,7 +70,10 @@ const BnbCard = React.forwardRef((props, ref) => {
 
 	return (
 		<div className="card-content-wrapper" ref={ref} key={uniqueKey} onClick={() => handleNavigate()}>
-			<div className="carousel d-flex flex-column justify-content-center">
+			<div
+				className="carousel d-flex flex-column justify-content-center"
+				style={{ background: `url(${imagePlaceHolder}) center / cover` }}
+			>
 				{
 					data.images.length === 1 ? null : <div className="card-controller">
 						<LeftOutlined

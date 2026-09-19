@@ -147,6 +147,16 @@ const ProductContextProvider = (props) => {
 			return res.data
 		})
 	}
+
+	const GetCatalogProducts = async (params, signal) => {
+		const requestParams = { ...params, cursorMode: true }
+		const cacheKey = createProductCacheKey("catalog-cursor-list", requestParams)
+
+		return cachedRequest(cacheKey, async () => {
+			const res = await axios.post(`${API_URL}/filter`, { params: requestParams }, { ...config, signal })
+			return res.data
+		})
+	}
 	const SearchProduct = async (e, page) => {
 		const params = {
 			name: e?.name ?? "",
@@ -171,6 +181,7 @@ const ProductContextProvider = (props) => {
 		GetDetails,
 		RecentAndTopRated,
 		GetCustomizedProducts,
+		GetCatalogProducts,
 		SearchProduct,
 	}
 	const contextValues = isAuthenticated && user.type === "user" ? userContext : {

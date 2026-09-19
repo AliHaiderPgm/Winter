@@ -1,7 +1,32 @@
 @import "../transitions";
+
+.product-card-reveal {
+	animation: product-card-reveal 260ms ease-out both;
+}
+
+.catalog-page-loader {
+	min-height: 120px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@keyframes product-card-reveal {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 .card-content-wrapper {
 	max-width: 400px;
 	width: 100%;
+	content-visibility: auto;
+	contain-intrinsic-size: 420px;
 	overflow: hidden;
 	cursor: pointer;
 	.carousel {
@@ -36,6 +61,12 @@
 			// width: 100%;
 			aspect-ratio: 1/1;
 			object-fit: cover;
+			display: block;
+			opacity: 0;
+			transition: opacity 180ms ease;
+		}
+		.product-image--loaded {
+			opacity: 1;
 		}
 		.ant-carousel {
 			.slick-list {

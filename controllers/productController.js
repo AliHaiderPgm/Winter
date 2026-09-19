@@ -52,7 +52,7 @@ const recentAndTopRated = asyncHandler(async (req, res) => {
 // @access   PUBLIC
 const filterProducts = asyncHandler(async (req, res) => {
     try {
-        const { name, field, value, page, prices, types, sizes, brands, order, limit } = req.body.params
+        const { name, field, value, page, prices, types, sizes, brands, order, limit, cursorMode, cursor } = req.body.params
         // console.log(req.body.params)
         // Pagination
         const obj = {}
@@ -61,7 +61,7 @@ const filterProducts = asyncHandler(async (req, res) => {
         }
         const pageVal = parseInt(page) || 1
         const perPage = limit || 8
-        const skip = (pageVal - 1) * perPage
+        const skip = cursorMode ? 0 : (pageVal - 1) * perPage
         // Filter
         //by size
         if (sizes && sizes.length > 0) {
@@ -98,15 +98,53 @@ const filterProducts = asyncHandler(async (req, res) => {
         if (name) {
             obj.name = { $regex: new RegExp(name, "i") }
         }
-        const data = await Product.find(obj).sort({ createdAt: sortByDate }).skip(skip).limit(perPage)
+
+        const usesPriceCursor = cursorMode && (order === "acs" || order === "desc")
+        const cursorSortField = usesPriceCursor ? "price" : "createdAt"
+        const cursorSortDirection = order === "desc" ? -1 : 1
+
+        if (cursorMode && cursor) {
+            const cursorDate = new Date(cursor.createdAt)
+            const cursorValue = usesPriceCursor ? Number(cursor.sortValue) : cursorDate
+            const comparison = usesPriceCursor ? (cursorSortDirection === -1 ? "$lt" : "$gt") : (sortByDate === -1 ? "$lt" : "$gt")
+            obj.$and = [
+                { $or: [
+                    { [cursorSortField]: { [comparison]: cursorValue } },
+                    { [cursorSortField]: cursorValue, _id: { [comparison]: cursor.id } },
+                ] },
+            ]
+        }
+
+        const cursorSort = usesPriceCursor
+            ? { price: cursorSortDirection, _id: cursorSortDirection }
+            : { createdAt: sortByDate, _id: sortByDate }
+        const data = await Product.find(obj)
+            .sort(cursorSort)
+            .skip(skip)
+            .limit(cursorMode ? perPage + 1 : perPage)
         // console.log(data)
 
         // sort products
-        if (order && order === "acs") {
+        if (!cursorMode && order && order === "acs") {
             data.sort((a, b) => a.price - b.price)
         }
-        if (order && order === "desc") {
+        if (!cursorMode && order && order === "desc") {
             data.sort((a, b) => b.price - a.price)
+        }
+
+        if (cursorMode) {
+            const hasMore = data.length > perPage
+            const items = hasMore ? data.slice(0, perPage) : data
+            const lastItem = items[items.length - 1]
+            return res.status(200).json({
+                items,
+                hasMore,
+                nextCursor: lastItem ? {
+                    createdAt: lastItem.createdAt,
+                    sortValue: usesPriceCursor ? lastItem.price : undefined,
+                    id: lastItem._id,
+                } : null,
+            })
         }
 
         res.status(200).json(data)

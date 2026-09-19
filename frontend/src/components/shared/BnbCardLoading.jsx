@@ -1,31 +1,19 @@
 import { Skeleton } from "antd"
-import React, { Suspense } from "react";
-import image from "../../assets/placeholder.png"
-// const Skeleton = React.lazy(() => import('antd').then(module => ({ default: module.Skeleton })));
+import React from "react";
 
 
 const styles = {
     image: {
-        minWidth: "270px",
         width: "100%",
-        height: "300px"
+        aspectRatio: "1 / 1",
+        height: "auto"
     }
 }
 const BnbCardLoading = () => {
     return (
         <div className="d-flex flex-column gap-2">
-            <Suspense fallback={<p>Loafing</p>}>
-                <Skeleton.Image style={styles.image} active />
-            </Suspense>
-
-            <Suspense fallback={<p>Loading...</p>}>
-                <Skeleton
-                    active
-                    paragraph={{
-                        rows: 2,
-                    }}
-                />
-            </Suspense>
+            <Skeleton.Image style={styles.image} active />
+            <Skeleton active paragraph={{ rows: 2 }} />
         </div>
     )
 }

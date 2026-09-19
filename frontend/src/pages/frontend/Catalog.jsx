@@ -1,16 +1,18 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
-import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space, message } from "antd"
+import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space, Spin, message } from "antd"
 const Breadcrumb = React.lazy(() => import('antd').then(module => ({ default: module.Breadcrumb })));
 const Select = React.lazy(() => import('antd').then(module => ({ default: module.Select })));
 import Loader from "../../components/shared/Loader"
 import BnbCard from "../../components/shared/BnbCard"
+import BnbCardLoading from "../../components/shared/BnbCardLoading"
 import { CloseOutlined, FilterOutlined } from "@ant-design/icons"
 import data, { shopByPrice, sortBy } from "../../global/data"
 
 
 const initialState = new Array(5).fill([])
+const PRODUCTS_PER_PAGE = 16
 
 const Catalog = ({ category }) => {
     const [state, setState] = useState([])
@@ -31,72 +33,103 @@ const Catalog = ({ category }) => {
 
     const [firstLoading, setFirstLoading] = useState(true)
     const [loading, setLoading] = useState(false)
-    const { GetCustomizedProducts } = useProduct()
+    const { GetCatalogProducts } = useProduct()
     const [page, setPage] = useState(1)
-    const log = useRef(true)
     const [checkedVals, setCheckedVals] = useState(initialState)
     const [selectedSize, setSelectedSize] = useState([])
     const [clearFilterBtn, setClearFilterBtn] = useState(false)
     const [isDisabled, setIsDisabled] = useState(false)
     const [isResEmpty, setIsResEmpty] = useState(false)
+    const [hasMore, setHasMore] = useState(true)
     const [width, setWidth] = useState(window.innerWidth)
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isError, setIsError] = useState(false)
     const navigate = useNavigate()
     const [api, context] = message.useMessage()
     const loadingRef = useRef(false)
-    const scrollFrame = useRef(null)
-    // //////////Scroll & resize /////////
-    const handleScroll = () => {
-        if (scrollFrame.current !== null) return
-        scrollFrame.current = requestAnimationFrame(() => {
-            scrollFrame.current = null
-            if (loadingRef.current || isResEmpty) return
-            if (document.documentElement.scrollTop + window.innerHeight + 180 >= document.documentElement.scrollHeight) {
-                setPage(prev => prev + 1)
-            }
-        })
-    }
+    const pageRequestRef = useRef(false)
+    const hasMoreRef = useRef(true)
+    const cursorRef = useRef(null)
+    const abortControllerRef = useRef(null)
+    const sentinelRef = useRef(null)
     const handleResize = () => {
         setWidth(window.innerWidth)
     }
     useEffect(() => {
-        window.scrollTo(0, 0)
-        window.addEventListener("scroll", handleScroll)
         window.addEventListener("resize", handleResize)
         return () => {
-            window.removeEventListener("scroll", handleScroll)
             window.removeEventListener("resize", handleResize)
-            if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current)
+            abortControllerRef.current?.abort()
         }
     }, [])
+
+    useEffect(() => {
+        const node = sentinelRef.current
+        if (!node) return undefined
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting || loadingRef.current || pageRequestRef.current || !hasMoreRef.current) return
+            pageRequestRef.current = true
+            setPage(prev => prev + 1)
+        }, { rootMargin: "400px 0px" })
+
+        observer.observe(node)
+        return () => observer.disconnect()
+    }, [loading, firstLoading, state.length, hasMore])
 
 
     /////////Get products ////////
     const getProducts = async (scrolling) => {
+        if (loadingRef.current) return
+
         try {
+            if (!scrolling) {
+                abortControllerRef.current?.abort()
+                cursorRef.current = null
+            }
+            const controller = new AbortController()
+            abortControllerRef.current = controller
             loadingRef.current = true
             setIsError(false)
             setIsDisabled(true)
             const val = scrolling === true ? true : false
+            if (!val) {
+                hasMoreRef.current = true
+                setHasMore(true)
+            }
             val === false && setState([])
-            const pageNo = !val ? 1 : page
             setFirstLoading(!val)
             setLoading(val)
 
-            const res = await GetCustomizedProducts("shoefor", newType, pageNo, checkedVals)
+            const result = await GetCatalogProducts({
+                field: "shoefor",
+                value: newType,
+                page: 1,
+                limit: PRODUCTS_PER_PAGE,
+                cursor: val ? cursorRef.current : null,
+                prices: checkedVals[0] ?? [],
+                types: checkedVals[1] ?? [],
+                brands: checkedVals[2] ?? [],
+                sizes: checkedVals[3] ?? [],
+                order: checkedVals[4]?.[0] ?? null,
+            }, controller.signal)
+            const res = result.items || []
+            cursorRef.current = result.nextCursor
+            hasMoreRef.current = result.hasMore
+            setHasMore(result.hasMore)
             setState(prev => {
                 const uniqueIds = new Set(prev.map(item => item._id))
                 const newItems = res.filter(item => !uniqueIds.has(item._id))
                 return [...prev, ...newItems]
             })
 
-            res.length === 0 && setPage(1)
-            res.length === 0 ? setIsResEmpty(true) : setIsResEmpty(false)
+            setIsResEmpty(res.length === 0 && !scrolling)
         } catch (error) {
+            if (error?.code === "ERR_CANCELED" || error?.name === "CanceledError") return
             setIsError(true)
         } finally {
             loadingRef.current = false
+            pageRequestRef.current = false
             setFirstLoading(false)
             setLoading(false)
             setIsDisabled(false)
@@ -104,8 +137,13 @@ const Catalog = ({ category }) => {
     }
     useEffect(() => {
         if (newType !== prevType) {
-            getProducts()
             setPrevType(newType)
+            setPage(1)
+            setState([])
+            cursorRef.current = null
+            hasMoreRef.current = true
+            setHasMore(true)
+            setIsResEmpty(false)
         }
     }, [newType])
     useEffect(() => {
@@ -116,7 +154,6 @@ const Catalog = ({ category }) => {
                 //////Get products on scroll ////////
                 getProducts(true)
             }
-            log.current = false
         }
     }, [page])
 
@@ -230,6 +267,11 @@ const Catalog = ({ category }) => {
 
     // optimizing
     const MemoizedBnbCard = useMemo(() => React.memo(BnbCard), [])
+    const skeletonCards = Array.from({ length: 8 }, (_, index) => (
+        <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4" key={`skeleton-${index}`}>
+            <BnbCardLoading />
+        </div>
+    ))
 
     return <>
         {context}
@@ -294,14 +336,19 @@ const Catalog = ({ category }) => {
                 <div className="col-12 col-md-9">
                     <div style={{ minHeight: "65dvh" }}>
                         {
-                            firstLoading ? <Loader />
+                            firstLoading ? <div className="row">{skeletonCards}</div>
                                 :
                                 <div className="row">
                                     {state?.map((product, index) => (
-                                        <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 d-flex justify-content-center d-md-block" key={index}>
+                                        <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 d-flex justify-content-center d-md-block product-card-reveal" key={product._id}>
                                             <MemoizedBnbCard data={product} />
                                         </div>
                                     ))}
+                                    {loading && (
+                                        <div className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4 catalog-page-loader">
+                                            <Spin size="small" />
+                                        </div>
+                                    )}
                                     {
                                         !firstLoading && state.length === 0 && !isError ? <div className="mx-auto"><Empty /></div> : null
                                     }
@@ -321,9 +368,8 @@ const Catalog = ({ category }) => {
                                 </div>
                         }
                     </div>
-                    <div style={{ height: 42 }} className="mb-5">
-                        {loading && <Loader />}
-                    </div>
+                    <div ref={sentinelRef} aria-hidden="true" style={{ height: 1 }} />
+                    <div className="mb-5" />
                 </div>
             </div>
         </div>
