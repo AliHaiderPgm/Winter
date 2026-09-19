@@ -12,6 +12,10 @@ const footerLinks = [
 		title: "Help Center",
 		navigateTo: "/help"
 	},
+	{
+		title: "Contact Us",
+		navigateTo: "/contact"
+	},
 ]
 
 export default function Footer() {

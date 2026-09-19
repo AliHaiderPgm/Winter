@@ -28,6 +28,7 @@ app.use(express.urlencoded({ limit: '20mb', extended: true }))
 app.use('/api/users', require('./routes/userRoutes'))
 app.use('/api/products', require('./routes/productRoutes'))
 app.use('/api/checkout', require('./routes/checkoutRoute'))
+app.use('/api/contact', require('./routes/contactRoute'))
 
 // server frontend
 if (process.env.NODE_ENV === 'production') {

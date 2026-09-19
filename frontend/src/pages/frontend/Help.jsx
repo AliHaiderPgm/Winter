@@ -368,7 +368,13 @@ export default function Help() {
 								Send us your order ID and what went wrong. A real person will get back to you
 								within 24 hours.
 							</p>
-							<Button className="bg-white text-black border-0" href={mailtoLink} block>Email support</Button>
+							<Button
+								className="bg-white text-black border-0"
+								onClick={() => navigate("/contact")}
+								block
+							>
+								Contact us
+							</Button>
 							<div className="d-flex align-items-center gap-2 mt-3">
 								<ClockCircleOutlined />
 								<p className="m-0">Monday to Saturday, 9:00 am to 8:00 pm</p>
