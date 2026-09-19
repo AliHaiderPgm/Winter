@@ -152,12 +152,13 @@ const Details = () => {
     }
 
     const ShoesFor = product?.shoefor === 'Male' ? 'Men' : product?.shoefor === 'Female' ? 'Women' : 'Kids';
+    const genderSlug = product?.shoefor === 'Male' ? 'men' : product?.shoefor === 'Female' ? 'women' : 'kids';
     const breadCrumbItems = [
         {
             title: <Link to="/">Home</Link>,
         },
         {
-            title: <Link to={`/${product?.shoefor}`}>{ShoesFor}</Link>,
+            title: <Link to={`/${genderSlug}`}>{ShoesFor}</Link>,
         },
         {
             title: `${product?.name}`,

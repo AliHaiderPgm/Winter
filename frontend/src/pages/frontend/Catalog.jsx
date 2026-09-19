@@ -16,7 +16,8 @@ const Catalog = () => {
     const [state, setState] = useState([])
     const [prevType, setPrevType] = useState('')
     const { type } = useParams()
-    const newType = type.charAt(0).toUpperCase() + type.slice(1)
+    const genderBySlug = { men: 'Male', women: 'Female', kids: 'Children' }
+    const newType = genderBySlug[type?.toLowerCase()]
     const ShoesFor = newType == 'Male' ? 'Men' : newType == 'Female' ? 'Women' : newType == 'Children' ? 'Kids' : null;
 
     if (ShoesFor === null) {

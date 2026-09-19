@@ -43,15 +43,15 @@ const Navbar = () => {
 		},
 		{
 			title: "Men",
-			navigateTo: "/Male"
+			navigateTo: "/men"
 		},
 		{
 			title: "Women",
-			navigateTo: "/Female"
+			navigateTo: "/women"
 		},
 		{
 			title: "Kids",
-			navigateTo: "/Children"
+			navigateTo: "/kids"
 		},
 	]
 

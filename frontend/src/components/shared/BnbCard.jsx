@@ -62,7 +62,8 @@ const BnbCard = React.forwardRef((props, ref) => {
 	const carousel = useRef()
 	const navigate = useNavigate()
 	const handleNavigate = useCallback(() => {
-		navigate(`/${data?.shoefor}/${data._id}`)
+		const genderSlug = data?.shoefor === 'Male' ? 'men' : data?.shoefor === 'Female' ? 'women' : 'kids'
+		navigate(`/${genderSlug}/${data._id}`)
 	}, [data, navigate])
 
 	return (
