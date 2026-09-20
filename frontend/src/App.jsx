@@ -12,18 +12,23 @@ import AntApp from "antd/es/app"
 import ConfigProvider from "antd/es/config-provider"
 import ProductContextProvider from "./context/ProductContext"
 import CartContextProvider from "./context/CartContext"
+import NoticeProvider from "./context/NoticeContext"
 import antdTheme from "./components/antdTheme"
 function App() {
 	return (
 		<ConfigProvider theme={antdTheme}>
 			<AntApp>
-				<AuthContextProvider>
-					<ProductContextProvider>
-						<CartContextProvider>
-								<Router />
-						</CartContextProvider>
-					</ProductContextProvider>
-				</AuthContextProvider>
+				{/* Inside AntApp so notices can still fall back to antd's toast
+				    wherever the navbar pill is not on screen. */}
+				<NoticeProvider>
+					<AuthContextProvider>
+						<ProductContextProvider>
+							<CartContextProvider>
+									<Router />
+							</CartContextProvider>
+						</ProductContextProvider>
+					</AuthContextProvider>
+				</NoticeProvider>
 			</AntApp>
 		</ConfigProvider>
 	)

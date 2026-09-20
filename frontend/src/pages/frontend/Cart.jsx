@@ -7,7 +7,9 @@ import CartCard from "../../components/frontend/cart/CartCard";
 import { formatDate } from "../../global";
 
 const Cart = () => {
-    const { products } = useCart()
+    // subTotal and tax are used by the mobile summary line below; without them
+    // the cart page threw a ReferenceError on phones.
+    const { products, subTotal, tax } = useCart()
     const [innerWidth, setInnerWidth] = useState(window.innerWidth)
     const navigate = useNavigate()
     const [isDisable, setIsDisable] = useState(false)

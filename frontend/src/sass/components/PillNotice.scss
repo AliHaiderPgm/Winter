@@ -1,0 +1,88 @@
+@import "../transitions";
+
+// The notice is drawn inside the navbar pill. .nav-links already clips to its
+// rounded border and hides its own overflow, so nothing escapes the pill: the
+// links, the icon and the letters are clipped by that overflow rather than by
+// rules here.
+.pill-nav-item {
+	will-change: transform, opacity;
+}
+
+.pill-notice {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	// Stops short of the search button, which keeps the pill's trailing edge, so
+	// the message sits exactly where the links were.
+	right: 48px;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 18px;
+	overflow: hidden;
+	// Purely presentational: the pill underneath keeps receiving clicks.
+	pointer-events: none;
+	// Inherited by both the icon and the letters.
+	color: #111;
+
+	// The starting state of every phase is written here, so the glyph has
+	// somewhere to travel from before the first frame runs. The stroke offsets
+	// are filled in by JS once the real path lengths are known.
+	&__glyph {
+		flex: 0 0 auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		margin-right: 8px;
+		opacity: 0;
+		will-change: transform, opacity;
+	}
+
+	&__icon {
+		transform: translateY(10px) scale(0.7);
+
+		svg {
+			display: block;
+		}
+	}
+
+	&__emoji {
+		font-size: 17px;
+		line-height: 1;
+		font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+		transform: translateY(10px) scale(0.4);
+	}
+
+	&__ring,
+	&__mark {
+		stroke-dasharray: 0;
+		stroke-dashoffset: 0;
+	}
+
+	&__dot {
+		opacity: 0;
+	}
+
+	&__text {
+		display: inline-block;
+		white-space: nowrap;
+		font-size: 13px;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		line-height: 1;
+	}
+
+	&__letter {
+		display: inline-block;
+		opacity: 0;
+		transform: translateY(12px);
+		will-change: transform, opacity;
+	}
+}
+
+.pill-notice[data-type="error"] {
+	// The rose from _tones.scss, so errors stay inside the same quiet palette.
+	color: #a34a4a;
+}

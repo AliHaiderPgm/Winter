@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react"
+import React, { Suspense, useEffect, useRef, useState } from "react"
 import { Link, NavLink, useNavigate, useParams } from "react-router-dom"
 import Logo from "../../assets/logo.png"
 import Icon, {
@@ -23,12 +23,17 @@ import AuthServices from "../../context/AuthServices"
 import { addToHistory } from "../../global"
 import Svg from "../../global/svg"
 import { useCart } from "../../context/CartContext"
+import { useNotice } from "../../context/NoticeContext"
+import { preloadMotion } from "../../utils/motion"
+import PillNotice from "./PillNotice"
 
 
 const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { isAuthenticated, dispatch, user } = useAuth()
+	const { notify, setPillAvailable } = useNotice()
 	const { message } = AntApp.useApp()
+	const pillRef = useRef(null)
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [searchActive, setSearchActive] = useState(false)
@@ -189,10 +194,13 @@ const Navbar = () => {
 	}
 
 	const handleLogout = async () => {
+		// Read the name before the dispatch clears the session, so the farewell
+		// can carry it.
+		const firstName = user?.name?.trim()?.split(/\s+/)?.[0]
 		try {
 			await AuthServices.logoutUser()
 			dispatch({ type: "LOGOUT" })
-			message.success("Logged out!")
+			notify(firstName ? `Goodbye, ${firstName}!` : "Goodbye!", { type: "farewell", emoji: "\u{1F44B}" })
 		} catch (error) {
 			message.error("Failed to log out!")
 		}
@@ -210,6 +218,20 @@ const Navbar = () => {
 			window.removeEventListener("resize", handleResize);
 		};
 	}, []);
+
+	// Notices only play where the pill exists, which is the same breakpoint the
+	// desktop nav links use. Mobile keeps antd's toast.
+	const hasPill = innerWidth > 768
+	useEffect(() => {
+		setPillAvailable(hasPill)
+		return () => setPillAvailable(false)
+	}, [hasPill, setPillAvailable])
+
+	// Fetch framer-motion while the page is quiet, so the first notice does not
+	// wait on a network round trip.
+	useEffect(() => {
+		if (hasPill) preloadMotion()
+	}, [hasPill])
 
 	// search
 	const handleSearch = () => {
@@ -247,10 +269,10 @@ const Navbar = () => {
 					{/* ////////////////////DESKTOP VIEW ///////////////////////////////// */}
 					{
 						innerWidth > 768 && <>
-							<div className="nav-links">
+							<div className="nav-links" ref={pillRef}>
 								{
 									navItems.map((item, index) => {
-										return <div className="d-flex align-items-center" key={index}>
+										return <div className="d-flex align-items-center pill-nav-item" key={index}>
 											<NavLink
 												to={item.navigateTo}
 												className={({ isActive }) =>
@@ -269,6 +291,7 @@ const Navbar = () => {
 										<SearchOutlined className="search" />
 									</div>
 								</div>
+								<PillNotice scopeRef={pillRef} />
 							</div>
 							<div className="notFrontend d-flex align-items-center gap-1">
 								<Button className="py-3 icons-container" onClick={() => navigate("/favorite")}>

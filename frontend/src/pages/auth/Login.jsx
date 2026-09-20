@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { App as AntApp, Button, Checkbox, Form, Input } from "antd"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
+import { useNotice } from "../../context/NoticeContext"
 import LoginImage from "../../assets/login.jpg"
 import Logo from "../../assets/logo.png"
 
@@ -11,6 +12,7 @@ export default function Login() {
 	const navigate = useNavigate()
 	const { dispatch } = useAuth()
 	const { message } = AntApp.useApp()
+	const { holdForPill } = useNotice()
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { pathname } = useLocation()
 	useEffect(() => {
@@ -26,6 +28,10 @@ export default function Login() {
 			const res = await AuthServices.loginUser(e)
 			if (res.status === 200) {
 				dispatch({ type: "LOGIN", payload: { user: res.data } })
+				// Held rather than notified: this screen has no navbar, so the pill
+				// picks the greeting up as soon as the storefront mounts.
+				const firstName = res.data?.name?.trim()?.split(/\s+/)?.[0]
+				holdForPill(firstName ? `Welcome back, ${firstName}!` : "Welcome back!", { emoji: "\u{1F389}" })
 				const isAdmin = res.data?.type?.toLowerCase?.() === "admin"
 				navigate(isAdmin ? "/dashboard/products" : "/")
 			}

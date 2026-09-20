@@ -249,13 +249,13 @@ export default function About() {
 
 			<div className="container pb-4 pb-md-5">
 				<div className="about-cta row g-3 align-items-center">
-					<div className="col-12 col-lg-8">
+					<div className="col-12 col-lg-8 mt-0">
 						<h3 className="fw-bold mb-2">Ready to find your next pair?</h3>
 						<p className="m-0">
 							{`Sizes ${Math.min(...sizeValues)} to ${Math.max(...sizeValues)} across every department, with free shipping over Rs. 4,999.`}
 						</p>
 					</div>
-					<div className="col-12 col-lg-4 d-flex flex-wrap gap-2 justify-content-lg-end">
+					<div className="col-12 col-lg-4 d-flex flex-wrap gap-2 justify-content-lg-end mt-0">
 						<Button className="bg-white text-black border-0" onClick={() => navigate("/women")}>Shop Women</Button>
 						<Button className="bg-white text-black border-0" onClick={() => navigate("/kids")}>Shop Kids</Button>
 					</div>

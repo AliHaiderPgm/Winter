@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { App as AntApp, Button, Checkbox, Form, Input } from "antd"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
+import { useNotice } from "../../context/NoticeContext"
 import LoginImage from "../../assets/signup.jpg"
 import Logo from "../../assets/logo.png"
 
@@ -11,6 +12,7 @@ export default function Login() {
 	const navigate = useNavigate()
 	const { dispatch } = useAuth()
 	const { message } = AntApp.useApp()
+	const { holdForPill } = useNotice()
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	useEffect(() => {
 		window.addEventListener("resize", () => setInnerWidth(window.innerWidth))
@@ -29,8 +31,16 @@ export default function Login() {
 				...e,
 				type: "user"
 			}
-			const user = await AuthServices.registerUser(data)
-			dispatch({ type: "LOGIN", payload: { user } })
+			const response = await AuthServices.registerUser(data)
+			// Register answers with { data: user } while login answers with the
+			// user itself, so unwrap it here: storing the wrapper left the navbar
+			// greeting someone with no name until the next page load.
+			const newUser = response?.data || response
+			dispatch({ type: "LOGIN", payload: { user: newUser } })
+			// A brand new account gets its own welcome, held until the storefront
+			// has a pill to play it in.
+			const firstName = newUser?.name?.trim()?.split(/\s+/)?.[0]
+			holdForPill(firstName ? `Welcome to Winter, ${firstName}!` : "Welcome to Winter!", { emoji: "\u{1F388}" })
 			navigate("/")
 		} catch (error) {
 			console.log(error)
