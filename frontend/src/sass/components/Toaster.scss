@@ -1,0 +1,50 @@
+// Sonner injects its own stylesheet from JS, and it is appended to <head>
+// after this file, so an equally specific selector would lose to it. Every rule
+// below therefore carries one more class than sonner's own: the toaster rules
+// pair the class with its attribute, and the toast rules keep the class in
+// front of the toast selector.
+//
+// .app-toaster lands on sonner's <ol data-sonner-toaster>, which is also where
+// it keeps its custom properties, so everything is scoped under it.
+.app-toaster {
+	font-family: "Ubuntu", "sans-serif";
+
+	&[data-sonner-toaster] {
+		font-family: "Ubuntu", "sans-serif";
+	}
+}
+
+// --border-radius is read by the toast itself, so setting it there beats the
+// value sonner puts on the toaster.
+.app-toaster [data-sonner-toast] {
+	--border-radius: 12px;
+}
+
+.app-toaster [data-sonner-toast][data-styled="true"] {
+	padding: 14px 16px;
+	border-color: rgba(17, 17, 17, 0.09);
+	box-shadow:
+		0 6px 24px rgba(17, 17, 17, 0.08),
+		0 1px 2px rgba(17, 17, 17, 0.04);
+}
+
+.app-toaster [data-sonner-toast][data-styled="true"] [data-title] {
+	font-size: 13.5px;
+	font-weight: 500;
+	line-height: 1.45;
+}
+
+// The glyph inherits the toast's near-black text, which is already the site's
+// palette. Only a problem gets a colour, and each one is its quiet tone: a
+// hint, not a second palette.
+.app-toaster [data-sonner-toast][data-type="error"] [data-icon] {
+	color: #a34a4a;
+}
+
+.app-toaster [data-sonner-toast][data-type="warning"] [data-icon] {
+	color: #a9761f;
+}
+
+.app-toaster [data-sonner-toast][data-type="info"] [data-icon] {
+	color: #3b6fa0;
+}

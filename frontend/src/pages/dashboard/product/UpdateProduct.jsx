@@ -1,7 +1,8 @@
-import { Breadcrumb, Button, Form, Input, InputNumber, Popconfirm, Select, notification } from "antd"
+import { Breadcrumb, Button, Form, Input, InputNumber, Popconfirm, Select } from "antd"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { getBase64, getRandomId } from "../../../global"
+import { toast } from "../../../utils/toast"
 import { useProduct } from "../../../context/ProductContext"
 import data from "../../../global/data"
 import TextArea from "antd/es/input/TextArea"
@@ -19,9 +20,6 @@ const UpdateProduct = () => {
 	const [state, setState] = useState({})
 	const [newImages, setNewImages] = useState([])
 	const navigate = useNavigate()
-	const [api, contextHolder] = notification.useNotification({
-		placement: "top"
-	});
 	const [form] = Form.useForm()
 	// call get current product data function
 	const getData = async () => {
@@ -30,7 +28,7 @@ const UpdateProduct = () => {
 			const data = await GetDetails(id)
 			setState({ ...data })
 		} catch (error) {
-			api.error({ message: "Something went wrong!" })
+			toast.error("Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
@@ -57,7 +55,7 @@ const UpdateProduct = () => {
 				setNewImages((prevImage) => [...prevImage, file])
 			})
 		} catch (error) {
-			api.error({ message: "Failed to set images!" })
+			toast.error("Failed to set images!")
 		}
 	}
 	useEffect(() => {
@@ -91,10 +89,10 @@ const UpdateProduct = () => {
 				images: newImagesUrl,
 			}
 			await UpdateProduct(id, productData)
-			api.success({ message: "Product Updated!" })
+			toast.success("Product Updated!")
 		} catch (error) {
 			console.log(error)
-			api.error({ message: "Something went wrong!" })
+			toast.error("Something went wrong!")
 		} finally {
 			setUpdateLoading(false)
 		}
@@ -105,10 +103,10 @@ const UpdateProduct = () => {
 		try {
 			setDeleteLoading(true)
 			await DeleteProduct(id)
-			api.success({ message: "Product Deleted!" })
+			toast.success("Product Deleted!")
 			navigate("/dashboard/products")
 		} catch (error) {
-			api.error({ message: "Something went wrong!" })
+			toast.error("Something went wrong!")
 		} finally {
 			setDeleteLoading(false)
 		}
@@ -131,7 +129,6 @@ const UpdateProduct = () => {
 	]
 	return (
 		<>
-			{contextHolder}
 			<div className="container">
 				<div className="container-fluid">
 					<Breadcrumb items={breadCrumbItems} />

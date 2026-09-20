@@ -1,6 +1,6 @@
 import { useState } from "react"
 import Dragger from "../../../components/upload"
-import { Button, Form, Input, InputNumber, Select, notification } from "antd"
+import { Button, Form, Input, InputNumber, Select } from "antd"
 import {
 	FontSizeOutlined,
 	DollarOutlined,
@@ -9,6 +9,7 @@ import {
 import { useProduct } from "../../../context/ProductContext"
 import data from "../../../global/data"
 import { getBase64 } from "../../../global"
+import { toast } from "../../../utils/toast"
 
 const { TextArea } = Input
 
@@ -17,9 +18,6 @@ const AddProduct = () => {
 	const [images, setImages] = useState([])
 	const [loading, setLoading] = useState(false)
 	const { AddProduct } = useProduct()
-	const [api, contextHolder] = notification.useNotification({
-		placement: "bottom"
-	});
 
 	const handleSubmit = async (e) => {
 		try {
@@ -40,11 +38,11 @@ const AddProduct = () => {
 			if (res.status === 200) {
 				setImages([])
 				form.resetFields()
-				api.success({ message: "Product added successfully!" })
+				toast.success("Product added successfully!")
 			}
 		} catch (error) {
 			console.log(error)
-			api.error({ message: "Something went wrong!" })
+			toast.error("Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
@@ -52,7 +50,6 @@ const AddProduct = () => {
 
 	return (
 		<>
-			{contextHolder}
 			<div className="d-flex flex-column align-items-center">
 				<h1 className="text-decoration-underline">Add Product</h1>
 				<div className="w-100 py-4 px-0 px-md-5">

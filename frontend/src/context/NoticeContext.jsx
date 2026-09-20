@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react"
-import AntApp from "antd/es/app"
+import { toast } from "../utils/toast"
 
 // Two contexts on purpose. The notifier side is stable, so raising a notice
 // never re-renders the components that can raise one, while the queue side
@@ -31,7 +31,6 @@ const optionsOf = (options) => (
 )
 
 export const NoticeProvider = ({ children }) => {
-	const { message } = AntApp.useApp()
 	const queue = useRef([])
 	const held = useRef([])
 	const heldTimer = useRef(null)
@@ -40,11 +39,11 @@ export const NoticeProvider = ({ children }) => {
 	const pillOnScreen = useRef(false)
 	const [version, setVersion] = useState(0)
 
-	// antd has no farewell toast, so anything that is not an error reads as a
-	// success there.
-	const toast = useCallback((notice) => {
-		message[notice.type === "error" ? "error" : "success"](notice.text)
-	}, [message])
+	// The toast has no farewell variant, so anything that is not an error reads
+	// as a success there.
+	const fallback = useCallback((notice) => {
+		toast[notice.type === "error" ? "error" : "success"](notice.text)
+	}, [])
 
 	const enqueue = useCallback((notice) => {
 		queue.current.push(notice)
@@ -62,13 +61,13 @@ export const NoticeProvider = ({ children }) => {
 		const notice = build(text, options)
 		if (!notice) return
 
-		// No pill to animate in: the classic antd toast stands in.
+		// No pill to animate in: the toast stands in.
 		if (!pillOnScreen.current) {
-			toast(notice)
+			fallback(notice)
 			return
 		}
 		enqueue(notice)
-	}, [build, enqueue, toast])
+	}, [build, enqueue, fallback])
 
 	// For notices raised where the pill is not mounted yet. The pill picks it up
 	// as soon as the navbar mounts; if nothing mounts it first, the toast takes
@@ -85,9 +84,9 @@ export const NoticeProvider = ({ children }) => {
 		heldTimer.current = window.setTimeout(() => {
 			const waiting = held.current
 			held.current = []
-			waiting.forEach(toast)
+			waiting.forEach(fallback)
 		}, HELD_TIMEOUT)
-	}, [build, toast])
+	}, [build, fallback])
 
 	// The pill drains the queue itself so a run of notices can play back to back
 	// without the nav links bouncing in between. It looks at the front of the
@@ -112,7 +111,7 @@ export const NoticeProvider = ({ children }) => {
 				if (pillOnScreen.current || !queue.current.length) return
 				const waiting = queue.current
 				queue.current = []
-				waiting.forEach(toast)
+				waiting.forEach(fallback)
 			}, PILL_GRACE)
 			return
 		}
@@ -123,7 +122,7 @@ export const NoticeProvider = ({ children }) => {
 		const waiting = held.current
 		held.current = []
 		waiting.forEach(enqueue)
-	}, [enqueue, toast])
+	}, [enqueue, fallback])
 
 	useEffect(() => () => {
 		window.clearTimeout(heldTimer.current)

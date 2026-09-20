@@ -9,7 +9,6 @@ import Footer from "../../components/shared/Footer"
 import PreLoader from "../../components/PreLoader"
 import PrivateRoute from "../../router/privateRoute"
 import { useAuth } from "../../context/AuthContext"
-import message from "antd/es/message"
 
 // Only the landing page has to be there for the first paint. Every other screen
 // is a click away, so its code is fetched when it is opened instead of being
@@ -32,11 +31,9 @@ const Profile = lazy(() => import("./Profile"))
 
 const index = () => {
 	const { isAuthenticated } = useAuth()
-	const [messageApi, contextHolder] = message.useMessage()
 
 	return (
 		<div className="frontend-layout">
-			{contextHolder}
 			<Navbar />
 			<main className="frontend-content d-flex justify-content-center">
 				<div style={{ maxWidth: 1920, width: "100%" }}>

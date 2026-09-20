@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { App as AntApp, Alert, Button, Card, Form, Input, Modal, Progress, Tag } from "antd"
+import { Alert, Button, Card, Form, Input, Modal, Progress, Tag } from "antd"
 import { CameraOutlined, CheckCircleFilled, DeleteOutlined, EditOutlined, IdcardOutlined, KeyOutlined, MailOutlined, PhoneOutlined, ReloadOutlined, SafetyCertificateOutlined, UserOutlined } from "@ant-design/icons"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
+import { toast } from "../../utils/toast"
 
 const phoneNumberRule = {
     validator(_, value) {
@@ -17,7 +18,6 @@ const phoneNumberRule = {
 
 const Profile = () => {
     const { user, dispatch } = useAuth()
-    const { message } = AntApp.useApp()
     const [form] = Form.useForm()
     const [passwordForm] = Form.useForm()
     const [editing, setEditing] = useState(false)
@@ -63,7 +63,7 @@ const Profile = () => {
             })
             dispatch({ type: "LOGIN", payload: { user: updatedUser } })
             setEditing(false)
-            message.success("Profile updated successfully")
+            toast.success("Profile updated successfully")
         } catch (requestError) {
             setError(requestError.response?.data?.message || "Unable to update your profile")
         } finally {
@@ -87,7 +87,7 @@ const Profile = () => {
             })
             passwordForm.resetFields()
             setPasswordEditing(false)
-            message.success("Password updated successfully")
+            toast.success("Password updated successfully")
         } catch (requestError) {
             setPasswordError(requestError.response?.data?.message || "Unable to update your password")
         } finally {
@@ -130,7 +130,7 @@ const Profile = () => {
                 await updateProfileImage(url)
                 setUploadProgress(100)
                 setUploadStatus("success")
-                message.success("Profile image updated")
+                toast.success("Profile image updated")
             } catch (requestError) {
                 setUploadStatus("error")
                 setError(requestError.response?.data?.message || "Unable to upload your profile image")
@@ -176,7 +176,7 @@ const Profile = () => {
             setImageLoading(true)
             setError("")
             await updateProfileImage(null)
-            message.success("Profile image removed")
+            toast.success("Profile image removed")
         } catch (requestError) {
             setError(requestError.response?.data?.message || "Unable to remove your profile image")
         } finally {

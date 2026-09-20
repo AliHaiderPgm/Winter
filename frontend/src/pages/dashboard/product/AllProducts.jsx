@@ -1,8 +1,9 @@
 import Card from "../../../components/shared/Card"
-import { Input, Select, message, notification } from "antd"
+import { Input, Select } from "antd"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "../../../utils/toast"
 import Loader from "../../../components/shared/Loader"
 const { Search } = Input
 
@@ -13,9 +14,6 @@ const AllProducts = () => {
 	const [loading, setLoading] = useState(true)
 	const { GetProducts, SearchProduct } = useProduct()
 	const navigate = useNavigate()
-	const [api, contextHolder] = notification.useNotification({
-		placement: "bottom"
-	});
 
 	const options = []
 	for (let i = 10; i < 36; i++) {
@@ -31,7 +29,7 @@ const AllProducts = () => {
 			const res = await GetProducts()
 			setProducts(res)
 		} catch (error) {
-			api.error({ message: "Something went wrong!" })
+			toast.error("Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
@@ -54,7 +52,7 @@ const AllProducts = () => {
 			const res = await SearchProduct(query)
 			setProducts(res)
 		} catch (error) {
-			api.error({ message: "Something went wrong!" })
+			toast.error("Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
@@ -69,7 +67,6 @@ const AllProducts = () => {
 	}
 	return (
 		<>
-			{contextHolder}
 			<div className="d-flex flex-column flex-md-row gap-2 justify-content-between mt-2 mb-3">
 				<div className="col-12 col-md-3">
 					<Search

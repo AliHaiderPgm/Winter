@@ -1,12 +1,13 @@
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
-import { App as AntApp, Button, Carousel, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Result } from "antd"
+import { Button, Carousel, Divider, Collapse, Rate, Image, Drawer, Modal, Input, Form, Breadcrumb, Result } from "antd"
 import Loader from "../../../components/shared/Loader"
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"
 import FavoriteButton from "../../../components/shared/FavoriteButton"
 import { useAuth } from "../../../context/AuthContext"
 import { useCart } from "../../../context/CartContext"
+import { toast } from "../../../utils/toast"
 
 const Details = () => {
     const { id } = useParams()
@@ -16,7 +17,6 @@ const Details = () => {
     const carousel = useRef()
     const log = useRef(true)
     const { user, isAuthenticated } = useAuth()
-    const { message } = AntApp.useApp()
     const [open, setOpen] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedSized, setSelectedSized] = useState(null)
@@ -50,7 +50,7 @@ const Details = () => {
 
     const handleAddToCart = () => {
         if (!selectedSized) {
-            message.error("Select a size!")
+            toast.error("Select a size!")
             return
         }
         const productData = {
@@ -71,10 +71,10 @@ const Details = () => {
         try {
             setLoading(prev => ({ ...prev, addingReview: true }))
             await UpdateProduct(id, productData)
-            message.success("Your review has been added successfully!")
+            toast.success("Your review has been added successfully!")
             setIsModalOpen(false)
         } catch (error) {
-            message.error("Failed to add your review!")
+            toast.error("Failed to add your review!")
         } finally {
             setLoading(prev => ({ ...prev, addingReview: false }))
         }
@@ -87,7 +87,7 @@ const Details = () => {
         }
 
         if (product.reviews.some(review => user?._id === review?.user?._id)) {
-            message.error("You have already submitted a review!");
+            toast.error("You have already submitted a review!");
             return;
         }
 

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { App as AntApp, Button, Checkbox, Form, Input } from "antd"
+import { Button, Checkbox, Form, Input } from "antd"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
 import { useNotice } from "../../context/NoticeContext"
+import { toast } from "../../utils/toast"
 import LoginImage from "../../assets/signup.jpg"
 import Logo from "../../assets/logo.png"
 
@@ -11,7 +12,6 @@ export default function Login() {
 	const [loading, setLoading] = useState(false)
 	const navigate = useNavigate()
 	const { dispatch } = useAuth()
-	const { message } = AntApp.useApp()
 	const { holdForPill } = useNotice()
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	useEffect(() => {
@@ -24,7 +24,7 @@ export default function Login() {
 	const handleSubmit = async (e) => {
 		try {
 			if (e.password !== e.confirmPassword) {
-				return message.error("Password does not match.")
+				return toast.error("Password does not match.")
 			}
 			setLoading(true)
 			const data = {
@@ -44,7 +44,7 @@ export default function Login() {
 			navigate("/")
 		} catch (error) {
 			console.log(error)
-			message.error("Oops! Something went wrong!")
+			toast.error("Oops! Something went wrong!")
 		} finally {
 			setLoading(false)
 		}

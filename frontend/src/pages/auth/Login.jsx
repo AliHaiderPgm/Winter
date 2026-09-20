@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { App as AntApp, Button, Checkbox, Form, Input } from "antd"
+import { Button, Checkbox, Form, Input } from "antd"
 import AuthServices from "../../context/AuthServices"
 import { useAuth } from "../../context/AuthContext"
 import { useNotice } from "../../context/NoticeContext"
+import { toast } from "../../utils/toast"
 import LoginImage from "../../assets/login.jpg"
 import Logo from "../../assets/logo.png"
 
@@ -11,7 +12,6 @@ export default function Login() {
 	const [loading, setLoading] = useState(false)
 	const navigate = useNavigate()
 	const { dispatch } = useAuth()
-	const { message } = AntApp.useApp()
 	const { holdForPill } = useNotice()
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { pathname } = useLocation()
@@ -36,7 +36,7 @@ export default function Login() {
 				navigate(isAdmin ? "/dashboard/products" : "/")
 			}
 		} catch (error) {
-			message.error("Failed to login!")
+			toast.error("Failed to login!")
 		} finally {
 			setLoading(false)
 		}

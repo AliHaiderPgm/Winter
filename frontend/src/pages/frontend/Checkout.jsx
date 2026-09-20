@@ -1,4 +1,4 @@
-import { Button, Form, Input, Radio, Select, message } from "antd"
+import { Button, Form, Input, Radio, Select } from "antd"
 import SummaryElements from "../../components/frontend/cart/SummaryElements"
 import { useCart } from "../../context/CartContext"
 import { formatDate } from "../../global"
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
 import { useAuth } from "../../context/AuthContext"
+import { toast } from "../../utils/toast"
 
 const phoneNumberRule = {
     validator(_, value) {
@@ -27,7 +28,6 @@ const Checkout = () => {
     const [paymentMethod, setPaymentMethod] = useState("onlinePayment")
     const [form] = Form.useForm()
     const navigate = useNavigate()
-    const [api, context] = message.useMessage()
 
     useEffect(() => {
         if (!user) return
@@ -63,7 +63,7 @@ const Checkout = () => {
             }
         } catch (error) {
             // console.log(error)
-            api.error({ message: "Something went wrong!" })
+            toast.error("Something went wrong!")
         } finally {
             setLoading(false)
         }
@@ -77,7 +77,6 @@ const Checkout = () => {
 
     return (
         <div className="row flex-column-reverse flex-md-row gap-2 gap-md-1 gap-xl-5 w-75 mx-auto">
-            {context}
             <div className="col-12 col-md-6 col-xl-7 p-1">
                 <h3 className="pb-1 pb-lg-3">Checkout</h3>
                 <Form

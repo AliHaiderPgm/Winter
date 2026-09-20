@@ -9,7 +9,6 @@ import Icon, {
 	ShoppingCartOutlined,
 	ShoppingOutlined,
 } from "@ant-design/icons"
-import AntApp from "antd/es/app"
 import Badge from "antd/es/badge"
 import Button from "antd/es/button"
 import Drawer from "antd/es/drawer"
@@ -26,13 +25,13 @@ import { useCart } from "../../context/CartContext"
 import { useNotice } from "../../context/NoticeContext"
 import { preloadMotion } from "../../utils/motion"
 import PillNotice from "./PillNotice"
+import { toast } from "../../utils/toast"
 
 
 const Navbar = () => {
 	const [innerWidth, setInnerWidth] = useState(window.innerWidth)
 	const { isAuthenticated, dispatch, user } = useAuth()
 	const { notify, setPillAvailable } = useNotice()
-	const { message } = AntApp.useApp()
 	const pillRef = useRef(null)
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -202,7 +201,7 @@ const Navbar = () => {
 			dispatch({ type: "LOGOUT" })
 			notify(firstName ? `Goodbye, ${firstName}!` : "Goodbye!", { type: "farewell", emoji: "\u{1F44B}" })
 		} catch (error) {
-			message.error("Failed to log out!")
+			toast.error("Failed to log out!")
 		}
 	}
 
@@ -220,7 +219,7 @@ const Navbar = () => {
 	}, []);
 
 	// Notices only play where the pill exists, which is the same breakpoint the
-	// desktop nav links use. Mobile keeps antd's toast.
+	// desktop nav links use. On mobile they come through as a toast instead.
 	const hasPill = innerWidth > 768
 	useEffect(() => {
 		setPillAvailable(hasPill)

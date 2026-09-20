@@ -13,13 +13,15 @@ import ConfigProvider from "antd/es/config-provider"
 import ProductContextProvider from "./context/ProductContext"
 import CartContextProvider from "./context/CartContext"
 import NoticeProvider from "./context/NoticeContext"
+import AppToaster from "./components/shared/AppToaster"
 import antdTheme from "./components/antdTheme"
 function App() {
 	return (
 		<ConfigProvider theme={antdTheme}>
 			<AntApp>
-				{/* Inside AntApp so notices can still fall back to antd's toast
-				    wherever the navbar pill is not on screen. */}
+				{/* One toaster for every screen: the storefront, the dashboard, the
+				    auth pages. */}
+				<AppToaster />
 				<NoticeProvider>
 					<AuthContextProvider>
 						<ProductContextProvider>

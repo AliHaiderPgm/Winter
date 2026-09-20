@@ -1,4 +1,4 @@
-import { App as AntApp, Button, Input, Popconfirm, Select, Space, Table } from "antd"
+import { Button, Input, Popconfirm, Select, Space, Table } from "antd"
 import {
 	CheckOutlined,
 	DeleteOutlined,
@@ -8,9 +8,9 @@ import { useEffect, useRef, useState } from "react"
 import Highlighter from "react-highlight-words"
 import AuthServices from "../../../context/AuthServices"
 import { useAuth } from "../../../context/AuthContext"
+import { toast } from "../../../utils/toast"
 
 const Users = () => {
-	const { message } = AntApp.useApp()
 	const [fetchedData, setFetchedData] = useState([])
 	const [data, setData] = useState([])
 	const [searchText, setSearchText] = useState("")
@@ -30,7 +30,7 @@ const Users = () => {
 			setFetchedData(dataToStore)
 			setData(dataToStore)
 		} catch (error) {
-			message.error("Something went wrong!")
+			toast.error("Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
@@ -48,9 +48,9 @@ const Users = () => {
 			setUpdating(true)
 			await AuthServices.updateUser(e._id, { type: e.type })
 			await getUsers()
-			message.success("Updated user!")
+			toast.success("Updated user!")
 		} catch (error) {
-			message.error("Something went wrong!")
+			toast.error("Something went wrong!")
 		} finally {
 			setUpdating(false)
 		}
@@ -63,9 +63,9 @@ const Users = () => {
 			setDeleting(newDeleting)
 			await AuthServices.deleteUser(e._id)
 			await getUsers()
-			message.success("User deleted!")
+			toast.success("User deleted!")
 		} catch (error) {
-			message.error("Failed to delete user!")
+			toast.error("Failed to delete user!")
 		} finally {
 			const newDeleting = [...deleting]
 			newDeleting[i] = false

@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react"
-import AntApp from "antd/es/app"
 import Button from "antd/es/button"
 import { HeartFilled, HeartOutlined } from "@ant-design/icons"
 import { checkInFavorites, handleAddToFavorites, removeFromFavorites } from "../../global"
+import { toast } from "../../utils/toast"
 
 const FavoriteButton = ({ product, children, className = "", size, block = false, shape }) => {
-    const { message } = AntApp.useApp()
     const [isAnimating, setIsAnimating] = useState(false)
     const [isAdded, setIsAdded] = useState(() => checkInFavorites(product))
     const animationTimer = useRef(null)
@@ -23,12 +22,12 @@ const FavoriteButton = ({ product, children, className = "", size, block = false
         if (isAdded) {
             removeFromFavorites(product)
             setIsAdded(false)
-            message.success("Removed from Favorites!")
+            toast.success("Removed from Favorites!")
             return
         }
 
         handleAddToFavorites(product)
-        message.success("Added to Favorites!")
+        toast.success("Added to Favorites!")
         setIsAdded(true)
         setIsAnimating(true)
         window.clearTimeout(animationTimer.current)

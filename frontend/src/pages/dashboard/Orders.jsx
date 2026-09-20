@@ -1,4 +1,4 @@
-import { App as AntApp, Button, Drawer, Input, Select, Space, Table } from "antd"
+import { Button, Drawer, Input, Select, Space, Table } from "antd"
 import {
 	CheckOutlined,
 	RightOutlined,
@@ -9,6 +9,7 @@ import Highlighter from "react-highlight-words"
 import { useCart } from "../../context/CartContext"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
 import { OrderStatus } from "../../global/data"
+import { toast } from "../../utils/toast"
 
 const paymentMethods = [
 	{
@@ -24,7 +25,6 @@ const paymentMethods = [
 ]
 
 const Orders = () => {
-	const { message } = AntApp.useApp()
 	const [fetchedData, setFetchedData] = useState([])
 	const [data, setData] = useState([])
 	const [searchText, setSearchText] = useState("")
@@ -44,7 +44,7 @@ const Orders = () => {
 			setFetchedData(res)
 			setData(res)
 		} catch (error) {
-			message.error("Something went wrong!")
+			toast.error("Something went wrong!")
 		} finally {
 			setLoading(false)
 		}
@@ -66,9 +66,9 @@ const Orders = () => {
 			const res = await getAllOrders()
 			setFetchedData(res)
 			setData(res)
-			message.success("Order updated!")
+			toast.success("Order updated!")
 		} catch (error) {
-			message.error("Failed to update order!")
+			toast.error("Failed to update order!")
 		} finally {
 			const newUpdating = [...updating]
 			newUpdating[index] = false

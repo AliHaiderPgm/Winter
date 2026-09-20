@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { useProduct } from "../../context/ProductContext"
-import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space, Spin, message } from "antd"
+import { Button, Checkbox, Collapse, Drawer, Empty, Radio, Result, Space, Spin } from "antd"
 const Breadcrumb = React.lazy(() => import('antd').then(module => ({ default: module.Breadcrumb })));
 const Select = React.lazy(() => import('antd').then(module => ({ default: module.Select })));
 import Loader from "../../components/shared/Loader"
@@ -45,7 +45,6 @@ const Catalog = ({ category }) => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [isError, setIsError] = useState(false)
     const navigate = useNavigate()
-    const [api, context] = message.useMessage()
     const loadingRef = useRef(false)
     const pageRequestRef = useRef(false)
     const hasMoreRef = useRef(true)
@@ -274,7 +273,6 @@ const Catalog = ({ category }) => {
     ))
 
     return <>
-        {context}
         <div className="product-catalog">
             <div className="px-2 px-sm-4 px-md-5 py-2 py-md-3 d-flex justify-content-between align-items-center">
                 <div>

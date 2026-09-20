@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { getRandomId } from "../global"
-import { App as AntApp } from "antd"
+import { toast } from "../utils/toast"
 import axios from "axios"
 import { useAuth } from "./AuthContext"
 import { ServerURL } from "."
@@ -17,7 +17,6 @@ const CartContextProvider = ({ children }) => {
     const [tax, setTax] = useState(0)
     const log = useRef(true)
     const { user, isAuthenticated } = useAuth()
-    const { message: messageApi } = AntApp.useApp()
     const successMessage = "Added to Cart!"
     const errorMessage = "Something went wrong!"
     const API_URL = `${ServerURL()}/checkout`
@@ -64,7 +63,7 @@ const CartContextProvider = ({ children }) => {
 
         const totalCount = totalQuantity(newData) + newData.quantity
         if (totalCount > 10) {
-            messageApi.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
+            toast.error("Sorry, you have reached the quantity limit. Please remove an item and try again.")
             return
         }
 
@@ -75,7 +74,7 @@ const CartContextProvider = ({ children }) => {
                     : item
             )
             localStorage.setItem("cartItems", JSON.stringify(data))
-            messageApi.success(successMessage)
+            toast.success(successMessage)
             getCartProducts()
             return
         }
@@ -86,7 +85,7 @@ const CartContextProvider = ({ children }) => {
         }
         products.push(data)
         localStorage.setItem("cartItems", JSON.stringify(products))
-        messageApi.success(successMessage)
+        toast.success(successMessage)
         getCartProducts()
     }
 
