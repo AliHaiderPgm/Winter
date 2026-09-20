@@ -26,7 +26,10 @@
 	max-width: 400px;
 	width: 100%;
 	content-visibility: auto;
-	contain-intrinsic-size: 420px;
+	// A fixed 420px was wrong for this fluid square card, so off-screen cards
+	// reserved the wrong height and the scrollbar jumped as they came in. With
+	// `auto` the browser remembers each card's real size after the first paint.
+	contain-intrinsic-size: auto 460px;
 	overflow: hidden;
 	cursor: pointer;
 	.carousel {
@@ -45,7 +48,7 @@
 				color: #222;
 				margin: 0px 10px;
 				opacity: 0;
-				transition: all $transition-2;
+				transition: opacity $transition-2, background-color $transition-2, color $transition-2;
 				&:nth-child(1) {
 					top: 50%;
 				}

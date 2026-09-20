@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import { App as AntApp, Button } from "antd"
+import AntApp from "antd/es/app"
+import Button from "antd/es/button"
 import { HeartFilled, HeartOutlined } from "@ant-design/icons"
 import { checkInFavorites, handleAddToFavorites, removeFromFavorites } from "../../global"
 

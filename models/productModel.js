@@ -62,4 +62,13 @@ const productSchema = mongoose.Schema({
     timestamps: true
 })
 
+// Every catalog page filters by department and sorts by date, and the filter
+// panel queries the rest. Without these Mongo scans the whole collection.
+productSchema.index({ shoefor: 1, createdAt: -1 })
+productSchema.index({ createdAt: -1 })
+productSchema.index({ price: 1 })
+productSchema.index({ brand: 1 })
+productSchema.index({ type: 1 })
+productSchema.index({ sizes: 1 })
+
 module.exports = mongoose.model('Product', productSchema)

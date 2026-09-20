@@ -1,5 +1,5 @@
-import { theme } from "antd"
-
+// No antd import here: this file only sets component tokens, and the old
+// (unused) `theme` import still pulled antd's theme module into the first load.
 const antdTheme = {
     components: {
         Button: {

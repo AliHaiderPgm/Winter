@@ -1,6 +1,6 @@
 import { useState } from "react"
 import axios from "axios"
-import { Button } from "antd"
+import Button from "antd/es/button"
 import { CheckCircleFilled } from "@ant-design/icons"
 import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"

@@ -22,7 +22,7 @@
 			font-weight: 600;
 			color: #a6a6a6;
 			background: transparent;
-			transition: all $transition-2;
+			transition: color $transition-2, margin-left $transition-2;
 			text-wrap: nowrap;
 		}
 		button.active {
@@ -34,7 +34,7 @@
 		.icon {
 			padding: 0.5rem;
 			font-size: 1.5rem;
-			transition: all 0.5s $cubic-transition;
+			transition: background-color 0.5s $cubic-transition, color 0.5s $cubic-transition;
 			cursor: pointer;
 			&:hover {
 				background: #000;

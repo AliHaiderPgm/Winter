@@ -1,4 +1,4 @@
-import { Carousel } from "antd"
+import Carousel from "antd/es/carousel"
 import { useNavigate } from "react-router-dom"
 import Nike1 from "../../assets/nike-1.jpg"
 import Nike2 from "../../assets/nike-2.jpg"

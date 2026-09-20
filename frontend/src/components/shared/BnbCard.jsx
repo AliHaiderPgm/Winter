@@ -1,5 +1,7 @@
 import React, { Suspense, useCallback, useEffect, useRef, useState } from "react"
-const Carousel = React.lazy(() => import('antd').then(module => ({ default: module.Carousel })));
+// Deep path on purpose: import('antd') pulls the entire barrel into this
+// chunk, and every card on the landing page triggers it.
+const Carousel = React.lazy(() => import('antd/es/carousel'));
 import { useNavigate } from "react-router-dom"
 import imagePlaceHolder from "../../assets/placeholder.png"
 import { LeftOutlined, RightOutlined, StarFilled } from "@ant-design/icons"

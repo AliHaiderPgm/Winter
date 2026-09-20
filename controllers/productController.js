@@ -3,12 +3,22 @@ const uploadImage = require('../controllers/uploadImage')
 
 const Product = require('../models/productModel')
 
+// Everything a card, a filter or a cart line needs. Descriptions and reviews are
+// two fifths of the payload and only the details page reads them, so lists skip
+// them and stay small.
+const LIST_FIELDS = 'name type brand shoefor price sizes rating stock images createdAt'
+
+// Products change rarely and every visitor reads the same rows, so let browsers
+// reuse a list for a minute and serve a stale one while it refreshes behind them.
+const PUBLIC_CACHE = 'public, max-age=60, stale-while-revalidate=300'
+
 // @desc     Get products
 // @route    GET /api/products
 // @access   PUBLIC
 const getProducts = asyncHandler(async (req, res) => {
     try {
-        const products = await Product.find()
+        const products = await Product.find().select(LIST_FIELDS).lean()
+        res.set('Cache-Control', PUBLIC_CACHE)
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json(error)
@@ -21,7 +31,8 @@ const getProducts = asyncHandler(async (req, res) => {
 const getProductDetails = asyncHandler(async (req, res) => {
     try {
         const id = req.params.id
-        const products = await Product.findById(id)
+        const products = await Product.findById(id).lean()
+        res.set('Cache-Control', PUBLIC_CACHE)
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json(error)
@@ -39,7 +50,8 @@ const recentAndTopRated = asyncHandler(async (req, res) => {
         if (topRated) {
             val = { "rating": { "$gte": 3 } }
         }
-        const products = await Product.find(val).sort({ createdAt: sortBy }).limit(limit)
+        const products = await Product.find(val).select(LIST_FIELDS).sort({ createdAt: sortBy }).limit(limit).lean()
+        res.set('Cache-Control', PUBLIC_CACHE)
         res.status(200).json(products)
     } catch (error) {
         res.status(400).json(error)
@@ -119,9 +131,11 @@ const filterProducts = asyncHandler(async (req, res) => {
             ? { price: cursorSortDirection, _id: cursorSortDirection }
             : { createdAt: sortByDate, _id: sortByDate }
         const data = await Product.find(obj)
+            .select(LIST_FIELDS)
             .sort(cursorSort)
             .skip(skip)
             .limit(cursorMode ? perPage + 1 : perPage)
+            .lean()
         // console.log(data)
 
         // sort products
@@ -131,6 +145,8 @@ const filterProducts = asyncHandler(async (req, res) => {
         if (!cursorMode && order && order === "desc") {
             data.sort((a, b) => b.price - a.price)
         }
+
+        res.set('Cache-Control', PUBLIC_CACHE)
 
         if (cursorMode) {
             const hasMore = data.length > perPage

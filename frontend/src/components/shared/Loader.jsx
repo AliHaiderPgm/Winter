@@ -1,4 +1,4 @@
-import { Spin } from "antd"
+import Spin from "antd/es/spin"
 import { LoadingOutlined } from "@ant-design/icons"
 import React, { useMemo } from "react"
 

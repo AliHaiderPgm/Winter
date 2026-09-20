@@ -9,8 +9,15 @@ import Icon, {
 	ShoppingCartOutlined,
 	ShoppingOutlined,
 } from "@ant-design/icons"
-import { App as AntApp, Badge, Button, Drawer, Input, Modal } from "antd"
-const Dropdown = React.lazy(() => import('antd').then(module => ({ default: module.Dropdown })));
+import AntApp from "antd/es/app"
+import Badge from "antd/es/badge"
+import Button from "antd/es/button"
+import Drawer from "antd/es/drawer"
+import Input from "antd/es/input"
+import Modal from "antd/es/modal"
+// Split out, and deep-pathed: import('antd') would pull the whole library into
+// the chunk that the navbar triggers on the first paint.
+const Dropdown = React.lazy(() => import('antd/es/dropdown'));
 import { useAuth } from "../../context/AuthContext"
 import AuthServices from "../../context/AuthServices"
 import { addToHistory } from "../../global"
