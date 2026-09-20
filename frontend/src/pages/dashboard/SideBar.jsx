@@ -1,51 +1,53 @@
-import { AppstoreOutlined, ShoppingOutlined, TagOutlined, UserOutlined } from "@ant-design/icons"
-import { NavLink } from "react-router-dom"
-const getRandomId = () => Math.random().toString(36).slice(2)
+import { AppstoreOutlined, PlusSquareOutlined, ShoppingOutlined, UserOutlined } from "@ant-design/icons"
+import { Link } from "react-router-dom"
+
+const link = (to, label) => (
+	<Link to={to} className="text-decoration-none">
+		{label}
+	</Link>
+)
 
 export const items = [
 	{
-		key: getRandomId(),
+		key: "products",
 		icon: <AppstoreOutlined />,
-		label: (
-			<NavLink to={"/dashboard/products"} className="text-decoration-none">
-				Products
-			</NavLink>
-		),
+		label: link("/dashboard/products", "Products"),
 	},
 	{
-		key: getRandomId(),
+		key: "orders",
 		icon: <ShoppingOutlined />,
-		label: (
-			<NavLink to={"/dashboard/orders"} className="text-decoration-none">
-				Orders
-			</NavLink>
-		),
+		label: link("/dashboard/orders", "Orders"),
 	},
 	{
-		key: getRandomId(),
+		key: "users",
 		icon: <UserOutlined />,
-		label: (
-			<NavLink to={"/dashboard/users"} className="text-decoration-none">
-				Users
-			</NavLink>
-		),
+		label: link("/dashboard/users", "Users"),
 	},
 	{
-		key: getRandomId(),
+		key: "manage",
 		label: "Manage",
 		children: [
 			{
-				key: getRandomId(),
-				icon: <TagOutlined />,
-				label: (
-					<NavLink
-						to={"/dashboard/addProduct"}
-						className="text-decoration-none"
-					>
-						Products
-					</NavLink>
-				),
+				key: "addProduct",
+				icon: <PlusSquareOutlined />,
+				label: link("/dashboard/addProduct", "Add product"),
 			},
 		],
 	},
 ]
+
+// The menu follows the route rather than remembering a click. The previous
+// build keyed every item with a random id and pinned the highlight to whatever
+// key "1" happened to be, so the active item was wrong everywhere.
+const routes = [
+	{ match: "/dashboard/orders", selected: "orders", open: [] },
+	{ match: "/dashboard/users", selected: "users", open: [] },
+	{ match: "/dashboard/addProduct", selected: "addProduct", open: ["manage"] },
+	{ match: "/dashboard/update", selected: "products", open: [] },
+	{ match: "/dashboard/products", selected: "products", open: [] },
+]
+
+export const menuStateFor = (pathname) => {
+	const route = routes.find((entry) => pathname.startsWith(entry.match))
+	return route ? { selectedKeys: [route.selected], openKeys: route.open } : { selectedKeys: ["products"], openKeys: [] }
+}

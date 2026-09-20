@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Form, Input, InputNumber, Popconfirm, Select } from "antd"
+import { Button, Form, Input, InputNumber, Popconfirm, Select } from "antd"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
 import { useEffect, useRef, useState } from "react"
 import { getBase64, getRandomId } from "../../../global"
@@ -8,6 +8,9 @@ import data from "../../../global/data"
 import TextArea from "antd/es/input/TextArea"
 import { DollarOutlined, FontSizeOutlined, StockOutlined } from "@ant-design/icons"
 import ImageUploader from "../../../components/dashboard/ImageUploader"
+import Loader from "../../../components/shared/Loader"
+import PageShell from "../../../components/dashboard/PageShell"
+import Panel from "../../../components/dashboard/Panel"
 
 const UpdateProduct = () => {
 	const { id } = useLocation().state
@@ -113,34 +116,34 @@ const UpdateProduct = () => {
 	}
 
 	if (loading) {
-		return <h1>Loading...</h1>
+		return (
+			<PageShell
+				eyebrow="Catalog"
+				title="Update product"
+				breadcrumb={[{ title: <Link to="/dashboard/products">Products</Link> }, { title: "Product" }]}
+			>
+				<Panel>
+					<div className="dashboard__loading"><Loader /></div>
+				</Panel>
+			</PageShell>
+		)
 	}
-	const breadCrumbItems = [
-		{
-			title: (
-				<Link to="/dashboard/products" className="text-decoration-none">
-					Products
-				</Link>
-			),
-		},
-		{
-			title: state.name,
-		},
-	]
+
 	return (
-		<>
-			<div className="container">
-				<div className="container-fluid">
-					<Breadcrumb items={breadCrumbItems} />
-					<div>
-						<h1 className="text-center mb-3">Update Product</h1>
-						<Form
-							form={form}
-							className="d-flex flex-column gap-2"
-							ref={formRef}
-							onFinish={handleUpdate}
-							initialValues={state}
-						>
+		<PageShell
+			eyebrow="Catalog"
+			title="Update product"
+			subtitle="Change the details, stock or photos, or remove the listing entirely."
+			breadcrumb={[{ title: <Link to="/dashboard/products">Products</Link> }, { title: state.name || "Product" }]}
+		>
+			<Panel title="Product details">
+					<Form
+						form={form}
+						className="dashboard__form d-flex flex-column gap-2"
+						ref={formRef}
+						onFinish={handleUpdate}
+						initialValues={state}
+					>
 							<Form.Item
 								name="name"
 								rules={[
@@ -309,22 +312,20 @@ const UpdateProduct = () => {
 										description="Delete this product."
 										onConfirm={handleDelete}
 									>
-										<Button
-											type="default"
-											size="large"
-											className="col-12 col-md-6 col-lg-3"
-											loading={deleteLoading}
-										>
-											Delete
-										</Button>
+								<Button
+									type="default"
+									size="large"
+									className="col-12 col-md-6 col-lg-3 btn-outline dashboard__action--danger"
+									loading={deleteLoading}
+								>
+									Delete
+								</Button>
 									</Popconfirm>
 								</div>
 							</Form.Item>
 						</Form>
-					</div>
-				</div>
-			</div>
-		</>
+			</Panel>
+		</PageShell>
 	)
 }
 

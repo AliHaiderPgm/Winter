@@ -1,10 +1,12 @@
 import Card from "../../../components/shared/Card"
-import { Input, Select } from "antd"
+import { Button, Input, Select } from "antd"
 import { useProduct } from "../../../context/ProductContext"
 import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "../../../utils/toast"
 import Loader from "../../../components/shared/Loader"
+import PageShell from "../../../components/dashboard/PageShell"
+import Panel from "../../../components/dashboard/Panel"
 const { Search } = Input
 
 const AllProducts = () => {
@@ -66,45 +68,64 @@ const AllProducts = () => {
 		navigate(`/dashboard/update/${id}`, { state: { id } })
 	}
 	return (
-		<>
-			<div className="d-flex flex-column flex-md-row gap-2 justify-content-between mt-2 mb-3">
-				<div className="col-12 col-md-3">
-					<Search
-						placeholder="Enter product name"
-						allowClear
-						enterButton="Find"
+		<PageShell
+			eyebrow="Catalog"
+			title="Products"
+			subtitle="Search the catalog, then open a product to edit its details, stock or images."
+			breadcrumb={[{ title: "Products" }]}
+			actions={<Button className="btn-filled" onClick={() => navigate("/dashboard/addProduct")}>Add product</Button>}
+		>
+			<Panel
+				title="Find a product"
+				note={loading ? "Loading the catalog..." : `${products.length} product${products.length === 1 ? "" : "s"} in the catalog`}
+			>
+				<div className="d-flex flex-column flex-md-row gap-2 align-items-stretch">
+					<div className="col-12 col-md-5 col-lg-4 p-0">
+						<Search
+							placeholder="Enter product name"
+							allowClear
+							enterButton="Find"
+							size="large"
+							onSearch={onSearch}
+							onChange={handleChange}
+							value={state}
+						/>
+					</div>
+					<Select
+						placeholder="coming soon"
 						size="large"
-						onSearch={onSearch}
 						onChange={handleChange}
-						value={state}
+						options={options}
+						disabled
 					/>
 				</div>
-				<Select
-					placeholder="coming soon"
-					size="large"
-					onChange={handleChange}
-					options={options}
-					disabled
-				/>
-			</div>
-			<div className="row">
-				{loading ? <Loader /> :
-					products.map((item, index) => {
-						return (
-							<div
-								className="col-12 col-md-6 col-lg-3 mb-3"
-								key={index}
-								onClick={() => handleNavigate(item._id)}
-							>
-								<Card d data={item} />
-							</div>
-						)
-					})}
+			</Panel>
+
+			<div className="mt-3">
 				{
-					!loading && products.length === 0 ? <p className="text-center fw-bold py-2">No product found</p> : null
+					loading
+						? <Panel><div className="dashboard__loading"><Loader /></div></Panel>
+						: products.length === 0
+							? <Panel><p className="m-0 muted">No product matches that search. Try another name.</p></Panel>
+							: <div className="row g-3">
+								{
+									products.map((item) => (
+										<div className="col-12 col-sm-6 col-lg-4 col-xxl-3" key={item._id}>
+											<button
+												type="button"
+												className="dashboard__product"
+												onClick={() => handleNavigate(item._id)}
+												aria-label={`Edit ${item.name}`}
+											>
+												<Card data={item} />
+											</button>
+										</div>
+									))
+								}
+							</div>
 				}
 			</div>
-		</>
+		</PageShell>
 	)
 }
 

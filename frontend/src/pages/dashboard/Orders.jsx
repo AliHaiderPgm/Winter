@@ -10,6 +10,8 @@ import { useCart } from "../../context/CartContext"
 import BasicDetailsCard from "../../components/shared/BasicDetailsCard"
 import { OrderStatus } from "../../global/data"
 import { toast } from "../../utils/toast"
+import PageShell from "../../components/dashboard/PageShell"
+import Panel from "../../components/dashboard/Panel"
 
 const paymentMethods = [
 	{
@@ -136,7 +138,7 @@ const Orders = () => {
 		filterIcon: (filtered) => (
 			<SearchOutlined
 				style={{
-					color: filtered ? "#1677ff" : undefined,
+					color: filtered ? "#111" : undefined,
 				}}
 			/>
 		),
@@ -151,7 +153,7 @@ const Orders = () => {
 			searchedColumn === dataIndex ? (
 				<Highlighter
 					highlightStyle={{
-						backgroundColor: "#ffc069",
+						backgroundColor: "rgba(17, 17, 17, 0.12)",
 						padding: 0,
 					}}
 					searchWords={[searchText]}
@@ -275,45 +277,81 @@ const Orders = () => {
 						loading={updating[index]}
 						disabled={isSame}
 						onClick={() => updateOrderFn(orderFromState, index)}
-						className="d-flex align-items-center"
+						className="d-flex align-items-center dashboard__action--confirm"
+						title={isSame ? "No change to save" : "Save this status"}
 					>
-						Update <CheckOutlined style={{ fontSize: 16, color: isSame ? "#00000040" : "#00FF00" }} />
+						Save <CheckOutlined style={{ fontSize: 16 }} />
 					</Button>
 				</div>
 			},
 		},
 	]
-	return <>
-		<Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} rowKey={i => i._id} />
-		<Drawer title="Order Details" placement="right" onClose={() => setIsModelOpen(false)} open={isModelOpen}>
-			<h5>Products</h5>
-			{
-				orderDetails && orderDetails.order.map((e, i) => {
-					return <BasicDetailsCard data={e} key={i} />
-				})
-			}
-			{
-				orderDetails ? <div>
-					<div className="my-2">
-						<h5>Delivery Details</h5>
-						<p className="m-0 fw-semibold">Name: <span className="fw-normal">{orderDetails.receiver.firstName + " " + orderDetails.receiver.secondName}</span></p>
-						<p className="m-0 fw-semibold">Address: <span className="fw-normal">{orderDetails.receiver.address + ", " + orderDetails.receiver.district}</span></p>
-						<p className="m-0 fw-semibold">Email: <span className="fw-normal">{orderDetails.receiver.email}</span></p>
-						<p className="m-0 fw-semibold">Phone: <span className="fw-normal">{orderDetails.receiver.phoneNumber}</span></p>
-					</div>
-					<div>
-						<h5>Order Details</h5>
-						<p className="m-0 fw-semibold">SubTotal: <span className="fw-normal ">Rs.{orderDetails.subTotal}</span></p>
-						<p className="m-0 fw-semibold">Tax: <span className="fw-normal ">Rs.{orderDetails.tax}</span></p>
-						<p className="m-0 fw-semibold">Total: <span className="fw-normal ">Rs.{orderDetails.total}</span></p>
-						<p className="m-0 fw-semibold">Payment Method: <span className="fw-normal ">{orderDetails.paymentMethod}</span></p>
-						<p className="m-0 fw-semibold">Order Placed: <span className="fw-normal ">{new Date(orderDetails.createdAt).toLocaleString()}</span></p>
-					</div>
-				</div> : null
-			}
-		</Drawer>
-	</>
+	return (
+		<PageShell
+			eyebrow="Operations"
+			title="Orders"
+			subtitle="Review every order placed in the store and move it along as it ships."
+			breadcrumb={[{ title: "Orders" }]}
+		>
+			<Panel
+				title="All orders"
+				note={loading ? "Loading orders..." : `${fetchedData.length} order${fetchedData.length === 1 ? "" : "s"}`}
+				flush
+			>
+				<Table
+					columns={columns}
+					dataSource={fetchedData}
+					loading={loading}
+					pagination={{ pageSize: 10, hideOnSinglePage: true, showSizeChanger: false }}
+					scroll={{ x: 900 }}
+					rowKey={i => i._id}
+				/>
+			</Panel>
 
+			<Drawer className="dashboard__drawer" title="Order details" placement="right" width={420} onClose={() => setIsModelOpen(false)} open={isModelOpen}>
+				<section className="dashboard__drawer__section">
+					<h3>Products</h3>
+					{
+						orderDetails && orderDetails.order.map((e, i) => {
+							return <BasicDetailsCard data={e} key={i} />
+						})
+					}
+				</section>
+			{
+				orderDetails ? <>
+					<section className="dashboard__drawer__section">
+						<h3>Delivery</h3>
+						<dl>
+							<dt>Name</dt>
+							<dd>{orderDetails.receiver.firstName + " " + orderDetails.receiver.secondName}</dd>
+							<dt>Address</dt>
+							<dd>{orderDetails.receiver.address + ", " + orderDetails.receiver.district}</dd>
+							<dt>Email</dt>
+							<dd>{orderDetails.receiver.email}</dd>
+							<dt>Phone</dt>
+							<dd>{orderDetails.receiver.phoneNumber}</dd>
+						</dl>
+					</section>
+					<section className="dashboard__drawer__section">
+						<h3>Summary</h3>
+						<dl>
+							<dt>Subtotal</dt>
+							<dd>Rs.{orderDetails.subTotal}</dd>
+							<dt>Tax</dt>
+							<dd>Rs.{orderDetails.tax}</dd>
+							<dt>Total</dt>
+							<dd className="fw-bold">Rs.{orderDetails.total}</dd>
+							<dt>Payment</dt>
+							<dd>{orderDetails.paymentMethod}</dd>
+							<dt>Placed</dt>
+							<dd>{new Date(orderDetails.createdAt).toLocaleString()}</dd>
+						</dl>
+					</section>
+				</> : null
+			}
+			</Drawer>
+		</PageShell>
+	)
 }
 
 export default Orders

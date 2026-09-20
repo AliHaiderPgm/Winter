@@ -10,6 +10,9 @@ import { useProduct } from "../../../context/ProductContext"
 import data from "../../../global/data"
 import { getBase64 } from "../../../global"
 import { toast } from "../../../utils/toast"
+import { Link } from "react-router-dom"
+import PageShell from "../../../components/dashboard/PageShell"
+import Panel from "../../../components/dashboard/Panel"
 
 const { TextArea } = Input
 
@@ -49,15 +52,17 @@ const AddProduct = () => {
 	}
 
 	return (
-		<>
-			<div className="d-flex flex-column align-items-center">
-				<h1 className="text-decoration-underline">Add Product</h1>
-				<div className="w-100 py-4 px-0 px-md-5">
+		<PageShell
+			eyebrow="Catalog"
+			title="Add product"
+			subtitle="Create a listing: the name buyers see, its price and stock, the sizes it comes in and its photos."
+			breadcrumb={[{ title: <Link to="/dashboard/products">Products</Link> }, { title: "Add product" }]}
+		>
+			<Panel title="Product details" note="Every field is required.">
 					<Form
 						form={form}
 						onFinish={handleSubmit}
-						// initialValues={initialState}
-						className="d-flex flex-column gap-2"
+						className="dashboard__form d-flex flex-column gap-2"
 					>
 						<Form.Item
 							name="name"
@@ -221,13 +226,12 @@ const AddProduct = () => {
 								loading={loading}
 								htmlType="submit"
 							>
-								Add Product
+								Add product
 							</Button>
 						</Form.Item>
 					</Form>
-				</div>
-			</div>
-		</>
+			</Panel>
+		</PageShell>
 	)
 }
 

@@ -1,0 +1,654 @@
+// The dashboard stylesheet is compiled on its own (it is imported by the lazy
+// dashboard chunk), so unlike the storefront partials it cannot rely on
+// _colors.scss having been pulled in already.
+@import "colors";
+@import "transitions";
+@import "tones";
+
+// The dashboard is the same product as the storefront, so it speaks the same
+// language instead of antd's defaults: white cards on a 2px #11111141 border
+// with a 7px radius, black CTAs, Ubuntu type, muted secondary copy, and the
+// quiet tones from _tones.scss - colour as a hint, only while hovered.
+//
+// Everything here is scoped under .dashboard, so none of it can reach the
+// storefront, which shares the same antd instance.
+$dash-border: #11111141;
+$dash-radius: 7px;
+$dash-muted: rgba(0, 0, 0, 0.5);
+$dash-faint: rgba(0, 0, 0, 0.35);
+$dash-ink: #111;
+$dash-surface: #fafafa;
+$dash-shadow: rgba(100, 100, 111, 0.2) 0 7px 24px 0;
+// The dark shell keeps the storefront's black rather than antd's #001529.
+$dash-dark: #111;
+$dash-dark-border: rgba(255, 255, 255, 0.12);
+$dash-dark-muted: rgba(255, 255, 255, 0.64);
+$sider-width: 220px;
+$sider-collapsed: 80px;
+
+.dashboard {
+	background-color: $dash-surface;
+	min-height: 100vh;
+	display: flex;
+	// antd draws `.ant-layout.ant-layout-has-sider { flex-direction: row }` at
+	// two classes, which outranks a lone `.dashboard`, so this needs the
+	// important - and it matters more than it looks. Left as a row, the main
+	// becomes a flex item with `flex-shrink: 0`, so instead of taking the
+	// space beside the sider it inflates to its own max-content width: with a
+	// full catalog of tiles that is a ~41,000px page. The shell is a column
+	// here because both the header and the sider are taken out of flow.
+	flex-direction: column !important;
+	align-items: stretch;
+
+	// A single focus treatment for the whole area, matching the storefront's
+	// footer links.
+	a,
+	button,
+	[tabindex] {
+		&:focus-visible {
+			outline: 2px solid $dash-ink;
+			outline-offset: 2px;
+			border-radius: 2px;
+		}
+	}
+
+	// ---------------------------------------------------------------- shell
+	&__header {
+		position: fixed;
+		top: 0;
+		inset-inline: 0;
+		z-index: 20;
+		height: 64px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-inline: 1.25rem;
+		background-color: $dash-dark;
+		border-bottom: 1px solid $dash-dark-border;
+		color: #fff;
+
+		.brand {
+			display: flex;
+			align-items: center;
+			gap: 0.75rem;
+			color: inherit;
+			text-decoration: none;
+			img {
+				height: 32px;
+				filter: invert(1) brightness(10);
+			}
+			.brand-label {
+				font-size: 0.75rem;
+				text-transform: uppercase;
+				letter-spacing: 3px;
+				color: $dash-dark-muted;
+			}
+			&:hover .brand-label {
+				color: #fff;
+			}
+		}
+
+		.header-actions {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+	}
+
+	// The account control mirrors the storefront's navbar dropdown.
+	&__account {
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		height: 40px;
+		padding-inline: 0.75rem;
+		border: 1px solid $dash-dark-border;
+		border-radius: 40px;
+		background-color: transparent;
+		color: #fff;
+		cursor: pointer;
+		transition: border-color $transition, background-color $transition;
+		.ant-avatar {
+			background-color: rgba(255, 255, 255, 0.14);
+			color: #fff;
+		}
+		.account-name {
+			font-size: 0.9rem;
+			font-weight: 500;
+			max-width: 160px;
+		}
+		.account-role {
+			font-size: 0.7rem;
+			text-transform: uppercase;
+			letter-spacing: 1.5px;
+			color: $dash-dark-muted;
+		}
+		&:hover {
+			background-color: rgba(255, 255, 255, 0.08);
+			border-color: rgba(255, 255, 255, 0.32);
+		}
+	}
+
+	&__store-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		height: 40px;
+		padding-inline: 0.9rem;
+		border: 1px solid $dash-dark-border;
+		border-radius: 40px;
+		color: $dash-dark-muted;
+		text-decoration: none;
+		font-size: 0.9rem;
+		transition: color $transition, border-color $transition, background-color $transition;
+		&:hover {
+			color: #fff;
+			border-color: rgba(255, 255, 255, 0.32);
+			background-color: rgba(255, 255, 255, 0.08);
+		}
+	}
+
+	&__sider {
+		position: fixed !important;
+		inset-block: 64px 0;
+		inset-inline-start: 0;
+		height: auto !important;
+		background-color: $dash-dark;
+		border-inline-end: 1px solid $dash-dark-border;
+		.ant-layout-sider-children {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
+	}
+
+	&__main {
+		flex: 1 0 auto;
+		margin-top: 64px;
+		margin-inline-start: $sider-width;
+		transition: margin-inline-start $transition;
+		min-width: 0;
+	}
+
+	&[data-collapsed="true"] &__main {
+		margin-inline-start: $sider-collapsed;
+	}
+
+	@media (max-width: 991.98px) {
+		&__main {
+			margin-inline-start: $sider-collapsed;
+		}
+	}
+
+	&__footer {
+		border-top: 1px solid $dash-border;
+		padding: 1.25rem;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 1.5rem;
+		align-items: center;
+		justify-content: space-between;
+		color: $dash-muted;
+		font-size: 0.875rem;
+		a {
+			color: inherit;
+			text-decoration: none;
+			transition: color $transition;
+			&:hover {
+				color: $dash-ink;
+			}
+		}
+	}
+
+	// ------------------------------------------------------------- nav menu
+	.ant-menu-dark {
+		background-color: transparent;
+		border-inline-end: none !important;
+		padding: 0.75rem 0.6rem;
+		font-size: 0.95rem;
+		.ant-menu-item,
+		.ant-menu-submenu-title {
+			height: 42px;
+			line-height: 42px;
+			margin: 2px 0;
+			border-radius: $dash-radius;
+			color: $dash-dark-muted;
+			transition: color $transition, background-color $transition;
+			.anticon {
+				font-size: 16px;
+			}
+			&:hover {
+				color: #fff;
+				background-color: rgba(255, 255, 255, 0.08);
+			}
+		}
+		.ant-menu-item-selected {
+			background-color: #fff !important;
+			color: $dash-ink !important;
+			font-weight: 600;
+		}
+		.ant-menu-sub {
+			background-color: transparent !important;
+		}
+		a {
+			color: inherit;
+			text-decoration: none;
+		}
+	}
+
+	// The collapse rail keeps one icon per row.
+	&__sider.ant-layout-sider-collapsed {
+		.ant-menu-dark {
+			padding-inline: 0.5rem;
+		}
+	}
+
+	// ---------------------------------------------------------------- pages
+	&__page {
+		padding-bottom: 1.5rem;
+	}
+
+	&__breadcrumb {
+		padding: 0.75rem 1.5rem;
+		.ant-breadcrumb-link,
+		.ant-breadcrumb-separator {
+			color: $dash-muted;
+			a {
+				color: $dash-muted;
+				text-decoration: none;
+				transition: color $transition;
+				&:hover {
+					color: $dash-ink;
+				}
+			}
+		}
+		li:last-child .ant-breadcrumb-link {
+			color: $dash-ink;
+			font-weight: 500;
+		}
+	}
+
+	&__intro {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		align-items: flex-end;
+		justify-content: space-between;
+		padding: 0.5rem 1.5rem 1.5rem;
+		border-bottom: 1px solid $dash-border;
+		// The storefront's "small" label from FancyHeader, scaled for a tool.
+		.eyebrow {
+			margin: 0 0 0.35rem;
+			font-size: 0.7rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 4px;
+			color: $dash-faint;
+		}
+		h1 {
+			margin: 0;
+			font-size: 1.6rem;
+			font-weight: 700;
+			line-height: 1.2;
+		}
+		.subtitle {
+			margin: 0.4rem 0 0;
+			color: $dash-muted;
+			max-width: 62ch;
+		}
+		.intro-actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			align-items: center;
+		}
+	}
+
+	&__body {
+		padding: 1.5rem;
+	}
+
+	// ---------------------------------------------------------------- cards
+	&__card {
+		background-color: #fff;
+		border: 2px solid $dash-border;
+		border-radius: $dash-radius;
+		padding: 1rem;
+		&--flush {
+			padding: 0;
+			overflow: hidden;
+			.dashboard__card__head {
+				padding: 1rem 1rem 0.9rem;
+				margin-bottom: 0;
+				border-bottom: 1px solid $dash-border;
+			}
+		}
+		&__head {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.75rem;
+			align-items: center;
+			justify-content: space-between;
+			padding-bottom: 0.9rem;
+			margin-bottom: 1rem;
+			border-bottom: 1px solid $dash-border;
+			h2 {
+				margin: 0;
+				font-size: 1.05rem;
+				font-weight: 600;
+			}
+			.note {
+				margin: 0;
+				font-size: 0.85rem;
+				color: $dash-muted;
+			}
+		}
+	}
+
+	// Interactive cards lift like the storefront's topic cards. Only used for
+	// cards that are themselves clickable.
+	button.dashboard__card,
+	a.dashboard__card {
+		text-align: start;
+		width: 100%;
+		cursor: pointer;
+		transition: border-color $transition, box-shadow $transition, transform $transition;
+		&:hover,
+		&:focus-visible {
+			border-color: $dash-ink;
+			box-shadow: $dash-shadow;
+			transform: translateY(-2px);
+		}
+	}
+
+	// ---------------------------------------------------------- typography
+	h1,
+	h2,
+	h3,
+	h4 {
+		color: $dash-ink;
+	}
+	.text-muted,
+	.muted {
+		color: $dash-muted !important;
+	}
+
+	// --------------------------------------------------------------- table
+	.ant-table-wrapper {
+		.ant-table {
+			background-color: transparent;
+			font-size: 0.9rem;
+		}
+		.ant-table-thead > tr > th {
+			background-color: #fff;
+			color: $dash-muted;
+			font-size: 0.72rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1.5px;
+			border-bottom: 1px solid $dash-border;
+			// antd draws a vertical divider between headers; the storefront's
+			// tables read as one line instead.
+			&::before {
+				display: none !important;
+			}
+			.ant-table-filter-trigger {
+				color: $dash-faint;
+				&:hover {
+					color: $dash-ink;
+				}
+			}
+		}
+		.ant-table-tbody > tr > td {
+			border-bottom: 1px solid rgba(17, 17, 17, 0.07);
+			color: rgba(0, 0, 0, 0.75);
+		}
+		.ant-table-tbody > tr:last-child > td {
+			border-bottom: none;
+		}
+		.ant-table-tbody > tr.ant-table-row:hover > td,
+		.ant-table-tbody > tr > td.ant-table-cell-row-hover {
+			background-color: rgba(0, 0, 0, 0.02);
+		}
+		// The empty state is a message, not a void.
+		.ant-empty {
+			margin-block: 2rem;
+		}
+		.ant-empty-description {
+			color: $dash-muted;
+		}
+		.ant-table-placeholder:hover > td {
+			background-color: transparent !important;
+		}
+		.ant-pagination {
+			padding: 0.75rem 1rem;
+			.ant-pagination-item,
+			.ant-pagination-prev,
+			.ant-pagination-next {
+				border-radius: $dash-radius;
+				a {
+					color: $dash-muted;
+				}
+				&:hover {
+					border-color: $dash-ink;
+				}
+			}
+			.ant-pagination-item-active {
+				background-color: $dash-ink;
+				border-color: $dash-ink;
+				a {
+					color: #fff;
+				}
+			}
+		}
+	}
+
+	// Row actions: quiet icon buttons that take a tone only on hover, exactly
+	// like the cards on the storefront.
+	.ant-table .ant-btn {
+		border-radius: $dash-radius;
+		font-size: 0.85rem;
+		padding-inline: 0.6rem;
+		// Icons only take a tone on hover, and only where a tone is set
+		// explicitly (see the --confirm / --danger actions below).
+		.anticon {
+			transition: color $transition;
+		}
+	}
+
+	&__action--danger .anticon {
+		color: $dash-muted;
+	}
+	&__action--danger:hover .anticon {
+		color: map-get($tone-colors, "rose") !important;
+	}
+	&__action--confirm .anticon {
+		color: $dash-muted;
+	}
+	&__action--confirm:not(:disabled):hover .anticon {
+		color: map-get($tone-colors, "green") !important;
+	}
+
+	// ---------------------------------------------------------------- forms
+	.ant-form-item-label > label {
+		font-size: 0.95rem !important;
+		font-weight: 500;
+		color: rgba(0, 0, 0, 0.72);
+	}
+	.ant-input,
+	.ant-input-affix-wrapper,
+	.ant-input-number,
+	.ant-select-selector,
+	.ant-picker {
+		border-radius: $dash-radius !important;
+	}
+	// antd 5.8 exposes no hover/active border tokens for Input or InputNumber
+	// (see the note in antdTheme.jsx), so the storefront's behaviour - a quiet
+	// border at rest, ink when it has focus - is spelled out here.
+	.ant-input:not(:disabled):hover,
+	.ant-input-affix-wrapper:not(:disabled):hover,
+	.ant-input-number:not(:disabled):hover,
+	.ant-select:not(.ant-select-disabled):hover .ant-select-selector,
+	.ant-picker:not(.ant-picker-disabled):hover {
+		border-color: $dash-border;
+	}
+	.ant-input:focus,
+	.ant-input-focused,
+	.ant-input-affix-wrapper-focused,
+	.ant-input-number-focused,
+	.ant-select-focused .ant-select-selector,
+	.ant-picker-focused {
+		border-color: $dash-ink;
+		box-shadow: none;
+	}
+	.ant-input-affix-wrapper .anticon,
+	.ant-input-number-prefix {
+		color: $dash-muted;
+	}
+	.ant-form-item-explain-error {
+		font-size: 0.85rem;
+	}
+	&__form {
+		max-width: 780px;
+		.ant-form-item {
+			margin-bottom: 0.9rem;
+		}
+	}
+
+	// NOTE: a select dropdown, an antd dropdown menu and a modal all render into
+	// a portal on <body>, so nothing scoped under .dashboard can reach them.
+	// Their look comes from tokens (see antdTheme.jsx) instead. The drawer is
+	// the exception: it also portals, but it carries its own .dashboard__drawer
+	// class, so the block below still lands.
+
+	// -------------------------------------------------------------- drawer
+	&__drawer {
+		.ant-drawer-header {
+			border-bottom: 1px solid $dash-border;
+			.ant-drawer-title {
+				font-weight: 700;
+			}
+		}
+		&__section {
+			& + & {
+				margin-top: 1.25rem;
+				padding-top: 1.25rem;
+				border-top: 1px solid $dash-border;
+			}
+			h3 {
+				font-size: 0.72rem;
+				font-weight: 600;
+				text-transform: uppercase;
+				letter-spacing: 2px;
+				color: $dash-faint;
+				margin-bottom: 0.5rem;
+			}
+			dl {
+				margin: 0;
+				display: grid;
+				grid-template-columns: minmax(0, 9rem) 1fr;
+				gap: 0.35rem 1rem;
+				font-size: 0.9rem;
+			}
+			dt {
+				color: $dash-muted;
+				font-weight: 500;
+			}
+			dd {
+				margin: 0;
+				word-break: break-word;
+			}
+		}
+	}
+
+	// --------------------------------------------------------------- tags
+	.ant-tag {
+		border-radius: $dash-radius;
+		padding-inline: 0.5rem;
+		margin-inline-end: 0;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		font-weight: 600;
+	}
+
+	// ------------------------------------------------------------ uploads
+	.ant-upload-drag {
+		border: 2px dashed $dash-border;
+		border-radius: $dash-radius;
+		background-color: rgba(0, 0, 0, 0.015);
+		transition: border-color $transition, background-color $transition;
+		&:hover {
+			border-color: $dash-ink;
+			background-color: rgba(0, 0, 0, 0.03);
+		}
+		// antd sets this icon's colour at four classes of specificity
+		// (.ant-upload-wrapper .ant-upload-drag .ant-upload-drag-icon .anticon),
+		// so the wrapper has to be named too or the blue wins.
+		.ant-upload-wrapper .ant-upload-drag-icon .anticon {
+			color: $dash-muted;
+		}
+		.ant-upload-text {
+			font-weight: 500;
+		}
+		.ant-upload-hint {
+			color: $dash-muted;
+		}
+	}
+
+	// ------------------------------------------------- product tiles
+	// The catalog grid: the whole tile is the control, so it behaves like the
+	// storefront's topic cards down to the keyboard.
+	&__product {
+		width: 100%;
+		padding: 0;
+		border: none;
+		background: transparent;
+		text-align: start;
+		cursor: pointer;
+		border-radius: $dash-radius;
+		.ant-card {
+			border: 2px solid $dash-border;
+			overflow: hidden;
+			transition: border-color $transition, box-shadow $transition, transform $transition;
+		}
+		&:hover .ant-card,
+		&:focus-visible .ant-card {
+			border-color: $dash-ink;
+			box-shadow: $dash-shadow;
+			transform: translateY(-2px);
+		}
+	}
+
+	// A destructive secondary button takes the rose only while hovered.
+	.btn-outline.dashboard__action--danger:hover {
+		border-color: map-get($tone-colors, "rose") !important;
+		color: map-get($tone-colors, "rose");
+	}
+
+	// ------------------------------------------------------------- loading
+	&__loading {
+		padding: 3rem 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		button.dashboard__card,
+		a.dashboard__card {
+			transition: none;
+			&:hover {
+				transform: none;
+			}
+		}
+		&__product .ant-card,
+		&__product:hover .ant-card {
+			transition: none;
+			transform: none;
+		}
+		&__main,
+		&__account,
+		&__store-link {
+			transition: none;
+		}
+	}
+}

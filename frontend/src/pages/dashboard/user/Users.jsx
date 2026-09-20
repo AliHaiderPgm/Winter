@@ -9,6 +9,8 @@ import Highlighter from "react-highlight-words"
 import AuthServices from "../../../context/AuthServices"
 import { useAuth } from "../../../context/AuthContext"
 import { toast } from "../../../utils/toast"
+import PageShell from "../../../components/dashboard/PageShell"
+import Panel from "../../../components/dashboard/Panel"
 
 const Users = () => {
 	const [fetchedData, setFetchedData] = useState([])
@@ -140,7 +142,7 @@ const Users = () => {
 		filterIcon: (filtered) => (
 			<SearchOutlined
 				style={{
-					color: filtered ? "#1677ff" : undefined,
+					color: filtered ? "#111" : undefined,
 				}}
 			/>
 		),
@@ -155,7 +157,7 @@ const Users = () => {
 			searchedColumn === dataIndex ? (
 				<Highlighter
 					highlightStyle={{
-						backgroundColor: "#ffc069",
+						backgroundColor: "rgba(17, 17, 17, 0.12)",
 						padding: 0,
 					}}
 					searchWords={[searchText]}
@@ -237,27 +239,51 @@ const Users = () => {
 					}
 				})
 				return <div key={index}>
-					<Popconfirm
-						title="Delete the user"
-						description={`Are you sure to delete "${record.name}"?`}
-						onConfirm={() => deleteUser(index, record)}
-					>
-						<Button danger type="text" loading={deleting[index]} >
-							<DeleteOutlined style={{ fontSize: 16 }} />
-						</Button>
-					</Popconfirm>
-					{record.type === userFromState.type ? null :
-						<Button type="text" loading={updating} onClick={() => {
-							updateUser(userFromState)
-						}}>
-							<CheckOutlined style={{ fontSize: 16, color: "#00FF00" }} />
-						</Button>
-					}
+				<Popconfirm
+					title="Delete the user"
+					description={`Are you sure to delete "${record.name}"?`}
+					okText="Delete"
+					okButtonProps={{ danger: true }}
+					onConfirm={() => deleteUser(index, record)}
+				>
+					<Button type="text" loading={deleting[index]} className="dashboard__action--danger" title={`Delete ${record.name}`}>
+						<DeleteOutlined style={{ fontSize: 16 }} />
+					</Button>
+				</Popconfirm>
+				{record.type === userFromState.type ? null :
+					<Button type="text" loading={updating} className="dashboard__action--confirm" title="Save this role" onClick={() => {
+						updateUser(userFromState)
+					}}>
+						<CheckOutlined style={{ fontSize: 16 }} />
+					</Button>
+				}
 				</div>
 			},
 		},
 	]
-	return <Table columns={columns} dataSource={fetchedData} loading={loading} pagination={false} scroll={{ x: 900, y: 500 }} rowKey={i => i._id} />
+	return (
+		<PageShell
+			eyebrow="People"
+			title="Users"
+			subtitle="Everyone with an account, and the role each one holds."
+			breadcrumb={[{ title: "Users" }]}
+		>
+			<Panel
+				title="All users"
+				note={loading ? "Loading users..." : `${fetchedData.length} user${fetchedData.length === 1 ? "" : "s"}, not counting you`}
+				flush
+			>
+				<Table
+					columns={columns}
+					dataSource={fetchedData}
+					loading={loading}
+					pagination={{ pageSize: 10, hideOnSinglePage: true, showSizeChanger: false }}
+					scroll={{ x: 900 }}
+					rowKey={i => i._id}
+				/>
+			</Panel>
+		</PageShell>
+	)
 }
 
 export default Users
