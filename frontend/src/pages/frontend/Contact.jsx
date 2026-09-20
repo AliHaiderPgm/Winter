@@ -249,7 +249,7 @@ export default function Contact() {
 												placeholder="What happened, and what would you like us to do?"
 											/>
 										</Form.Item>
-										<div className="d-flex flex-wrap align-items-center justify-content-between gap-2">
+										<div className="d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2">
 											<p className="text-black-50 small m-0">
 												We reply to the address above, usually the same day.
 											</p>

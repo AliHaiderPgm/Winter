@@ -5,11 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { ArrowUpOutlined } from "@ant-design/icons"
 const CatalogSection = () => {
 	const navigate = useNavigate()
-	const handleNavigate = (type) => {
-		let val;
-		type === "Men" ? val = "Male" : type === "Women" ? val = "Female" : val = "Children"
-		navigate(`/${val}`)
-	}
+	const handleNavigate = (type) => navigate(`/${type}`)
 	const Types = ["Men", "Women", "Kids"]
 	const Card = (props) => {
 		const type = props.type

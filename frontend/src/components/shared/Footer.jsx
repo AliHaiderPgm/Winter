@@ -16,12 +16,12 @@ const footerLinks = [
 		navigateTo: "/about"
 	},
 	{
-		title: "Help Center",
-		navigateTo: "/help"
-	},
-	{
 		title: "Contact Us",
 		navigateTo: "/contact"
+	},
+	{
+		title: "Help Center",
+		navigateTo: "/help"
 	},
 ]
 
