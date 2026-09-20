@@ -1,19 +1,19 @@
 
-# WINTER
+# ❄️WINTER
 
-Welcome to the Winter project repository! This is a full-stack e-commerce store built using the MERN (MongoDB, Express.js, React, Node.js) stack. The application allows users to browse a catalog of products, add items to their cart, and complete the purchase with a secure checkout process and much more.
+Welcome to the Winter Project Repository! This is a full-stack e-commerce store built using the MERN (MongoDB, Express.js, React, Node.js) stack. The application allows users to browse a catalog of products, add items to their cart, and complete the purchase with a secure checkout process, and much more.
 
 
 ## Tech Stack
 
 **Client:** React, SCSS, Ant Design, Bootstrap
 
-**Server:** Node, Express, Mongodb
+**Server:** Node, Express, MongoDB
 
 
 ## Website
 
-Check out👉[[Winter]](https://winterstore.vercel.app/)
+Check out👉[[WinterStore]](https://winterstore.vercel.app/)
 
 
 ## Run Locally
@@ -24,43 +24,24 @@ Clone the project
   git clone https://github.com/AliHaiderPgm/Winter.git
 ```
 
-Go to the project directory
-
-```bash
-  cd Winter
-```
-Install dependencies
-
+## Frontend Dependencies
+In the frontend directory:
 ```bash
   npm install
 ```
-
-Go to the frontend directory
-
-```bash
-  cd frontend
-```
-
-Install dependencies
-
-```bash
-  npm install
-```
-
-Start frontend
-
-```bash
-  npm run dev
-```
-
-To start the server navigate to Winter directory
-
+## Running the project
+In the project directory, you can run the server:
 ```bash
   npm run server
 ```
+To start the frontend, in the frontend directory:
+```bash
+  npm run dev
+```
+Runs the app in the development mode.
+Open http://localhost:5173/ to view it in the browser.
 
 And you are good to GO!🥳
-
 
 ## Feedback
 
