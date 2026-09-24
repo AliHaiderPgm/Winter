@@ -26,6 +26,7 @@ import { useNotice } from "../../context/NoticeContext"
 import { preloadMotion } from "../../utils/motion"
 import PillNotice from "./PillNotice"
 import { toast } from "../../utils/toast"
+import { TextRoll } from "./TextRoll"
 
 
 const Navbar = () => {
@@ -270,19 +271,19 @@ const Navbar = () => {
 						innerWidth > 768 && <>
 							<div className="nav-links" ref={pillRef}>
 								{
-									navItems.map((item, index) => {
-										return <div className="d-flex align-items-center pill-nav-item" key={index}>
+									navItems.map((item, index) => (
+										<div className="d-flex align-items-center pill-nav-item" key={index}>
 											<NavLink
 												to={item.navigateTo}
 												className={({ isActive }) =>
 													isActive ? "active link" : "inactive link"
 												}
 											>
-												{item.title}
+												<TextRoll>{item.title}</TextRoll>
 											</NavLink>
 											<span className="divider"></span>
 										</div>
-									})
+									))
 								}
 								<Input placeholder="Search" size="large" className={`search-bar ${searchActive && "active"}`} onChange={e => handleChange(e)} value={searchText} onPressEnter={() => handleSearch()} allowClear />
 								<div className="icon" onClick={() => handleSearch()}>

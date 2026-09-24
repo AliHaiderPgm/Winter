@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom"
 import logo from "../../assets/logo.png"
 import { BsFacebook, BsGithub, BsInstagram, BsTwitter } from "react-icons/bs"
 import { ServerURL } from "../../context"
+import { TextRoll } from "./TextRoll"
 
 const SUBSCRIBE_URL = `${ServerURL()}/subscribe`
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
@@ -111,20 +112,18 @@ export default function Footer() {
 							</div>
 							<div className="col-12">
 								<ul className="navbar-nav">
-									{
-										footerLinks.map((link, index) => {
-											return <li key={index}>
+									{footerLinks.map((link, index) => (
+										<li key={index}>
 											<NavLink
 												to={link.navigateTo}
 												className={({ isActive }) =>
 													isActive ? "footer-link active" : "footer-link"
 												}
 											>
-													{link.title}
-												</NavLink>
-											</li>
-										})
-									}
+												<TextRoll>{link.title}</TextRoll>
+											</NavLink>
+										</li>
+									))}
 								</ul>
 							</div>
 						</div>

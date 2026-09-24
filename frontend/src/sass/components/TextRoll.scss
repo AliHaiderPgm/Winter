@@ -1,0 +1,89 @@
+// TextRoll - see components/shared/TextRoll.jsx.
+//
+// They share the same font-size, so the invisible label and the rolling overlay
+// are laid out on the same baseline and exactly the same box: the label can be
+// transparent without costing a pixel of position or width.
+//
+// Nothing here is sized in pixels except through em, so the roll follows the host
+// link's font-size (navbar pill and footer links run at different sizes today).
+
+$text-roll-line: 1.4; // one glyph line: comfortably taller than the font's ink
+$text-roll-duration: 0.42s;
+$text-roll-ease: cubic-bezier(0.25, 1, 0.3, 1);
+
+.text-roll {
+	position: relative;
+	display: inline-block;
+	// Same line-height as the label so this box is exactly the label's height, and
+	// the overlay below can be pinned to both with `inset: 0`.
+	line-height: $text-roll-line;
+
+	// The accessible copy: in flow, so it decides the link's width, baseline and
+	// height (removing it would collapse the pill), and transparent, because the
+	// visible letters are the ones being rolled.
+	&__label {
+		display: inline-block;
+		line-height: $text-roll-line;
+		white-space: nowrap;
+		color: transparent;
+	}
+
+	// The animation, painted over the label. Decorated with user-select: none so a
+	// drag across it highlights (and copies) the label's text once, not twice.
+	&__roll {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		user-select: none;
+	}
+
+	// One letter. Each cell clips its own two glyphs, which is what lets the letters
+	// move independently without the row needing a clip of its own.
+	&__cell {
+		position: relative;
+		flex: none;
+		overflow: hidden;
+		line-height: $text-roll-line;
+	}
+
+	// Resting glyph: in place, and it leaves upwards when the link is active.
+	&__glyph {
+		display: block;
+		transform: translateY(0);
+		transition: transform $text-roll-duration $text-roll-ease;
+	}
+
+	// The copy that follows it in: parked exactly one cell-height below, which is
+	// why the cell and this box must agree on their height (`line-height`).
+	&__glyph--clone {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		transform: translateY(100%);
+	}
+}
+
+// The hosts of the roll: desktop pill links and footer links. The whole link
+// drives it, not just the label, so hovering the link's padding counts too.
+// Add another host class here when somewhere else starts using <TextRoll>.
+.link:hover,
+.link:focus-visible,
+.footer-link:hover,
+.footer-link:focus-visible {
+	.text-roll__glyph {
+		transform: translateY(-100%);
+	}
+
+	.text-roll__glyph--clone {
+		transform: translateY(0);
+	}
+}
+
+// Reduced motion drops the travel: the letters are still swapped, but instantly
+// rather than rolled.
+@media (prefers-reduced-motion: reduce) {
+	.text-roll__glyph {
+		transition: none;
+	}
+}
