@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Winter Web App",
   "main": "index.js",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js",
